@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
+using System.Reflection;
 using ecomode;
 using ecomode.Interop;
 
@@ -24,7 +25,13 @@ public partial class MainForm : Form
             _isAdmin = isAdmin;
             _InitializeComponent();
 
-            this.Icon = new Icon("app_simplified.ico");
+            // this.Icon = new Icon("app_simplified.ico");
+            var icon = LoadEmbeddedIcon("ecomode.Assets.app_simplified.ico");
+            if (icon != null)
+            {
+                this.Icon = icon;
+                trayIcon.Icon = icon;
+            }
 
             EnergyManager.Logger = Log;
 
@@ -185,7 +192,7 @@ public partial class MainForm : Form
         miTrayQuit.Click += OnMenuQuit;
 
         // trayIcon.Icon = SystemIcons.Application; // replace with your own .ico if you have one
-        trayIcon.Icon = new Icon("app_simplified.ico");
+        // trayIcon.Icon = new Icon("app_simplified.ico");
         trayIcon.Text = "EcoMode";
         trayIcon.ContextMenuStrip = trayMenu;
         trayIcon.Visible = true;
@@ -627,6 +634,14 @@ public partial class MainForm : Form
     #endregion
 
     #region Helpers
+
+    private static Icon? LoadEmbeddedIcon(string resourceName)
+    {
+        var asm = Assembly.GetExecutingAssembly();
+        // e.g. "ecomode.Assets.app_simplified.ico"
+        using var s = asm.GetManifestResourceStream(resourceName);
+        return s != null ? new Icon(s) : null;
+    }
 
     private void OnMenuResetDefaults(object? sender, EventArgs e)
     {

@@ -11,4 +11,9 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
+<ItemGroup>
+  <EmbeddedResource Include="Assets\app_simplified.ico" />
+</ItemGroup>
+
+
 </Project>
