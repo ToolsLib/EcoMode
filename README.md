@@ -68,3 +68,10 @@ signtool.exe sign /f "path\to\your\certificate.pfx" /p "your_certificate_passwor
 ## Notes & tweaks
 
 Tuning values: EPP/Boost numbers are conservative defaults; adjust in ApplyPowerPlan.
+
+## 📜 License
+
+This project is licensed under the [CC BY-NC-ND 4.0 License](LICENSE).
+
+You are free to share the software for non-commercial use **as-is** with attribution.  
+You may not modify, rebrand, or use the name **EcoMode** for derivative works.  
