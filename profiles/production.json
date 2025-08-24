@@ -1,0 +1,29 @@
+{
+  "IncludePowerPlan": true,
+  "IncludeEdge": true,
+  "IncludeChrome": true,
+  "IncludeGpuPref": true,
+  "IncludeEcoQos": true,
+  "GpuPrefApps": [
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+    "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe",
+    "C:\\Program Files\\Adobe\\Adobe Photoshop 2025\\Photoshop.exe",
+    "C:\\Program Files (x86)\\Steam\\steam.exe",
+    "C:\\Program Files\\Blender Foundation\\Blender 4.0\\blender.exe"
+  ],
+  "BypassProcesses": [
+    "explorer",
+    "dwm",
+    "taskmgr",
+    "discord",
+    "teams",
+    "slack",
+    "code",
+    "devenv",
+    "powershell",
+    "cmd"
+  ],
+  "EcoQosProcesses": null
+}

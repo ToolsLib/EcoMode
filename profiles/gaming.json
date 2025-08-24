@@ -1,0 +1,49 @@
+{
+  "IncludePowerPlan": true,
+  "IncludeEdge": true,
+  "IncludeChrome": true,
+  "IncludeGpuPref": true,
+  "IncludeEcoQos": true,
+  "GpuPrefApps": [
+    "C:\\Program Files (x86)\\Steam\\steam.exe",
+    "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win64\\EpicGamesLauncher.exe",
+    "C:\\Program Files (x86)\\Battle.net\\Battle.net.exe",
+    "C:\\Riot Games\\Riot Client\\RiotClientServices.exe",
+    "C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\UbisoftConnect.exe",
+    "C:\\Program Files (x86)\\GOG Galaxy\\GalaxyClient.exe",
+    "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+    "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe",
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+  ],
+  "BypassProcesses": [
+    "explorer",
+    "dwm",
+    "taskmgr",
+
+    "steam",
+    "epicgameslauncher",
+    "battlenet",
+    "riotclientservices",
+    "ubisoftconnect",
+    "galaxyclient",
+
+    "obs64",
+    "discord",
+    "nvcontainer",     
+    "nvidiashare",          
+    "msiafterburner",
+    "rtss",
+    "lghub",
+    "icue",
+    "armourycrate",
+    "lightingservice",
+    "nzxtcam",
+
+    "code",
+    "devenv",
+    "powershell",
+    "cmd"
+  ],
+  "EcoQosProcesses": null
+}
