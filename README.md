@@ -30,11 +30,3 @@ signtool.exe sign /f "path\to\your\certificate.pfx" /p "your_certificate_passwor
 # Notes & tweaks
 
 Tuning values: EPP/Boost numbers are conservative defaults; adjust in ApplyPowerPlan.
-
-GPU preference uses HKCU and will be honored by AMD/NVIDIA/Intel on modern Windows. You can add/remove EXE paths in the UI and click Save Settings.
-
-EcoQoS: sets per-process throttling immediately for running processes; re-run if new processes start later (or extend the app with a small scheduler/tray icon if you like).
-
-If you prefer WPF or WinUI 3, the backend methods here drop in as-is; only the UI changes.
-
-TO CHANGE: Access denied on system processes/services is expected; we silently ignore them.
