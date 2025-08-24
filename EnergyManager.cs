@@ -1,4 +1,5 @@
-using ecomode.Interop; // or ecomode.Interop
+using ecomode.Interop;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -8,52 +9,31 @@ namespace ecomode // or ecomode
     // public unsafe class EnergyManager
     public class EnergyManager
     {
-        public static readonly HashSet<string> BypassProcessList = new(StringComparer.OrdinalIgnoreCase)
+        public static readonly HashSet<string> DefaultBypass = new(StringComparer.OrdinalIgnoreCase)
         {
-            // Not ourselves
-            "energystar.exe",
-            "ecotogglegui.exe", // add your EXE if different
-
-            // Browsers / aware
-            "msedge.exe",
-            "webviewhost.exe",
-            "chrome.exe",
-
-            // UWP frame host
+            "ecomode.exe", // app exe
+            "msedge.exe", "webviewhost.exe", "chrome.exe",
             "applicationframehost.exe",
-
-            // Tools
-            "taskmgr.exe",
-            "procmon.exe",
-            "procmon64.exe",
-
-            // Widgets
+            "taskmgr.exe", "procmon.exe", "procmon64.exe",
             "widgets.exe",
-
-            // Shell
-            "dwm.exe",
-            "explorer.exe",
-            "shellexperiencehost.exe",
-            "startmenuexperiencehost.exe",
-            "searchhost.exe",
-            "sihost.exe",
-            "fontdrvhost.exe",
-
-            // IME
-            "chsime.exe",
-            "ctfmon.exe",
-
-#if DEBUG
+            "dwm.exe", "explorer.exe", "shellexperiencehost.exe",
+            "startmenuexperiencehost.exe", "searchhost.exe", "sihost.exe", "fontdrvhost.exe",
+            "chsime.exe", "ctfmon.exe",
+        #if DEBUG
             "devenv.exe",
-#endif
-            // Services
-            "csrss.exe",
-            "smss.exe",
-            "svchost.exe",
-
-            // WUDF
+        #endif
+            "csrss.exe", "smss.exe", "svchost.exe",
             "wudfrd.exe",
         };
+
+        // working set (starts as DefaultBypass)
+        private static HashSet<string> _bypass = new(DefaultBypass, StringComparer.OrdinalIgnoreCase);
+
+        // expose read-only view if needed elsewhere
+        public static IReadOnlyCollection<string> BypassProcessList => _bypass;
+
+        public static Action<string, Color?>? Logger { get; set; }
+        private static void Log(string msg, Color? color = null) => Logger?.Invoke(msg, color);
 
         public const string UWPFrameHostApp = "ApplicationFrameHost.exe";
 
@@ -85,6 +65,41 @@ namespace ecomode // or ecomode
 
             Marshal.StructureToPtr(throttleState,  pThrottleOn,  false);
             Marshal.StructureToPtr(unthrottleState,pThrottleOff, false);
+        }
+
+        // Normalize helper: trim, ensure ".exe", lowercase
+        private static string NormalizeProcName(string s)
+        {
+            var name = (s ?? string.Empty).Trim().Trim('"');
+            if (string.IsNullOrEmpty(name)) return string.Empty;
+            if (!name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                name += ".exe";
+            return name.ToLowerInvariant();
+        }
+
+        // Allow Form to set/override bypass items (union with defaults)
+        public static void SetBypass(IEnumerable<string>? userBypass)
+        {
+            var merged = new HashSet<string>(DefaultBypass, StringComparer.OrdinalIgnoreCase);
+
+            if (userBypass != null)
+            {
+                foreach (var raw in userBypass)
+                {
+                    var n = NormalizeProcName(raw);
+                    if (!string.IsNullOrEmpty(n)) merged.Add(n);
+                }
+            }
+
+            // Always make sure our own GUI exe is present (in case renamed)
+            try
+            {
+                var thisExe = Process.GetCurrentProcess().ProcessName + ".exe";
+                merged.Add(thisExe.ToLowerInvariant());
+            }
+            catch { /* ignore */ }
+
+            _bypass = merged;
         }
 
         private static void ToggleEfficiencyMode(IntPtr hProcess, bool enable)
@@ -155,7 +170,8 @@ namespace ecomode // or ecomode
             }
 
             // Foreground gets unthrottled (boost), previous gets throttled
-            bool bypass = !string.IsNullOrEmpty(appName) && BypassProcessList.Contains(appName);
+            // bool bypass = !string.IsNullOrEmpty(appName) && BypassProcessList.Contains(appName);
+            bool bypass = !string.IsNullOrEmpty(appName) && _bypass.Contains(appName);
             if (!bypass)
             {
                 ToggleEfficiencyMode(procHandle, enable: false); // unthrottle
@@ -196,16 +212,26 @@ namespace ecomode // or ecomode
                     if ((uint)proc.Id == pendingProcPid) continue; // keep foreground unthrottled
 
                     var name = proc.ProcessName + ".exe";
-                    if (BypassProcessList.Contains(name)) continue;
+                    // if (BypassProcessList.Contains(name)) continue;
+                    if (_bypass.Contains(name)) continue;
 
                     var hProcess = Win32Api.OpenProcess(
                         (uint)Win32Api.ProcessAccessFlags.SetInformation, false, (uint)proc.Id);
                     if (hProcess == IntPtr.Zero) continue;
 
                     ToggleEfficiencyMode(hProcess, enable: true); // throttle
+                    Log($"EcoQoS: throttle -> {proc.ProcessName}:{proc.Id}");
                     Win32Api.CloseHandle(hProcess);
                 }
-                catch { /* access denied/race — ignore */ }
+                // catch { /* access denied/race — ignore */ }
+                catch (Win32Exception wex) when (wex.NativeErrorCode == 5) // ERROR_ACCESS_DENIED
+                {
+                    Log($"EcoQoS: access denied (expected) -> {proc.ProcessName}:{proc.Id}");
+                }
+                catch (Exception ex)
+                {
+                    Log($"EcoQoS error {proc.ProcessName}:{proc.Id} -> {ex.Message}");
+                }
             }
         }
 
@@ -220,7 +246,8 @@ namespace ecomode // or ecomode
                 {
                     if (proc.SessionId != currentSessionId) continue;
                     var name = proc.ProcessName + ".exe";
-                    if (BypassProcessList.Contains(name)) continue;
+                    // if (BypassProcessList.Contains(name)) continue;
+                    if (_bypass.Contains(name)) continue;
 
                     var hProcess = Win32Api.OpenProcess(
                         (uint)Win32Api.ProcessAccessFlags.SetInformation, false, (uint)proc.Id);

@@ -7,32 +7,7 @@ using System.Text;
 
 static class Program
 {
-    // /// <summary>
-    // ///  The main entry point for the application.
-    // /// </summary>
-    // [STAThread]
-    // static void Main()
-    // {
-    //     // To customize application configuration such as set high DPI settings or default font,
-    //     // see https://aka.ms/applicationconfiguration.
-    //     ApplicationConfiguration.Initialize();
-    //     Application.Run(new Form1());
-    // }    
-
     [STAThread]
-    // static void Main()
-    // {
-    //     ApplicationConfiguration.Initialize();
-    //     Application.Run(new Form1(IsElevated()));
-    // }
-
-    // static bool IsElevated()
-    // {
-    //     using var identity = WindowsIdentity.GetCurrent();
-    //     var principal = new WindowsPrincipal(identity);
-    //     return principal.IsInRole(WindowsBuiltInRole.Administrator);
-    // }
-
     static void Main()
     {
         // Global exception handlers (before anything else)
@@ -49,14 +24,14 @@ static class Program
             bool isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
             // Wrap constructor too, in case InitializeComponent throws
-            Form1 form;
+            MainForm form;
             try
             {
-                form = new Form1(isAdmin);
+                form = new MainForm(isAdmin);
             }
             catch (Exception ex)
             {
-                ShowAndLog("Error creating Form1 (InitializeComponent?)", ex);
+                ShowAndLog("Error creating MainForm (InitializeComponent?)", ex);
                 return;
             }
 
@@ -82,7 +57,7 @@ static class Program
 
         try
         {
-            MessageBox.Show($"{title}:\r\n\r\n{ex}", "EcoToggleGUI — Error",
+            MessageBox.Show($"{title}:\r\n\r\n{ex}", "EcoModeGUI — Error",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         catch { /* last resort: swallow */ }
@@ -92,7 +67,7 @@ static class Program
     {
         var dir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "EcoToggleGUI");
+            "EcoModeGUI");
         return Path.Combine(dir, "error.log");
     }
 }
