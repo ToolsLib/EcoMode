@@ -69,6 +69,12 @@ signtool.exe sign /f "path\to\your\certificate.pfx" /p "your_certificate_passwor
 
 Tuning values: EPP/Boost numbers are conservative defaults; adjust in ApplyPowerPlan.
 
+## 🙏 Thanks
+
+This project was inspired by and builds upon ideas from
+[**EnergyStar by imbushuo**](https://github.com/imbushuo/EnergyStar).
+Big thanks for making their work available to the community! 💚
+
 ## 📜 License
 
 This project is licensed under the [CC BY-NC-ND 4.0 License](LICENSE).
