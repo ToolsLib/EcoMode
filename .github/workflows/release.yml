@@ -55,7 +55,9 @@ jobs:
         run: |
           ./tests/ReleaseScripts.Tests.ps1
           # Hosted VMs do not reliably expose CPU EPP/boost power settings.
-          dotnet run --project tests/EcoMode.RegressionTests.csproj --configuration Release -- --skip-power-read
+          dotnet build EcoMode.slnx --configuration Release
+          if ($LASTEXITCODE -ne 0) { throw 'Solution build failed.' }
+          dotnet run --project tests/EcoMode.RegressionTests/EcoMode.RegressionTests.csproj --configuration Release --no-build -- --skip-power-read
           if ($LASTEXITCODE -ne 0) { throw 'Regression checks failed.' }
 
       - name: Install verified Inno Setup

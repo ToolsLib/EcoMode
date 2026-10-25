@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Platforms>AnyCPU</Platforms>
+    <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyName>ecomode</AssemblyName>
+    <RootNamespace>ecomode</RootNamespace>
+    <Product>EcoMode</Product>
+    <Company>ToolsLib</Company>
+    <Description>Windows power saving with automatic backup and restoration.</Description>
+    <ApplicationIcon>Assets\app_simplified.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\app_simplified.ico" LogicalName="ecomode.Assets.app_simplified.ico" />
+    <EmbeddedResource Include="Profiles\*.json" LogicalName="ecomode.profiles.%(Filename)%(Extension)" />
+    <InternalsVisibleTo Include="EcoMode.RegressionTests" />
+  </ItemGroup>
+</Project>

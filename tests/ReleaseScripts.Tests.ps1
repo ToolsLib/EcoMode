@@ -50,9 +50,72 @@ function global:gh {
 
 try {
     Run 'installer preserves user profiles and machine recovery originals' {
-        $installerScript = Get-Content -Raw -LiteralPath "$projectRoot/ecomode.iss"
+        $installerScript = Get-Content -Raw -LiteralPath "$projectRoot/installer/EcoMode.iss"
         Assert ($installerScript -notmatch '(?im)^\s*\[UninstallDelete\]') 'Uninstall must preserve recovery data after abnormal termination.'
         Assert ($installerScript -match 'artifacts\\standalone\\win-x64') 'Installer publish defaults must use the standalone output.'
+    }
+    Run 'release packaging uses the source layout from any working directory and cleans failed builds' {
+        $buildRoot = Join-Path $fixture 'packaging'
+        $buildScripts = Join-Path $buildRoot 'scripts'
+        $buildProject = Join-Path $buildRoot 'src/EcoMode/EcoMode.csproj'
+        $buildInstaller = Join-Path $buildRoot 'installer/EcoMode.iss'
+        $directories = @($buildScripts, (Split-Path $buildProject), (Split-Path $buildInstaller),
+            "$buildRoot/src/EcoMode/Profiles", "$buildRoot/docs", "$buildRoot/elsewhere")
+        New-Item -ItemType Directory -Path $directories -Force | Out-Null
+        Copy-Item -LiteralPath "$projectRoot/scripts/Build-Release.ps1", "$projectRoot/scripts/Get-ReleaseVersion.ps1" -Destination $buildScripts
+        foreach ($file in @($buildProject, $buildInstaller, "$buildRoot/LICENSE", "$buildRoot/README.md",
+            "$buildRoot/src/EcoMode/Profiles/balanced.json", "$buildRoot/docs/screenshot.png")) {
+            Set-Content -LiteralPath $file -Value 'fixture'
+        }
+        $compiler = Join-Path $buildRoot 'compiler.ps1'
+        @'
+param([Parameter(ValueFromRemainingArguments)][string[]] $CompilerArguments)
+if ([IO.Path]::GetFullPath($CompilerArguments[-1]) -ne $global:EcoModeBuildTest.Installer) {
+    throw 'The release script used the wrong installer path.'
+}
+$output = ($CompilerArguments | Where-Object { $_.StartsWith('/O') }).Substring(2)
+$filename = ($CompilerArguments | Where-Object { $_.StartsWith('/F') }).Substring(2)
+[IO.File]::WriteAllText((Join-Path $output ($filename + '.exe')), 'installer fixture')
+$global:LASTEXITCODE = 0
+'@ | Set-Content -LiteralPath $compiler
+        $global:EcoModeBuildTest = @{ Project = [IO.Path]::GetFullPath($buildProject); Installer = [IO.Path]::GetFullPath($buildInstaller); FailPublish = $false }
+        function global:dotnet {
+            if ($args[0] -ne 'publish' -or [IO.Path]::GetFullPath($args[1]) -ne $global:EcoModeBuildTest.Project) {
+                throw 'The release script used the wrong application project.'
+            }
+            if ($global:EcoModeBuildTest.FailPublish) { $global:LASTEXITCODE = 1; return }
+            $output = $args[[Array]::IndexOf($args, '--output') + 1]
+            [IO.File]::WriteAllText((Join-Path $output 'ecomode.exe'), 'application fixture')
+            $global:LASTEXITCODE = 0
+        }
+        Push-Location "$buildRoot/elsewhere"
+        try {
+            & "$buildScripts/Build-Release.ps1" -Version $testVersion -IsccPath $compiler
+            $releaseRoot = Join-Path $buildRoot 'artifacts/release'
+            $archive = [IO.Compression.ZipFile]::OpenRead((Join-Path $releaseRoot "$packageName.zip"))
+            try {
+                $entries = @($archive.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
+                foreach ($expected in @('ecomode.exe', 'profiles/balanced.json', 'docs/screenshot.png', 'README.md', 'LICENSE')) {
+                    Assert ($expected -in $entries) "Portable release is missing $expected."
+                }
+                Assert (@($entries | Where-Object { $_ -match '(^|/)(src|tests|obj|bin)/' }).Count -eq 0) 'Developer sources or build directories leaked into the package.'
+            }
+            finally { $archive.Dispose() }
+            foreach ($line in (Get-Content -LiteralPath (Join-Path $releaseRoot "$packageName-SHA256SUMS.txt"))) {
+                $hash, $name = $line -split '  ', 2
+                Assert ((Get-FileHash -LiteralPath (Join-Path $releaseRoot $name) -Algorithm SHA256).Hash -eq $hash) 'A package checksum is invalid.'
+            }
+            $global:EcoModeBuildTest.FailPublish = $true
+            Assert-Throws { & "$buildScripts/Build-Release.ps1" -Version '9.9.9' -IsccPath $compiler }
+            Assert (@(Get-ChildItem "$buildRoot/artifacts" -Directory -Filter 'staging-*').Count -eq 0) 'A build left staging files behind.'
+            Assert (!(Test-Path -LiteralPath "$releaseRoot/EcoMode-9.9.9-win-x64.zip")) 'Failed publishing created a release package.'
+        }
+        finally {
+            Pop-Location
+            Remove-Item -LiteralPath Function:\dotnet -ErrorAction SilentlyContinue
+            Remove-Variable -Name EcoModeBuildTest -Scope Global -ErrorAction SilentlyContinue
+            $global:LASTEXITCODE = 0
+        }
     }
     $fixtureScripts = Join-Path $fixture 'scripts'
     $fixturePackages = Join-Path $fixture 'artifacts/release'

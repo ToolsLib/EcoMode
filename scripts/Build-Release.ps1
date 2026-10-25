@@ -27,19 +27,20 @@ if (!$IsccPath -or !(Test-Path -LiteralPath $IsccPath -PathType Leaf)) {
 New-Item -ItemType Directory -Path $releaseDirectory, $publishDirectory -Force | Out-Null
 
 try {
-    dotnet publish "$projectRoot/ecomode.csproj" --configuration Release --runtime win-x64 --self-contained true `
+    dotnet publish "$projectRoot/src/EcoMode/EcoMode.csproj" --configuration Release --runtime win-x64 --self-contained true `
         -p:PublishProfile=Standalone `
         --output $publishDirectory "-p:Version=$Version" "-p:AssemblyVersion=$numericVersion" "-p:FileVersion=$numericVersion"
     if ($LASTEXITCODE -ne 0) { throw 'dotnet publish failed.' }
 
     Copy-Item -LiteralPath "$projectRoot/LICENSE", "$projectRoot/README.md" -Destination $publishDirectory
-    Copy-Item -LiteralPath "$projectRoot/profiles", "$projectRoot/docs" -Destination $publishDirectory -Recurse
+    Copy-Item -LiteralPath "$projectRoot/src/EcoMode/Profiles" -Destination (Join-Path $publishDirectory 'profiles') -Recurse
+    Copy-Item -LiteralPath "$projectRoot/docs" -Destination $publishDirectory -Recurse
 
     $zipPath = Join-Path $releaseDirectory "$packageName.zip"
     Compress-Archive -Path "$publishDirectory/*" -DestinationPath $zipPath -Force
 
     & $IsccPath "/DMyAppVer=$Version" "/DMyAppNumericVer=$numericVersion" "/DPublishDir=$publishDirectory" `
-        "/O$releaseDirectory" "/F$packageName-setup" "$projectRoot/ecomode.iss"
+        "/O$releaseDirectory" "/F$packageName-setup" "$projectRoot/installer/EcoMode.iss"
     if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed.' }
 
     $installerPath = Join-Path $releaseDirectory "$packageName-setup.exe"

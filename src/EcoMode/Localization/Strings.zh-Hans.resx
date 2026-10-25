@@ -1,0 +1,932 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="&#xD;&#xA;&#xD;&#xA;Review the app paths and bypass list, then switch Eco Mode on to apply it." xml:space="preserve">
+    <value>
+
+检查应用路径和排除列表，然后开启节能模式。</value>
+  </data>
+  <data name="&amp;Advanced view" xml:space="preserve">
+    <value>高级视图(&amp;A)</value>
+  </data>
+  <data name="&amp;Edit" xml:space="preserve">
+    <value>编辑(&amp;E)</value>
+  </data>
+  <data name="&amp;Export Profile…" xml:space="preserve">
+    <value>导出配置(&amp;X)…</value>
+  </data>
+  <data name="&amp;File" xml:space="preserve">
+    <value>文件(&amp;F)</value>
+  </data>
+  <data name="&amp;Import Profile…" xml:space="preserve">
+    <value>导入配置(&amp;I)…</value>
+  </data>
+  <data name="&amp;Quit" xml:space="preserve">
+    <value>退出(&amp;Q)</value>
+  </data>
+  <data name="&amp;Reset to Defaults" xml:space="preserve">
+    <value>恢复默认设置(&amp;R)</value>
+  </data>
+  <data name="&amp;Save" xml:space="preserve">
+    <value>保存(&amp;S)</value>
+  </data>
+  <data name="&amp;Standard view" xml:space="preserve">
+    <value>标准视图(&amp;S)</value>
+  </data>
+  <data name="&amp;View" xml:space="preserve">
+    <value>视图(&amp;V)</value>
+  </data>
+  <data name="=== ECO OFF ===" xml:space="preserve">
+    <value>=== 节能模式已关闭 ===</value>
+  </data>
+  <data name="=== ECO ON ===" xml:space="preserve">
+    <value>=== 节能模式已开启 ===</value>
+  </data>
+  <data name="=== RESTORE ORIGINAL SETTINGS ===" xml:space="preserve">
+    <value>=== 恢复原始设置 ===</value>
+  </data>
+  <data name="A machine restore journal cannot contain per-user settings." xml:space="preserve">
+    <value>系统恢复记录不能包含用户设置。</value>
+  </data>
+  <data name="ACTIVITY" xml:space="preserve">
+    <value>活动</value>
+  </data>
+  <data name="ADMINISTRATOR ACCESS" xml:space="preserve">
+    <value>管理员权限</value>
+  </data>
+  <data name="APPLY TO" xml:space="preserve">
+    <value>应用范围</value>
+  </data>
+  <data name="Activity log" xml:space="preserve">
+    <value>活动日志</value>
+  </data>
+  <data name="Activity will appear here when you save settings or enable Eco Mode." xml:space="preserve">
+    <value>保存设置或开启节能模式后，活动将显示在这里。</value>
+  </data>
+  <data name="Add app" xml:space="preserve">
+    <value>添加应用</value>
+  </data>
+  <data name="Administrator Recovery Required" xml:space="preserve">
+    <value>需要管理员权限恢复</value>
+  </data>
+  <data name="Advanced view" xml:space="preserve">
+    <value>高级视图</value>
+  </data>
+  <data name="Advanced view&#xD;&#xA;Fine-tune power-saving options, profiles and rules for individual apps." xml:space="preserve">
+    <value>高级视图
+自定义节能选项、配置和各个应用的规则。</value>
+  </data>
+  <data name="All settings available" xml:space="preserve">
+    <value>所有设置均可用</value>
+  </data>
+  <data name="Are you sure you want to reset EcoMode settings to defaults?&#xD;&#xA;" xml:space="preserve">
+    <value>确定要恢复 EcoMode 的默认设置吗？
+</value>
+  </data>
+  <data name="Background EcoQoS and power-saving browser GPU preferences. Keeps your power plan and browser policies." xml:space="preserve">
+    <value>对后台应用使用 EcoQoS，为浏览器选择节能显卡。保留电源计划和浏览器策略。</value>
+  </data>
+  <data name="Background EcoQoS with common build tools and runtimes bypassed. Add any other build or container processes you use." xml:space="preserve">
+    <value>对后台应用使用 EcoQoS，并排除常用构建工具和运行时。请添加其他构建或容器进程。</value>
+  </data>
+  <data name="Background EcoQoS with common editors, renderers and encoders bypassed. Keeps power, browser and GPU settings." xml:space="preserve">
+    <value>对后台应用使用 EcoQoS，并排除常用编辑器、渲染器和编码器。保留电源、浏览器和显卡设置。</value>
+  </data>
+  <data name="Background EcoQoS with common meeting apps and browsers bypassed. Keeps power, browser and GPU settings." xml:space="preserve">
+    <value>对后台应用使用 EcoQoS，并排除常用会议应用和浏览器。保留电源、浏览器和显卡设置。</value>
+  </data>
+  <data name="Background EcoQoS; keeps power, browser and GPU settings. Add your game names to the bypass list to protect background games." xml:space="preserve">
+    <value>对后台应用使用 EcoQoS，保留电源、浏览器和显卡设置。请将游戏加入排除列表，以免影响后台运行的游戏。</value>
+  </data>
+  <data name="Background processes · EcoQoS" xml:space="preserve">
+    <value>后台进程 · EcoQoS</value>
+  </data>
+  <data name="Backup failed. Check the log and retry." xml:space="preserve">
+    <value>备份失败。请查看日志并重试。</value>
+  </data>
+  <data name="Balanced" xml:space="preserve">
+    <value>均衡</value>
+  </data>
+  <data name="Battery Saver" xml:space="preserve">
+    <value>节电</value>
+  </data>
+  <data name="Browse: error adding path -&gt; {0} ({1})" xml:space="preserve">
+    <value>添加路径失败：{0}（{1}）</value>
+  </data>
+  <data name="Browse: skipped missing file: {0}" xml:space="preserve">
+    <value>已跳过不存在的文件：{0}</value>
+  </data>
+  <data name="Browser power savings (restart browsers after changes)" xml:space="preserve">
+    <value>浏览器节能（更改后请重启浏览器）</value>
+  </data>
+  <data name="Cannot Load Preset" xml:space="preserve">
+    <value>无法加载预设</value>
+  </data>
+  <data name="Cannot read original settings: {0}" xml:space="preserve">
+    <value>无法读取原始设置：{0}</value>
+  </data>
+  <data name="Check the activity log and retry Quit. Restoring the power plan or browser policies may require Administrator privileges." xml:space="preserve">
+    <value>请查看活动日志后再次退出。恢复电源计划或浏览器策略可能需要管理员权限。</value>
+  </data>
+  <data name="Check the activity log and retry." xml:space="preserve">
+    <value>请查看活动日志并重试。</value>
+  </data>
+  <data name="Choose Cancel to keep EcoMode open." xml:space="preserve">
+    <value>选择“取消”以保持 EcoMode 运行。</value>
+  </data>
+  <data name="Choose OK to exit and keep the pending recovery record, then reopen EcoMode as Administrator and restore the settings. " xml:space="preserve">
+    <value>选择“确定”退出并保留待恢复记录，然后以管理员身份重新打开 EcoMode 并恢复设置。</value>
+  </data>
+  <data name="Choose the view that feels right for you. You can change it anytime from the View menu." xml:space="preserve">
+    <value>请选择适合你的视图。随时可以通过“视图”菜单更改。</value>
+  </data>
+  <data name="Chrome · battery saver + hardware acceleration off" xml:space="preserve">
+    <value>Chrome · 节电并关闭硬件加速</value>
+  </data>
+  <data name="Click RETRY to finish restoring." xml:space="preserve">
+    <value>点击“重试”以完成恢复。</value>
+  </data>
+  <data name="Could not migrate the legacy journal; attempting restoration from the available originals: {0}" xml:space="preserve">
+    <value>无法迁移旧恢复记录；将尝试使用可用的原始设置恢复：{0}</value>
+  </data>
+  <data name="Could not remove the foreground hook: {0}" xml:space="preserve">
+    <value>无法停止前台窗口监控：{0}</value>
+  </data>
+  <data name="Could not save original settings: {0}. Eco Mode remains off. Retry Save originals or switch on to retry the backup." xml:space="preserve">
+    <value>无法保存原始设置：{0}。节能模式保持关闭。请重新保存原始设置，或开启模式以重试备份。</value>
+  </data>
+  <data name="Creative Work" xml:space="preserve">
+    <value>创意工作</value>
+  </data>
+  <data name="Development" xml:space="preserve">
+    <value>开发</value>
+  </data>
+  <data name="Duplicate setting in the restore snapshot." xml:space="preserve">
+    <value>恢复备份中存在重复设置。</value>
+  </data>
+  <data name="Eco Mode" xml:space="preserve">
+    <value>节能模式</value>
+  </data>
+  <data name="Eco ON failed: {0}" xml:space="preserve">
+    <value>开启节能模式失败：{0}</value>
+  </data>
+  <data name="Eco applied: {0} / {1}" xml:space="preserve">
+    <value>已应用节能设置：{0} / {1}</value>
+  </data>
+  <data name="Eco apply failed: {0}: {1}" xml:space="preserve">
+    <value>应用节能设置失败：{0}：{1}</value>
+  </data>
+  <data name="Eco mode is off" xml:space="preserve">
+    <value>节能模式已关闭</value>
+  </data>
+  <data name="Eco mode is on" xml:space="preserve">
+    <value>节能模式已开启</value>
+  </data>
+  <data name="EcoMode could not restart as Administrator. It will continue in standard mode.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>EcoMode 无法以管理员身份重启，将继续使用标准模式。
+
+</value>
+  </data>
+  <data name="EcoMode is already running in this or another Windows session. Close that instance before starting another." xml:space="preserve">
+    <value>EcoMode 已在此 Windows 会话或其他会话中运行。请先关闭已有实例。</value>
+  </data>
+  <data name="EcoMode is running without Administrator privileges.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>EcoMode 当前没有管理员权限。
+
+</value>
+  </data>
+  <data name="EcoMode is still running here." xml:space="preserve">
+    <value>EcoMode 仍在此处运行。</value>
+  </data>
+  <data name="EcoMode profile (*.json)|*.json|All files (*.*)|*.*" xml:space="preserve">
+    <value>EcoMode 配置 (*.json)|*.json|所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="EcoMode restores the settings it changed when you quit. Closing the window keeps it running in the tray." xml:space="preserve">
+    <value>退出 EcoMode 时会恢复其更改的设置。关闭窗口后，程序仍在系统托盘中运行。</value>
+  </data>
+  <data name="EcoModeGUI — Error" xml:space="preserve">
+    <value>EcoModeGUI — 错误</value>
+  </data>
+  <data name="EcoQoS enabled. Foreground apps keep their original priority." xml:space="preserve">
+    <value>EcoQoS 已开启。前台应用保留原始优先级。</value>
+  </data>
+  <data name="EcoQoS: could not update process {0}: {1}" xml:space="preserve">
+    <value>EcoQoS：无法更新进程 {0}：{1}</value>
+  </data>
+  <data name="EcoQoS: process unavailable: {0}" xml:space="preserve">
+    <value>EcoQoS：进程不可用：{0}</value>
+  </data>
+  <data name="EcoQoS: throttle -&gt; {0}:{1}" xml:space="preserve">
+    <value>EcoQoS：限制 -&gt; {0}:{1}</value>
+  </data>
+  <data name="Edge · efficiency + hardware acceleration off" xml:space="preserve">
+    <value>Edge · 效率模式并关闭硬件加速</value>
+  </data>
+  <data name="Enables every saving option, including reduced CPU boost and browser acceleration. May slow demanding tasks." xml:space="preserve">
+    <value>开启所有节能选项，包括降低 CPU 睿频和关闭浏览器硬件加速。可能降低高负载任务的性能。</value>
+  </data>
+  <data name="Error initializing EcoMode" xml:space="preserve">
+    <value>EcoMode 初始化失败</value>
+  </data>
+  <data name="Export EcoMode Profile" xml:space="preserve">
+    <value>导出 EcoMode 配置</value>
+  </data>
+  <data name="Export failed: {0}" xml:space="preserve">
+    <value>导出失败：{0}</value>
+  </data>
+  <data name="Failed to open donate link: {0}" xml:space="preserve">
+    <value>无法打开支持链接：{0}</value>
+  </data>
+  <data name="Fatal error in Program.Main" xml:space="preserve">
+    <value>Program.Main 中发生严重错误</value>
+  </data>
+  <data name="GPU APPLICATIONS" xml:space="preserve">
+    <value>显卡应用</value>
+  </data>
+  <data name="GPU preference · power-saving graphics" xml:space="preserve">
+    <value>显卡偏好 · 节能显卡</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>游戏</value>
+  </data>
+  <data name="Hide activity" xml:space="preserve">
+    <value>隐藏活动</value>
+  </data>
+  <data name="How would you like to use EcoMode?" xml:space="preserve">
+    <value>你希望如何使用 EcoMode？</value>
+  </data>
+  <data name="Import EcoMode Profile" xml:space="preserve">
+    <value>导入 EcoMode 配置</value>
+  </data>
+  <data name="Import failed: invalid JSON ({0})" xml:space="preserve">
+    <value>导入失败：JSON 无效（{0}）</value>
+  </data>
+  <data name="Import failed: {0}" xml:space="preserve">
+    <value>导入失败：{0}</value>
+  </data>
+  <data name="Include this option when Eco Mode is enabled." xml:space="preserve">
+    <value>开启节能模式时包含此选项。</value>
+  </data>
+  <data name="Invalid missing-value entry in the restore snapshot." xml:space="preserve">
+    <value>恢复备份中的缺失值条目无效。</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>加载</value>
+  </data>
+  <data name="Load Preset" xml:space="preserve">
+    <value>加载预设</value>
+  </data>
+  <data name="Load preset failed: {0}" xml:space="preserve">
+    <value>加载预设失败：{0}</value>
+  </data>
+  <data name="Load the {0} preset? This replaces your current profile and any unsaved edits.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>加载“{0}”预设吗？这会替换当前配置和未保存的更改。
+
+</value>
+  </data>
+  <data name="Lower-power graphics for selected apps" xml:space="preserve">
+    <value>为所选应用使用节能显卡</value>
+  </data>
+  <data name="Machine restore journal is missing or invalid." xml:space="preserve">
+    <value>系统恢复记录缺失或无效。</value>
+  </data>
+  <data name="NEVER THROTTLE" xml:space="preserve">
+    <value>从不限制</value>
+  </data>
+  <data name="No original settings have been saved. No system settings were changed." xml:space="preserve">
+    <value>尚未保存原始设置。未更改任何系统设置。</value>
+  </data>
+  <data name="No power-saving options selected. Choose your options in Advanced view." xml:space="preserve">
+    <value>尚未选择节能选项。请在高级视图中选择。</value>
+  </data>
+  <data name="Non-UI/Background Exception" xml:space="preserve">
+    <value>后台异常</value>
+  </data>
+  <data name="OFF" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="ON" xml:space="preserve">
+    <value>开启</value>
+  </data>
+  <data name="ORIGINALS  /  COULD NOT READ" xml:space="preserve">
+    <value>原始设置 / 无法读取</value>
+  </data>
+  <data name="ORIGINALS  /  ECO CHANGES ACTIVE" xml:space="preserve">
+    <value>原始设置 / 节能更改已生效</value>
+  </data>
+  <data name="ORIGINALS  /  NOT SAVED YET" xml:space="preserve">
+    <value>原始设置 / 尚未保存</value>
+  </data>
+  <data name="ORIGINALS  /  RESTORE PENDING" xml:space="preserve">
+    <value>原始设置 / 待恢复</value>
+  </data>
+  <data name="ORIGINALS  /  SAVE FAILED" xml:space="preserve">
+    <value>原始设置 / 保存失败</value>
+  </data>
+  <data name="ORIGINALS  /  SAVED" xml:space="preserve">
+    <value>原始设置 / 已保存</value>
+  </data>
+  <data name="Off. Activate to enable Eco Mode." xml:space="preserve">
+    <value>已关闭。激活此开关可开启节能模式。</value>
+  </data>
+  <data name="On. Activate to turn Eco Mode off and restore original settings." xml:space="preserve">
+    <value>已开启。激活此开关可关闭节能模式并恢复原始设置。</value>
+  </data>
+  <data name="Original Settings" xml:space="preserve">
+    <value>原始设置</value>
+  </data>
+  <data name="Original restored: {0} / {1}" xml:space="preserve">
+    <value>已恢复原始设置：{0} / {1}</value>
+  </data>
+  <data name="Original settings include user GPU preferences only. Administrator-only settings will be captured before they are first applied." xml:space="preserve">
+    <value>原始设置仅包含用户显卡偏好。需要管理员权限的设置将在首次应用前备份。</value>
+  </data>
+  <data name="Original settings restored. Restart browsers to apply policy changes." xml:space="preserve">
+    <value>已恢复原始设置。请重启浏览器以应用策略更改。</value>
+  </data>
+  <data name="Original settings saved ({0:g}) to {1}." xml:space="preserve">
+    <value>原始设置已于 {0:g} 保存至 {1}。</value>
+  </data>
+  <data name="POWER CONTROL  /  Keep background work in check." xml:space="preserve">
+    <value>电源管理 / 让后台活动井然有序。</value>
+  </data>
+  <data name="PRESET PROFILE" xml:space="preserve">
+    <value>预设配置</value>
+  </data>
+  <data name="Power plan and browser policies skipped: restart as Administrator to use them." xml:space="preserve">
+    <value>已跳过电源计划和浏览器策略：请以管理员身份重启以使用这些选项。</value>
+  </data>
+  <data name="Power plan savings" xml:space="preserve">
+    <value>电源计划节能</value>
+  </data>
+  <data name="Power plan · EPP and CPU boost" xml:space="preserve">
+    <value>电源计划 · EPP 和 CPU 睿频</value>
+  </data>
+  <data name="PresetProfileAccessibility" xml:space="preserve">
+    <value>预设配置</value>
+  </data>
+  <data name="Process names · one per line" xml:space="preserve">
+    <value>进程名称 · 每行一个</value>
+  </data>
+  <data name="Profile exported to: {0}" xml:space="preserve">
+    <value>配置已导出至：{0}</value>
+  </data>
+  <data name="Profile imported from: {0}" xml:space="preserve">
+    <value>配置已从以下位置导入：{0}</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="Quit and Restore Settings" xml:space="preserve">
+    <value>退出并恢复设置</value>
+  </data>
+  <data name="Quitting turns Eco Mode off and restores the original power plan settings, browser policies, GPU preferences, " xml:space="preserve">
+    <value>退出会关闭节能模式，并恢复 EcoMode 更改的原始电源计划、浏览器策略、显卡偏好，</value>
+  </data>
+  <data name="RETRY" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="Ready to save power." xml:space="preserve">
+    <value>准备节能。</value>
+  </data>
+  <data name="Recovery needs attention" xml:space="preserve">
+    <value>恢复需要处理</value>
+  </data>
+  <data name="Reduced background activity" xml:space="preserve">
+    <value>减少后台活动</value>
+  </data>
+  <data name="Replace Original Settings" xml:space="preserve">
+    <value>替换原始设置</value>
+  </data>
+  <data name="Replace the saved original settings with the current settings for the selected options?" xml:space="preserve">
+    <value>用所选选项的当前设置替换已保存的原始设置吗？</value>
+  </data>
+  <data name="Reset failed: {0}" xml:space="preserve">
+    <value>重置失败：{0}</value>
+  </data>
+  <data name="Reset to Defaults" xml:space="preserve">
+    <value>恢复默认设置</value>
+  </data>
+  <data name="Restart EcoMode as Administrator to restore this setting." xml:space="preserve">
+    <value>请以管理员身份重新启动 EcoMode 以恢复此设置。</value>
+  </data>
+  <data name="Restart as Administrator to enable power-plan changes and Edge/Chrome policies, and to restore system settings.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>以管理员身份重启可更改电源计划和 Edge/Chrome 策略，并恢复系统设置。
+
+</value>
+  </data>
+  <data name="Restart as Administrator?" xml:space="preserve">
+    <value>以管理员身份重启？</value>
+  </data>
+  <data name="Restart browsers for restored policies to take effect.&#xD;&#xA;&#xD;&#xA;Choose OK to restore settings and quit." xml:space="preserve">
+    <value>请重启浏览器，使恢复的策略生效。
+
+选择“确定”以恢复设置并退出。</value>
+  </data>
+  <data name="Restart browsers to apply policy changes." xml:space="preserve">
+    <value>请重启浏览器以应用策略更改。</value>
+  </data>
+  <data name="Restoration pending. Activate to retry restoring original settings." xml:space="preserve">
+    <value>有待恢复的设置。激活此开关可重试恢复原始设置。</value>
+  </data>
+  <data name="Restore Incomplete" xml:space="preserve">
+    <value>恢复未完成</value>
+  </data>
+  <data name="Restore failed: {0}" xml:space="preserve">
+    <value>恢复失败：{0}</value>
+  </data>
+  <data name="Restore failed: {0}: {1}" xml:space="preserve">
+    <value>恢复失败：{0}：{1}</value>
+  </data>
+  <data name="Restore incomplete. See the log, then retry Restore originals (as Administrator if required)." xml:space="preserve">
+    <value>恢复未完成。请查看日志，然后重试恢复原始设置（必要时以管理员身份运行）。</value>
+  </data>
+  <data name="Restore journal could not be updated. Continuing restoration; pending work may be retried on the next launch: {0}" xml:space="preserve">
+    <value>无法更新恢复记录。将继续恢复；待处理项目可在下次启动时重试：{0}</value>
+  </data>
+  <data name="Restore originals" xml:space="preserve">
+    <value>恢复原始设置</value>
+  </data>
+  <data name="Restore pending" xml:space="preserve">
+    <value>等待恢复</value>
+  </data>
+  <data name="Restore pending changes before replacing the original settings." xml:space="preserve">
+    <value>替换原始设置前，请先恢复待处理的更改。</value>
+  </data>
+  <data name="Restore saved settings" xml:space="preserve">
+    <value>恢复已保存的设置</value>
+  </data>
+  <data name="Restore the pending changes before replacing the original settings." xml:space="preserve">
+    <value>替换原始设置前，请先恢复待处理的更改。</value>
+  </data>
+  <data name="SAVED ORIGINALS" xml:space="preserve">
+    <value>已保存的原始设置</value>
+  </data>
+  <data name="STANDARD ACCESS" xml:space="preserve">
+    <value>标准权限</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Save original settings before enabling Eco Mode." xml:space="preserve">
+    <value>开启节能模式前，请先保存原始设置。</value>
+  </data>
+  <data name="Save original settings failed: {0}" xml:space="preserve">
+    <value>保存原始设置失败：{0}</value>
+  </data>
+  <data name="Save originals" xml:space="preserve">
+    <value>保存原始设置</value>
+  </data>
+  <data name="Save power with one switch." xml:space="preserve">
+    <value>一个开关，轻松节能。</value>
+  </data>
+  <data name="Save power. Keep background activity in check." xml:space="preserve">
+    <value>节省电能，掌控后台活动。</value>
+  </data>
+  <data name="Save profile" xml:space="preserve">
+    <value>保存配置</value>
+  </data>
+  <data name="Saved changes are waiting to be restored. Use RETRY or Restore originals." xml:space="preserve">
+    <value>有已保存的更改等待恢复。请使用“重试”或“恢复原始设置”。</value>
+  </data>
+  <data name="Select application(s) to set GPU preference" xml:space="preserve">
+    <value>选择要设置显卡偏好的应用</value>
+  </data>
+  <data name="Settings reset to defaults." xml:space="preserve">
+    <value>已恢复默认设置。</value>
+  </data>
+  <data name="Settings saved." xml:space="preserve">
+    <value>设置已保存。</value>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>显示</value>
+  </data>
+  <data name="Standard view" xml:space="preserve">
+    <value>标准视图</value>
+  </data>
+  <data name="Standard view (recommended)&#xD;&#xA;The Eco Mode switch, clear status and an easy way to restore settings." xml:space="preserve">
+    <value>标准视图（推荐）
+节能开关、清晰的状态，以及便捷的设置恢复。</value>
+  </data>
+  <data name="Some options need Administrator access. Available options still work. Quit restores changes; closing the window keeps EcoMode running in the tray." xml:space="preserve">
+    <value>部分选项需要管理员权限，其他选项仍可使用。退出时会恢复更改；关闭窗口后 EcoMode 仍在系统托盘中运行。</value>
+  </data>
+  <data name="Some original settings could not be restored. EcoMode will stay open.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>部分原始设置无法恢复，EcoMode 将保持运行。
+
+</value>
+  </data>
+  <data name="Some process settings could not be restored; cleanup will be retried." xml:space="preserve">
+    <value>部分进程设置无法恢复；稍后将重试清理。</value>
+  </data>
+  <data name="Some settings could not be applied. See the log; switch Eco Mode off to restore any partial changes." xml:space="preserve">
+    <value>部分设置无法应用。请查看日志；关闭节能模式可恢复已应用的部分更改。</value>
+  </data>
+  <data name="Some settings still need to be restored. Click RETRY." xml:space="preserve">
+    <value>部分设置仍需恢复。请点击“重试”。</value>
+  </data>
+  <data name="Some system settings need Administrator privileges to restore. Process throttling has been cleaned up.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>恢复部分系统设置需要管理员权限。进程限制已清理。
+
+</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>支持</value>
+  </data>
+  <data name="Switch Eco Mode off and finish restoring pending changes before loading a preset." xml:space="preserve">
+    <value>加载预设前，请关闭节能模式并完成待处理的恢复。</value>
+  </data>
+  <data name="Switch Eco Mode off and finish restoring pending changes before saving a new original." xml:space="preserve">
+    <value>保存新的原始设置前，请关闭节能模式并完成待处理的恢复。</value>
+  </data>
+  <data name="Switch off to restore originals." xml:space="preserve">
+    <value>关闭即可恢复原始设置。</value>
+  </data>
+  <data name="Switch on to save power." xml:space="preserve">
+    <value>开启即可节能。</value>
+  </data>
+  <data name="System settings need Administrator" xml:space="preserve">
+    <value>系统设置需要管理员权限</value>
+  </data>
+  <data name="The app assembly path is unavailable." xml:space="preserve">
+    <value>无法获取应用程序集路径。</value>
+  </data>
+  <data name="The app path is unavailable." xml:space="preserve">
+    <value>无法获取应用路径。</value>
+  </data>
+  <data name="The app path must be absolute." xml:space="preserve">
+    <value>应用路径必须是绝对路径。</value>
+  </data>
+  <data name="The original settings snapshot is invalid or from an unsupported version." xml:space="preserve">
+    <value>原始设置备份无效，或其版本不受支持。</value>
+  </data>
+  <data name="The profile contains no settings." xml:space="preserve">
+    <value>配置中没有设置。</value>
+  </data>
+  <data name="The restore snapshot contains an invalid setting value or type." xml:space="preserve">
+    <value>恢复备份中存在无效的设置值或类型。</value>
+  </data>
+  <data name="The restore snapshot contains an unsupported setting destination." xml:space="preserve">
+    <value>恢复备份包含不受支持的设置目标。</value>
+  </data>
+  <data name="The {0} preset is missing." xml:space="preserve">
+    <value>找不到“{0}”预设。</value>
+  </data>
+  <data name="This will overwrite your current profile." xml:space="preserve">
+    <value>这将覆盖当前配置。</value>
+  </data>
+  <data name="Turn on Eco Mode to reduce power use. Turn it off to return to your saved settings." xml:space="preserve">
+    <value>开启节能模式以降低耗电量。关闭后即可恢复已保存的设置。</value>
+  </data>
+  <data name="UI Thread Exception" xml:space="preserve">
+    <value>界面线程异常</value>
+  </data>
+  <data name="Unknown profile preset." xml:space="preserve">
+    <value>未知的预设配置。</value>
+  </data>
+  <data name="Use Advanced view to change these options." xml:space="preserve">
+    <value>使用高级视图可更改这些选项。</value>
+  </data>
+  <data name="User originals saved. Power plan and browser policy originals will be saved when started as Administrator." xml:space="preserve">
+    <value>用户原始设置已保存。以管理员身份启动时，将保存电源计划和浏览器策略的原始设置。</value>
+  </data>
+  <data name="Using the last validated originals because the journal cannot be read: {0}" xml:space="preserve">
+    <value>无法读取恢复记录，将使用上次验证过的原始设置：{0}</value>
+  </data>
+  <data name="Video Calls" xml:space="preserve">
+    <value>视频通话</value>
+  </data>
+  <data name="View activity" xml:space="preserve">
+    <value>查看活动</value>
+  </data>
+  <data name="View activity (needs attention)" xml:space="preserve">
+    <value>查看活动（需要处理）</value>
+  </data>
+  <data name="Welcome to EcoMode" xml:space="preserve">
+    <value>欢迎使用 EcoMode</value>
+  </data>
+  <data name="Windows did not start the elevated app." xml:space="preserve">
+    <value>Windows 未启动具有管理员权限的应用。</value>
+  </data>
+  <data name="Windows will ask for permission. Choose No to continue with user GPU preferences and accessible processes only." xml:space="preserve">
+    <value>Windows 将请求授权。选择“否”则仅使用用户显卡偏好和可访问的进程。</value>
+  </data>
+  <data name="YOUR SETUP" xml:space="preserve">
+    <value>当前配置</value>
+  </data>
+  <data name="Your original settings are saved." xml:space="preserve">
+    <value>原始设置已保存。</value>
+  </data>
+  <data name="Your original settings will be saved before Eco Mode starts." xml:space="preserve">
+    <value>开启节能模式前将保存原始设置。</value>
+  </data>
+  <data name="Your originals are saved. Switch off to restore them." xml:space="preserve">
+    <value>原始设置已保存。关闭即可恢复。</value>
+  </data>
+  <data name="Your saved settings could not be read. View activity for help." xml:space="preserve">
+    <value>无法读取已保存的设置。请查看活动获取帮助。</value>
+  </data>
+  <data name="Your settings could not be saved. Check activity and retry." xml:space="preserve">
+    <value>无法保存设置。请查看活动并重试。</value>
+  </data>
+  <data name="Your view choice could not be remembered. You may be asked again next time. " xml:space="preserve">
+    <value>无法保存视图选择。下次启动时可能会再次询问。</value>
+  </data>
+  <data name="and process priority/throttling settings changed by EcoMode.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>以及进程优先级和限制设置。
+
+</value>
+  </data>
+  <data name="{0} preset loaded and saved. Review the app paths and bypass list, then switch Eco Mode on." xml:space="preserve">
+    <value>已加载并保存“{0}”预设。请检查应用路径和排除列表，然后开启节能模式。</value>
+  </data>
+  <data name="{0} restore failed for {1}:{2}: {3}" xml:space="preserve">
+    <value>恢复 {1}:{2} 的 {0} 失败：{3}</value>
+  </data>
+  <data name="&amp;Language" xml:space="preserve">
+    <value>语言(&amp;L)</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="Your language choice could not be saved. You may be asked again next time. {0}" xml:space="preserve">
+    <value>无法保存语言选择。下次启动时可能需要重新选择。{0}</value>
+  </data>
+  <data name="Full .exe paths · one per line" xml:space="preserve">
+    <value>完整 .exe 路径 · 每行一个</value>
+  </data>
+  <data name="GPU applications must be absolute paths to .exe files." xml:space="preserve">
+    <value>显卡应用必须使用 .exe 文件的绝对路径。</value>
+  </data>
+  <data name="Applications (*.exe)|*.exe|All files (*.*)|*.*" xml:space="preserve">
+    <value>应用程序 (*.exe)|*.exe|所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="Cannot read registry value {0}." xml:space="preserve">
+    <value>无法读取注册表值 {0}。</value>
+  </data>
+  <data name="Unsupported registry value kind: {0}" xml:space="preserve">
+    <value>不支持的注册表值类型：{0}</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>视图</value>
+  </data>
+  <data name="Process cleanup failed: {0}" xml:space="preserve">
+    <value>进程清理失败：{0}</value>
+  </data>
+  <data name="Quit anyway selected. Process settings may remain changed; saved system recovery records are preserved." xml:space="preserve">
+    <value>已选择仍然退出。部分进程设置可能保持更改；已保存的系统恢复记录将保留。</value>
+  </data>
+  <data name="Restoration incomplete" xml:space="preserve">
+    <value>恢复未完成</value>
+  </data>
+  <data name="Some settings still need to be restored." xml:space="preserve">
+    <value>部分设置仍需恢复。</value>
+  </data>
+  <data name="Some settings could not be restored. Windows may be blocking a process or require Administrator access." xml:space="preserve">
+    <value>部分设置无法恢复。Windows 可能正在阻止某个进程，或需要管理员权限。</value>
+  </data>
+  <data name="If you quit anyway, blocked process limits may remain until those processes restart. Process recovery cannot be retried after exit. Saved power plan and registry recovery records are kept for the next launch." xml:space="preserve">
+    <value>如果仍然退出，被阻止的进程限制可能会一直保留到这些进程重新启动。退出后无法重试恢复进程设置。电源计划和注册表的恢复记录将保留，供下次启动时使用。</value>
+  </data>
+  <data name="Reopen EcoMode as Administrator if system settings still need restoring. Restart browsers after restoring their policies." xml:space="preserve">
+    <value>如果仍需恢复系统设置，请以管理员身份重新打开 EcoMode。恢复浏览器策略后，请重启浏览器。</value>
+  </data>
+  <data name="Retry restoration" xml:space="preserve">
+    <value>重试恢复</value>
+  </data>
+  <data name="Keep EcoMode open" xml:space="preserve">
+    <value>保持 EcoMode 运行</value>
+  </data>
+  <data name="Quit anyway" xml:space="preserve">
+    <value>仍然退出</value>
+  </data>
+  <data name="BATTERY" xml:space="preserve">
+    <value>电池</value>
+  </data>
+  <data name="Show history" xml:space="preserve">
+    <value>显示历史记录</value>
+  </data>
+  <data name="Hide history" xml:space="preserve">
+    <value>隐藏历史记录</value>
+  </data>
+  <data name="Battery level history" xml:space="preserve">
+    <value>电池电量历史</value>
+  </data>
+  <data name="History appears while EcoMode is running." xml:space="preserve">
+    <value>EcoMode 运行期间会记录历史数据。</value>
+  </data>
+  <data name="Last 60 min · green: Eco on · gray: Eco off · dotted: mode change" xml:space="preserve">
+    <value>最近 60 分钟 · 绿色：节能开启 · 灰色：关闭 · 虚线：模式切换</value>
+  </data>
+  <data name="Automatic on battery (background apps only)" xml:space="preserve">
+    <value>使用电池时自动节能（仅后台应用）</value>
+  </data>
+  <data name="Automatically limit background apps on battery and restore them when plugged in." xml:space="preserve">
+    <value>使用电池时自动限制后台应用，接通电源后恢复。</value>
+  </data>
+  <data name="Resume automatic mode" xml:space="preserve">
+    <value>恢复自动模式</value>
+  </data>
+  <data name="Charging" xml:space="preserve">
+    <value>正在充电</value>
+  </data>
+  <data name="On battery" xml:space="preserve">
+    <value>使用电池</value>
+  </data>
+  <data name="Plugged in" xml:space="preserve">
+    <value>已接通电源</value>
+  </data>
+  <data name="Power status unavailable" xml:space="preserve">
+    <value>电源状态不可用</value>
+  </data>
+  <data name="No battery detected" xml:space="preserve">
+    <value>未检测到电池</value>
+  </data>
+  <data name="About {0} h {1} min left" xml:space="preserve">
+    <value>预计剩余 {0} 小时 {1} 分钟</value>
+  </data>
+  <data name="{0:F1} W discharge" xml:space="preserve">
+    <value>放电功率 {0:F1} W</value>
+  </data>
+  <data name="{0:F1}%/h observed" xml:space="preserve">
+    <value>实测每小时 {0:F1}%</value>
+  </data>
+  <data name="Runtime and discharge readings depend on your hardware." xml:space="preserve">
+    <value>续航时间和放电功率取决于硬件提供的数据。</value>
+  </data>
+  <data name="Automatic mode is off." xml:space="preserve">
+    <value>自动模式已关闭。</value>
+  </data>
+  <data name="Restore or backup needs attention. Automatic mode is paused." xml:space="preserve">
+    <value>恢复或备份需要处理。自动模式已暂停。</value>
+  </data>
+  <data name="Manual profile active. Resume automatic mode to hand back control." xml:space="preserve">
+    <value>手动配置已启用。点击恢复自动模式以交还控制权。</value>
+  </data>
+  <data name="Manual override until the power source changes." xml:space="preserve">
+    <value>手动控制将保持到电源来源改变。</value>
+  </data>
+  <data name="Automatic · background apps only" xml:space="preserve">
+    <value>自动节能 · 仅后台应用</value>
+  </data>
+  <data name="No battery detected. Automatic mode is idle." xml:space="preserve">
+    <value>未检测到电池。自动模式待机中。</value>
+  </data>
+  <data name="Plugged in · automatic mode is idle." xml:space="preserve">
+    <value>已接通电源 · 自动模式待机中。</value>
+  </data>
+  <data name="Waiting for power status." xml:space="preserve">
+    <value>正在等待电源状态。</value>
+  </data>
+  <data name="Background app check failed: {0}" xml:space="preserve">
+    <value>后台应用检查失败：{0}</value>
+  </data>
+  <data name="Automatic Eco Mode started for background apps. Your profile settings were not changed." xml:space="preserve">
+    <value>已为后台应用启动自动节能。配置设置保持不变。</value>
+  </data>
+  <data name="Automatic mode could not start: {0}" xml:space="preserve">
+    <value>无法启动自动模式：{0}</value>
+  </data>
+  <data name="Automatic mode preference could not be saved: {0}" xml:space="preserve">
+    <value>无法保存自动模式偏好：{0}</value>
+  </data>
+  <data name="Live apps" xml:space="preserve">
+    <value>实时应用</value>
+  </data>
+  <data name="&amp;Live apps…" xml:space="preserve">
+    <value>实时应用(&amp;L)…</value>
+  </data>
+  <data name="Wait for the current operation to finish." xml:space="preserve">
+    <value>请等待当前操作完成。</value>
+  </data>
+  <data name="Select a valid executable name." xml:space="preserve">
+    <value>请选择有效的可执行文件名。</value>
+  </data>
+  <data name="Built-in safety exclusions cannot be changed." xml:space="preserve">
+    <value>无法修改内置安全排除项。</value>
+  </data>
+  <data name="{0} excluded from throttling. Existing changes were queued for restoration." xml:space="preserve">
+    <value>已将 {0} 排除在限制之外，并请求恢复现有更改。</value>
+  </data>
+  <data name="Exclusion removed for {0}." xml:space="preserve">
+    <value>已移除 {0} 的排除项。</value>
+  </data>
+  <data name="Search app or PID" xml:space="preserve">
+    <value>搜索应用或 PID</value>
+  </data>
+  <data name="Filter apps" xml:space="preserve">
+    <value>筛选应用</value>
+  </data>
+  <data name="All apps" xml:space="preserve">
+    <value>所有应用</value>
+  </data>
+  <data name="Managed by EcoMode" xml:space="preserve">
+    <value>由 EcoMode 管理</value>
+  </data>
+  <data name="Excluded apps" xml:space="preserve">
+    <value>已排除的应用</value>
+  </data>
+  <data name="Needs restoration" xml:space="preserve">
+    <value>需要恢复</value>
+  </data>
+  <data name="Running apps in your Windows session" xml:space="preserve">
+    <value>当前 Windows 会话中运行的应用</value>
+  </data>
+  <data name="App" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="PID" xml:space="preserve">
+    <value>PID</value>
+  </data>
+  <data name="EcoMode status" xml:space="preserve">
+    <value>EcoMode 状态</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>优先级</value>
+  </data>
+  <data name="EcoQoS" xml:space="preserve">
+    <value>EcoQoS</value>
+  </data>
+  <data name="App list unavailable: {0}" xml:space="preserve">
+    <value>应用列表不可用：{0}</value>
+  </data>
+  <data name="Exclusions apply to every instance of the executable and are saved to your profile. Readings refresh every 2 seconds." xml:space="preserve">
+    <value>排除项适用于该可执行文件的所有实例，并保存到配置中。数据每 2 秒刷新一次。</value>
+  </data>
+  <data name="{0} of {1} apps · {2} managed · {3} need restoration" xml:space="preserve">
+    <value>显示 {0}/{1} 个应用 · 管理中 {2} 个 · 待恢复 {3} 个</value>
+  </data>
+  <data name="Remove exclusion" xml:space="preserve">
+    <value>移除排除项</value>
+  </data>
+  <data name="Never throttle this app" xml:space="preserve">
+    <value>永不限制此应用</value>
+  </data>
+  <data name="Select an app to manage its exclusion." xml:space="preserve">
+    <value>请选择应用以管理其排除设置。</value>
+  </data>
+  <data name="Built-in or protected app. Safety exclusion is locked." xml:space="preserve">
+    <value>内置或受保护的应用。安全排除项已锁定。</value>
+  </data>
+  <data name="Applies to all {0} processes." xml:space="preserve">
+    <value>适用于所有 {0} 进程。</value>
+  </data>
+  <data name="Exclusion saved, but some settings still need restoration. Use Restore originals to retry." xml:space="preserve">
+    <value>排除项已保存，但部分设置仍需恢复。请使用“恢复原始设置”重试。</value>
+  </data>
+  <data name="Exclusion preference saved for {0}." xml:space="preserve">
+    <value>已保存 {0} 的排除偏好。</value>
+  </data>
+  <data name="Could not change the exclusion: {0}" xml:space="preserve">
+    <value>无法更改排除项：{0}</value>
+  </data>
+  <data name="Foreground app" xml:space="preserve">
+    <value>前台应用</value>
+  </data>
+  <data name="Excluded from throttling" xml:space="preserve">
+    <value>已排除限制</value>
+  </data>
+  <data name="Protected by Windows" xml:space="preserve">
+    <value>受 Windows 保护</value>
+  </data>
+  <data name="Access unavailable" xml:space="preserve">
+    <value>无法访问</value>
+  </data>
+  <data name="Not managed by EcoMode" xml:space="preserve">
+    <value>未由 EcoMode 管理</value>
+  </data>
+  <data name="Windows managed" xml:space="preserve">
+    <value>由 Windows 管理</value>
+  </data>
+  <data name="Unavailable" xml:space="preserve">
+    <value>不可用</value>
+  </data>
+  <data name="Idle" xml:space="preserve">
+    <value>空闲</value>
+  </data>
+  <data name="Below normal" xml:space="preserve">
+    <value>低于正常</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="Above normal" xml:space="preserve">
+    <value>高于正常</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="Realtime" xml:space="preserve">
+    <value>实时</value>
+  </data>
+</root>

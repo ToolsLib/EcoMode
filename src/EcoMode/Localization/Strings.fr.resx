@@ -1,0 +1,932 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="&#xD;&#xA;&#xD;&#xA;Review the app paths and bypass list, then switch Eco Mode on to apply it." xml:space="preserve">
+    <value>
+
+Vérifiez les applications et les exclusions, puis activez le mode Éco.</value>
+  </data>
+  <data name="&amp;Advanced view" xml:space="preserve">
+    <value>Vue &amp;avancée</value>
+  </data>
+  <data name="&amp;Edit" xml:space="preserve">
+    <value>&amp;Édition</value>
+  </data>
+  <data name="&amp;Export Profile…" xml:space="preserve">
+    <value>E&amp;xporter le profil…</value>
+  </data>
+  <data name="&amp;File" xml:space="preserve">
+    <value>&amp;Fichier</value>
+  </data>
+  <data name="&amp;Import Profile…" xml:space="preserve">
+    <value>&amp;Importer un profil…</value>
+  </data>
+  <data name="&amp;Quit" xml:space="preserve">
+    <value>&amp;Quitter</value>
+  </data>
+  <data name="&amp;Reset to Defaults" xml:space="preserve">
+    <value>&amp;Rétablir les valeurs par défaut</value>
+  </data>
+  <data name="&amp;Save" xml:space="preserve">
+    <value>&amp;Enregistrer</value>
+  </data>
+  <data name="&amp;Standard view" xml:space="preserve">
+    <value>Vue &amp;standard</value>
+  </data>
+  <data name="&amp;View" xml:space="preserve">
+    <value>&amp;Affichage</value>
+  </data>
+  <data name="=== ECO OFF ===" xml:space="preserve">
+    <value>=== MODE ÉCO DÉSACTIVÉ ===</value>
+  </data>
+  <data name="=== ECO ON ===" xml:space="preserve">
+    <value>=== MODE ÉCO ACTIVÉ ===</value>
+  </data>
+  <data name="=== RESTORE ORIGINAL SETTINGS ===" xml:space="preserve">
+    <value>=== RESTAURATION DES ORIGINAUX ===</value>
+  </data>
+  <data name="A machine restore journal cannot contain per-user settings." xml:space="preserve">
+    <value>Le journal système ne peut pas contenir de réglages utilisateur.</value>
+  </data>
+  <data name="ACTIVITY" xml:space="preserve">
+    <value>ACTIVITÉ</value>
+  </data>
+  <data name="ADMINISTRATOR ACCESS" xml:space="preserve">
+    <value>ACCÈS ADMINISTRATEUR</value>
+  </data>
+  <data name="APPLY TO" xml:space="preserve">
+    <value>APPLIQUER À</value>
+  </data>
+  <data name="Activity log" xml:space="preserve">
+    <value>Journal d’activité</value>
+  </data>
+  <data name="Activity will appear here when you save settings or enable Eco Mode." xml:space="preserve">
+    <value>L’activité s’affichera ici après un enregistrement ou l’activation du mode Éco.</value>
+  </data>
+  <data name="Add app" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="Administrator Recovery Required" xml:space="preserve">
+    <value>Restauration administrateur requise</value>
+  </data>
+  <data name="Advanced view" xml:space="preserve">
+    <value>Vue avancée</value>
+  </data>
+  <data name="Advanced view&#xD;&#xA;Fine-tune power-saving options, profiles and rules for individual apps." xml:space="preserve">
+    <value>Vue avancée
+Personnalisez les économies d’énergie, les profils et les règles par application.</value>
+  </data>
+  <data name="All settings available" xml:space="preserve">
+    <value>Tous les réglages disponibles</value>
+  </data>
+  <data name="Are you sure you want to reset EcoMode settings to defaults?&#xD;&#xA;" xml:space="preserve">
+    <value>Rétablir les réglages par défaut d’EcoMode ?
+</value>
+  </data>
+  <data name="Background EcoQoS and power-saving browser GPU preferences. Keeps your power plan and browser policies." xml:space="preserve">
+    <value>EcoQoS en arrière-plan et graphismes économes pour les navigateurs. Conserve le mode d’alimentation et les stratégies des navigateurs.</value>
+  </data>
+  <data name="Background EcoQoS with common build tools and runtimes bypassed. Add any other build or container processes you use." xml:space="preserve">
+    <value>EcoQoS en arrière-plan, avec exclusion des outils de compilation courants. Ajoutez vos autres outils et conteneurs.</value>
+  </data>
+  <data name="Background EcoQoS with common editors, renderers and encoders bypassed. Keeps power, browser and GPU settings." xml:space="preserve">
+    <value>EcoQoS en arrière-plan, avec exclusion des éditeurs, moteurs de rendu et encodeurs courants. Conserve les autres réglages.</value>
+  </data>
+  <data name="Background EcoQoS with common meeting apps and browsers bypassed. Keeps power, browser and GPU settings." xml:space="preserve">
+    <value>EcoQoS en arrière-plan, avec exclusion des applications de réunion et navigateurs courants. Conserve les autres réglages.</value>
+  </data>
+  <data name="Background EcoQoS; keeps power, browser and GPU settings. Add your game names to the bypass list to protect background games." xml:space="preserve">
+    <value>EcoQoS en arrière-plan ; conserve les autres réglages. Ajoutez vos jeux aux exclusions pour les préserver en arrière-plan.</value>
+  </data>
+  <data name="Background processes · EcoQoS" xml:space="preserve">
+    <value>Arrière-plan · EcoQoS</value>
+  </data>
+  <data name="Backup failed. Check the log and retry." xml:space="preserve">
+    <value>Échec de la sauvegarde. Consultez le journal et réessayez.</value>
+  </data>
+  <data name="Balanced" xml:space="preserve">
+    <value>Équilibré</value>
+  </data>
+  <data name="Battery Saver" xml:space="preserve">
+    <value>Économie de batterie</value>
+  </data>
+  <data name="Browse: error adding path -&gt; {0} ({1})" xml:space="preserve">
+    <value>Ajout du chemin impossible : {0} ({1})</value>
+  </data>
+  <data name="Browse: skipped missing file: {0}" xml:space="preserve">
+    <value>Fichier absent ignoré : {0}</value>
+  </data>
+  <data name="Browser power savings (restart browsers after changes)" xml:space="preserve">
+    <value>Économie des navigateurs (redémarrez-les après modification)</value>
+  </data>
+  <data name="Cannot Load Preset" xml:space="preserve">
+    <value>Chargement du profil impossible</value>
+  </data>
+  <data name="Cannot read original settings: {0}" xml:space="preserve">
+    <value>Lecture des réglages d’origine impossible : {0}</value>
+  </data>
+  <data name="Check the activity log and retry Quit. Restoring the power plan or browser policies may require Administrator privileges." xml:space="preserve">
+    <value>Consultez le journal puis réessayez de quitter. La restauration du mode d’alimentation ou des stratégies peut nécessiter les droits administrateur.</value>
+  </data>
+  <data name="Check the activity log and retry." xml:space="preserve">
+    <value>Consultez le journal et réessayez.</value>
+  </data>
+  <data name="Choose Cancel to keep EcoMode open." xml:space="preserve">
+    <value>Choisissez Annuler pour garder EcoMode ouvert.</value>
+  </data>
+  <data name="Choose OK to exit and keep the pending recovery record, then reopen EcoMode as Administrator and restore the settings. " xml:space="preserve">
+    <value>Choisissez OK pour quitter en conservant la restauration en attente, puis relancez EcoMode en administrateur pour la terminer. </value>
+  </data>
+  <data name="Choose the view that feels right for you. You can change it anytime from the View menu." xml:space="preserve">
+    <value>Choisissez la vue qui vous convient. Vous pourrez la changer à tout moment dans le menu Affichage.</value>
+  </data>
+  <data name="Chrome · battery saver + hardware acceleration off" xml:space="preserve">
+    <value>Chrome · économie et accélération désactivée</value>
+  </data>
+  <data name="Click RETRY to finish restoring." xml:space="preserve">
+    <value>Cliquez sur RÉESSAYER pour terminer.</value>
+  </data>
+  <data name="Could not migrate the legacy journal; attempting restoration from the available originals: {0}" xml:space="preserve">
+    <value>Migration de l’ancien journal impossible ; restauration des sauvegardes disponibles : {0}</value>
+  </data>
+  <data name="Could not remove the foreground hook: {0}" xml:space="preserve">
+    <value>Arrêt du suivi des fenêtres impossible : {0}</value>
+  </data>
+  <data name="Could not save original settings: {0}. Eco Mode remains off. Retry Save originals or switch on to retry the backup." xml:space="preserve">
+    <value>Sauvegarde des réglages d’origine impossible : {0}. Le mode Éco reste désactivé. Réessayez l’enregistrement ou activez le mode pour relancer la sauvegarde.</value>
+  </data>
+  <data name="Creative Work" xml:space="preserve">
+    <value>Création</value>
+  </data>
+  <data name="Development" xml:space="preserve">
+    <value>Développement</value>
+  </data>
+  <data name="Duplicate setting in the restore snapshot." xml:space="preserve">
+    <value>Réglage en double dans la sauvegarde.</value>
+  </data>
+  <data name="Eco Mode" xml:space="preserve">
+    <value>Mode Éco</value>
+  </data>
+  <data name="Eco ON failed: {0}" xml:space="preserve">
+    <value>Échec de l’activation du mode Éco : {0}</value>
+  </data>
+  <data name="Eco applied: {0} / {1}" xml:space="preserve">
+    <value>Économie appliquée : {0} / {1}</value>
+  </data>
+  <data name="Eco apply failed: {0}: {1}" xml:space="preserve">
+    <value>Application impossible : {0} : {1}</value>
+  </data>
+  <data name="Eco mode is off" xml:space="preserve">
+    <value>Mode Éco désactivé</value>
+  </data>
+  <data name="Eco mode is on" xml:space="preserve">
+    <value>Mode Éco activé</value>
+  </data>
+  <data name="EcoMode could not restart as Administrator. It will continue in standard mode.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>EcoMode n’a pas pu redémarrer en administrateur. Il continue en mode standard.
+
+</value>
+  </data>
+  <data name="EcoMode is already running in this or another Windows session. Close that instance before starting another." xml:space="preserve">
+    <value>EcoMode est déjà ouvert dans cette session Windows ou une autre. Fermez cette instance avant d’en lancer une nouvelle.</value>
+  </data>
+  <data name="EcoMode is running without Administrator privileges.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>EcoMode s’exécute sans les droits administrateur.
+
+</value>
+  </data>
+  <data name="EcoMode is still running here." xml:space="preserve">
+    <value>EcoMode continue de fonctionner ici.</value>
+  </data>
+  <data name="EcoMode profile (*.json)|*.json|All files (*.*)|*.*" xml:space="preserve">
+    <value>Profil EcoMode (*.json)|*.json|Tous les fichiers (*.*)|*.*</value>
+  </data>
+  <data name="EcoMode restores the settings it changed when you quit. Closing the window keeps it running in the tray." xml:space="preserve">
+    <value>EcoMode restaure ses modifications lorsque vous quittez. Fermer la fenêtre le laisse actif dans la zone de notification.</value>
+  </data>
+  <data name="EcoModeGUI — Error" xml:space="preserve">
+    <value>EcoModeGUI — Erreur</value>
+  </data>
+  <data name="EcoQoS enabled. Foreground apps keep their original priority." xml:space="preserve">
+    <value>EcoQoS activé. Les applications au premier plan conservent leur priorité d’origine.</value>
+  </data>
+  <data name="EcoQoS: could not update process {0}: {1}" xml:space="preserve">
+    <value>EcoQoS : mise à jour du processus {0} impossible : {1}</value>
+  </data>
+  <data name="EcoQoS: process unavailable: {0}" xml:space="preserve">
+    <value>EcoQoS : processus indisponible : {0}</value>
+  </data>
+  <data name="EcoQoS: throttle -&gt; {0}:{1}" xml:space="preserve">
+    <value>EcoQoS : limitation -&gt; {0}:{1}</value>
+  </data>
+  <data name="Edge · efficiency + hardware acceleration off" xml:space="preserve">
+    <value>Edge · efficacité et accélération désactivée</value>
+  </data>
+  <data name="Enables every saving option, including reduced CPU boost and browser acceleration. May slow demanding tasks." xml:space="preserve">
+    <value>Active toutes les économies, dont la réduction du boost CPU et la désactivation de l’accélération des navigateurs. Peut ralentir les tâches exigeantes.</value>
+  </data>
+  <data name="Error initializing EcoMode" xml:space="preserve">
+    <value>Erreur au démarrage d’EcoMode</value>
+  </data>
+  <data name="Export EcoMode Profile" xml:space="preserve">
+    <value>Exporter le profil EcoMode</value>
+  </data>
+  <data name="Export failed: {0}" xml:space="preserve">
+    <value>Échec de l’exportation : {0}</value>
+  </data>
+  <data name="Failed to open donate link: {0}" xml:space="preserve">
+    <value>Ouverture du lien de soutien impossible : {0}</value>
+  </data>
+  <data name="Fatal error in Program.Main" xml:space="preserve">
+    <value>Erreur fatale dans Program.Main</value>
+  </data>
+  <data name="GPU APPLICATIONS" xml:space="preserve">
+    <value>APPLICATIONS GRAPHIQUES</value>
+  </data>
+  <data name="GPU preference · power-saving graphics" xml:space="preserve">
+    <value>Graphismes · mode économe</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>Jeux</value>
+  </data>
+  <data name="Hide activity" xml:space="preserve">
+    <value>Masquer l’activité</value>
+  </data>
+  <data name="How would you like to use EcoMode?" xml:space="preserve">
+    <value>Comment souhaitez-vous utiliser EcoMode ?</value>
+  </data>
+  <data name="Import EcoMode Profile" xml:space="preserve">
+    <value>Importer un profil EcoMode</value>
+  </data>
+  <data name="Import failed: invalid JSON ({0})" xml:space="preserve">
+    <value>Importation impossible : JSON invalide ({0})</value>
+  </data>
+  <data name="Import failed: {0}" xml:space="preserve">
+    <value>Échec de l’importation : {0}</value>
+  </data>
+  <data name="Include this option when Eco Mode is enabled." xml:space="preserve">
+    <value>Inclure cette option lorsque le mode Éco est activé.</value>
+  </data>
+  <data name="Invalid missing-value entry in the restore snapshot." xml:space="preserve">
+    <value>Entrée de valeur absente invalide dans la sauvegarde.</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>Charger</value>
+  </data>
+  <data name="Load Preset" xml:space="preserve">
+    <value>Charger un profil</value>
+  </data>
+  <data name="Load preset failed: {0}" xml:space="preserve">
+    <value>Chargement du profil impossible : {0}</value>
+  </data>
+  <data name="Load the {0} preset? This replaces your current profile and any unsaved edits.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>Charger le profil {0} ? Le profil actuel et les modifications non enregistrées seront remplacés.
+
+</value>
+  </data>
+  <data name="Lower-power graphics for selected apps" xml:space="preserve">
+    <value>Graphismes économes pour les applications choisies</value>
+  </data>
+  <data name="Machine restore journal is missing or invalid." xml:space="preserve">
+    <value>Le journal de restauration système est absent ou invalide.</value>
+  </data>
+  <data name="NEVER THROTTLE" xml:space="preserve">
+    <value>NE JAMAIS LIMITER</value>
+  </data>
+  <data name="No original settings have been saved. No system settings were changed." xml:space="preserve">
+    <value>Aucun réglage d’origine enregistré. Aucun réglage système n’a été modifié.</value>
+  </data>
+  <data name="No power-saving options selected. Choose your options in Advanced view." xml:space="preserve">
+    <value>Aucune économie sélectionnée. Choisissez vos options dans la vue avancée.</value>
+  </data>
+  <data name="Non-UI/Background Exception" xml:space="preserve">
+    <value>Exception en arrière-plan</value>
+  </data>
+  <data name="OFF" xml:space="preserve">
+    <value>INACTIF</value>
+  </data>
+  <data name="ON" xml:space="preserve">
+    <value>ACTIF</value>
+  </data>
+  <data name="ORIGINALS  /  COULD NOT READ" xml:space="preserve">
+    <value>ORIGINAUX  /  LECTURE IMPOSSIBLE</value>
+  </data>
+  <data name="ORIGINALS  /  ECO CHANGES ACTIVE" xml:space="preserve">
+    <value>ORIGINAUX  /  MODE ÉCO ACTIF</value>
+  </data>
+  <data name="ORIGINALS  /  NOT SAVED YET" xml:space="preserve">
+    <value>ORIGINAUX  /  NON ENREGISTRÉS</value>
+  </data>
+  <data name="ORIGINALS  /  RESTORE PENDING" xml:space="preserve">
+    <value>ORIGINAUX  /  À RESTAURER</value>
+  </data>
+  <data name="ORIGINALS  /  SAVE FAILED" xml:space="preserve">
+    <value>ORIGINAUX  /  ÉCHEC DE SAUVEGARDE</value>
+  </data>
+  <data name="ORIGINALS  /  SAVED" xml:space="preserve">
+    <value>ORIGINAUX  /  ENREGISTRÉS</value>
+  </data>
+  <data name="Off. Activate to enable Eco Mode." xml:space="preserve">
+    <value>Inactif. Activez pour démarrer le mode Éco.</value>
+  </data>
+  <data name="On. Activate to turn Eco Mode off and restore original settings." xml:space="preserve">
+    <value>Actif. Activez pour arrêter le mode Éco et restaurer les réglages d’origine.</value>
+  </data>
+  <data name="Original Settings" xml:space="preserve">
+    <value>Réglages d’origine</value>
+  </data>
+  <data name="Original restored: {0} / {1}" xml:space="preserve">
+    <value>Original restauré : {0} / {1}</value>
+  </data>
+  <data name="Original settings include user GPU preferences only. Administrator-only settings will be captured before they are first applied." xml:space="preserve">
+    <value>Seules les préférences graphiques utilisateur sont sauvegardées. Les réglages administrateur seront sauvegardés avant leur première application.</value>
+  </data>
+  <data name="Original settings restored. Restart browsers to apply policy changes." xml:space="preserve">
+    <value>Réglages d’origine restaurés. Redémarrez les navigateurs pour appliquer les stratégies.</value>
+  </data>
+  <data name="Original settings saved ({0:g}) to {1}." xml:space="preserve">
+    <value>Réglages d’origine enregistrés le {0:g} dans {1}.</value>
+  </data>
+  <data name="POWER CONTROL  /  Keep background work in check." xml:space="preserve">
+    <value>ÉCONOMIES D’ÉNERGIE  /  Maîtrisez l’arrière-plan.</value>
+  </data>
+  <data name="PRESET PROFILE" xml:space="preserve">
+    <value>PROFIL PRÉDÉFINI</value>
+  </data>
+  <data name="Power plan and browser policies skipped: restart as Administrator to use them." xml:space="preserve">
+    <value>Mode d’alimentation et stratégies ignorés : redémarrez en administrateur pour les appliquer.</value>
+  </data>
+  <data name="Power plan savings" xml:space="preserve">
+    <value>Économies du mode d’alimentation</value>
+  </data>
+  <data name="Power plan · EPP and CPU boost" xml:space="preserve">
+    <value>Alimentation · EPP et boost CPU</value>
+  </data>
+  <data name="PresetProfileAccessibility" xml:space="preserve">
+    <value>Profil prédéfini</value>
+  </data>
+  <data name="Process names · one per line" xml:space="preserve">
+    <value>Noms des processus · un par ligne</value>
+  </data>
+  <data name="Profile exported to: {0}" xml:space="preserve">
+    <value>Profil exporté vers : {0}</value>
+  </data>
+  <data name="Profile imported from: {0}" xml:space="preserve">
+    <value>Profil importé depuis : {0}</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="Quit and Restore Settings" xml:space="preserve">
+    <value>Quitter et restaurer les réglages</value>
+  </data>
+  <data name="Quitting turns Eco Mode off and restores the original power plan settings, browser policies, GPU preferences, " xml:space="preserve">
+    <value>Quitter désactive le mode Éco et restaure le mode d’alimentation, les stratégies des navigateurs, les préférences graphiques </value>
+  </data>
+  <data name="RETRY" xml:space="preserve">
+    <value>RÉESSAYER</value>
+  </data>
+  <data name="Ready to save power." xml:space="preserve">
+    <value>Prêt à économiser de l’énergie.</value>
+  </data>
+  <data name="Recovery needs attention" xml:space="preserve">
+    <value>Restauration à vérifier</value>
+  </data>
+  <data name="Reduced background activity" xml:space="preserve">
+    <value>Activité en arrière-plan réduite</value>
+  </data>
+  <data name="Replace Original Settings" xml:space="preserve">
+    <value>Remplacer les réglages d’origine</value>
+  </data>
+  <data name="Replace the saved original settings with the current settings for the selected options?" xml:space="preserve">
+    <value>Remplacer les réglages d’origine sauvegardés par les valeurs actuelles des options sélectionnées ?</value>
+  </data>
+  <data name="Reset failed: {0}" xml:space="preserve">
+    <value>Échec de la réinitialisation : {0}</value>
+  </data>
+  <data name="Reset to Defaults" xml:space="preserve">
+    <value>Rétablir les valeurs par défaut</value>
+  </data>
+  <data name="Restart EcoMode as Administrator to restore this setting." xml:space="preserve">
+    <value>Relancez EcoMode en administrateur pour restaurer ce réglage.</value>
+  </data>
+  <data name="Restart as Administrator to enable power-plan changes and Edge/Chrome policies, and to restore system settings.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>Redémarrez en administrateur pour modifier le mode d’alimentation et les stratégies Edge/Chrome, et restaurer les réglages système.
+
+</value>
+  </data>
+  <data name="Restart as Administrator?" xml:space="preserve">
+    <value>Redémarrer en administrateur ?</value>
+  </data>
+  <data name="Restart browsers for restored policies to take effect.&#xD;&#xA;&#xD;&#xA;Choose OK to restore settings and quit." xml:space="preserve">
+    <value>Redémarrez les navigateurs pour appliquer les stratégies restaurées.
+
+Choisissez OK pour restaurer les réglages et quitter.</value>
+  </data>
+  <data name="Restart browsers to apply policy changes." xml:space="preserve">
+    <value>Redémarrez les navigateurs pour appliquer les stratégies.</value>
+  </data>
+  <data name="Restoration pending. Activate to retry restoring original settings." xml:space="preserve">
+    <value>Restauration en attente. Activez pour réessayer de restaurer les réglages d’origine.</value>
+  </data>
+  <data name="Restore Incomplete" xml:space="preserve">
+    <value>Restauration incomplète</value>
+  </data>
+  <data name="Restore failed: {0}" xml:space="preserve">
+    <value>Échec de la restauration : {0}</value>
+  </data>
+  <data name="Restore failed: {0}: {1}" xml:space="preserve">
+    <value>Échec de la restauration : {0} : {1}</value>
+  </data>
+  <data name="Restore incomplete. See the log, then retry Restore originals (as Administrator if required)." xml:space="preserve">
+    <value>Restauration incomplète. Consultez le journal puis réessayez de restaurer les originaux, en administrateur si nécessaire.</value>
+  </data>
+  <data name="Restore journal could not be updated. Continuing restoration; pending work may be retried on the next launch: {0}" xml:space="preserve">
+    <value>Mise à jour du journal impossible. La restauration continue ; les éléments en attente pourront être réessayés au prochain démarrage : {0}</value>
+  </data>
+  <data name="Restore originals" xml:space="preserve">
+    <value>Restaurer les originaux</value>
+  </data>
+  <data name="Restore pending" xml:space="preserve">
+    <value>Restauration en attente</value>
+  </data>
+  <data name="Restore pending changes before replacing the original settings." xml:space="preserve">
+    <value>Restaurez les modifications en attente avant de remplacer les réglages d’origine.</value>
+  </data>
+  <data name="Restore saved settings" xml:space="preserve">
+    <value>Restaurer mes réglages</value>
+  </data>
+  <data name="Restore the pending changes before replacing the original settings." xml:space="preserve">
+    <value>Restaurez les modifications en attente avant de remplacer les réglages d’origine.</value>
+  </data>
+  <data name="SAVED ORIGINALS" xml:space="preserve">
+    <value>ORIGINAUX ENREGISTRÉS</value>
+  </data>
+  <data name="STANDARD ACCESS" xml:space="preserve">
+    <value>ACCÈS STANDARD</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="Save original settings before enabling Eco Mode." xml:space="preserve">
+    <value>Enregistrez les réglages d’origine avant d’activer le mode Éco.</value>
+  </data>
+  <data name="Save original settings failed: {0}" xml:space="preserve">
+    <value>Sauvegarde des réglages d’origine impossible : {0}</value>
+  </data>
+  <data name="Save originals" xml:space="preserve">
+    <value>Enregistrer l’origine</value>
+  </data>
+  <data name="Save power with one switch." xml:space="preserve">
+    <value>Économisez en un seul geste.</value>
+  </data>
+  <data name="Save power. Keep background activity in check." xml:space="preserve">
+    <value>Économisez l’énergie. Maîtrisez l’arrière-plan.</value>
+  </data>
+  <data name="Save profile" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="Saved changes are waiting to be restored. Use RETRY or Restore originals." xml:space="preserve">
+    <value>Des modifications attendent d’être restaurées. Utilisez RÉESSAYER ou Restaurer les originaux.</value>
+  </data>
+  <data name="Select application(s) to set GPU preference" xml:space="preserve">
+    <value>Choisir les applications à configurer</value>
+  </data>
+  <data name="Settings reset to defaults." xml:space="preserve">
+    <value>Réglages par défaut rétablis.</value>
+  </data>
+  <data name="Settings saved." xml:space="preserve">
+    <value>Réglages enregistrés.</value>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>Afficher</value>
+  </data>
+  <data name="Standard view" xml:space="preserve">
+    <value>Vue standard</value>
+  </data>
+  <data name="Standard view (recommended)&#xD;&#xA;The Eco Mode switch, clear status and an easy way to restore settings." xml:space="preserve">
+    <value>Vue standard (recommandée)
+Un interrupteur, un état clair et la restauration facile de vos réglages.</value>
+  </data>
+  <data name="Some options need Administrator access. Available options still work. Quit restores changes; closing the window keeps EcoMode running in the tray." xml:space="preserve">
+    <value>Certaines options nécessitent les droits administrateur. Les autres restent disponibles. Quitter restaure les réglages ; fermer la fenêtre garde EcoMode actif dans la zone de notification.</value>
+  </data>
+  <data name="Some original settings could not be restored. EcoMode will stay open.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>Certains réglages d’origine n’ont pas pu être restaurés. EcoMode reste ouvert.
+
+</value>
+  </data>
+  <data name="Some process settings could not be restored; cleanup will be retried." xml:space="preserve">
+    <value>Certains réglages de processus n’ont pas pu être restaurés ; une nouvelle tentative sera effectuée.</value>
+  </data>
+  <data name="Some settings could not be applied. See the log; switch Eco Mode off to restore any partial changes." xml:space="preserve">
+    <value>Certains réglages n’ont pas pu être appliqués. Consultez le journal ; désactivez le mode Éco pour annuler les modifications partielles.</value>
+  </data>
+  <data name="Some settings still need to be restored. Click RETRY." xml:space="preserve">
+    <value>Certains réglages restent à restaurer. Cliquez sur RÉESSAYER.</value>
+  </data>
+  <data name="Some system settings need Administrator privileges to restore. Process throttling has been cleaned up.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>Certains réglages système nécessitent les droits administrateur pour être restaurés. Les limitations de processus ont été annulées.
+
+</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Soutenir</value>
+  </data>
+  <data name="Switch Eco Mode off and finish restoring pending changes before loading a preset." xml:space="preserve">
+    <value>Désactivez le mode Éco et terminez les restaurations en attente avant de charger un profil.</value>
+  </data>
+  <data name="Switch Eco Mode off and finish restoring pending changes before saving a new original." xml:space="preserve">
+    <value>Désactivez le mode Éco et terminez les restaurations en attente avant de sauvegarder de nouveaux originaux.</value>
+  </data>
+  <data name="Switch off to restore originals." xml:space="preserve">
+    <value>Désactivez pour restaurer les originaux.</value>
+  </data>
+  <data name="Switch on to save power." xml:space="preserve">
+    <value>Activez pour économiser l’énergie.</value>
+  </data>
+  <data name="System settings need Administrator" xml:space="preserve">
+    <value>Réglages système : droits administrateur</value>
+  </data>
+  <data name="The app assembly path is unavailable." xml:space="preserve">
+    <value>Le chemin du module de l’application est indisponible.</value>
+  </data>
+  <data name="The app path is unavailable." xml:space="preserve">
+    <value>Le chemin de l’application est indisponible.</value>
+  </data>
+  <data name="The app path must be absolute." xml:space="preserve">
+    <value>Le chemin de l’application doit être absolu.</value>
+  </data>
+  <data name="The original settings snapshot is invalid or from an unsupported version." xml:space="preserve">
+    <value>La sauvegarde des réglages d’origine est invalide ou d’une version non prise en charge.</value>
+  </data>
+  <data name="The profile contains no settings." xml:space="preserve">
+    <value>Le profil ne contient aucun réglage.</value>
+  </data>
+  <data name="The restore snapshot contains an invalid setting value or type." xml:space="preserve">
+    <value>La sauvegarde contient une valeur ou un type de réglage invalide.</value>
+  </data>
+  <data name="The restore snapshot contains an unsupported setting destination." xml:space="preserve">
+    <value>La sauvegarde contient une destination de réglage non prise en charge.</value>
+  </data>
+  <data name="The {0} preset is missing." xml:space="preserve">
+    <value>Le profil {0} est introuvable.</value>
+  </data>
+  <data name="This will overwrite your current profile." xml:space="preserve">
+    <value>Votre profil actuel sera remplacé.</value>
+  </data>
+  <data name="Turn on Eco Mode to reduce power use. Turn it off to return to your saved settings." xml:space="preserve">
+    <value>Activez le mode Éco pour réduire la consommation. Désactivez-le pour retrouver vos réglages sauvegardés.</value>
+  </data>
+  <data name="UI Thread Exception" xml:space="preserve">
+    <value>Exception du thread d’interface</value>
+  </data>
+  <data name="Unknown profile preset." xml:space="preserve">
+    <value>Profil prédéfini inconnu.</value>
+  </data>
+  <data name="Use Advanced view to change these options." xml:space="preserve">
+    <value>Utilisez la vue avancée pour modifier ces options.</value>
+  </data>
+  <data name="User originals saved. Power plan and browser policy originals will be saved when started as Administrator." xml:space="preserve">
+    <value>Réglages utilisateur d’origine enregistrés. Ceux du mode d’alimentation et des navigateurs seront sauvegardés au démarrage en administrateur.</value>
+  </data>
+  <data name="Using the last validated originals because the journal cannot be read: {0}" xml:space="preserve">
+    <value>Utilisation des derniers originaux validés, car le journal est illisible : {0}</value>
+  </data>
+  <data name="Video Calls" xml:space="preserve">
+    <value>Appels vidéo</value>
+  </data>
+  <data name="View activity" xml:space="preserve">
+    <value>Voir l’activité</value>
+  </data>
+  <data name="View activity (needs attention)" xml:space="preserve">
+    <value>Voir l’activité (à vérifier)</value>
+  </data>
+  <data name="Welcome to EcoMode" xml:space="preserve">
+    <value>Bienvenue dans EcoMode</value>
+  </data>
+  <data name="Windows did not start the elevated app." xml:space="preserve">
+    <value>Windows n’a pas démarré l’application en administrateur.</value>
+  </data>
+  <data name="Windows will ask for permission. Choose No to continue with user GPU preferences and accessible processes only." xml:space="preserve">
+    <value>Windows demandera votre autorisation. Choisissez Non pour continuer uniquement avec les préférences graphiques utilisateur et les processus accessibles.</value>
+  </data>
+  <data name="YOUR SETUP" xml:space="preserve">
+    <value>VOTRE CONFIGURATION</value>
+  </data>
+  <data name="Your original settings are saved." xml:space="preserve">
+    <value>Vos réglages d’origine sont sauvegardés.</value>
+  </data>
+  <data name="Your original settings will be saved before Eco Mode starts." xml:space="preserve">
+    <value>Vos réglages d’origine seront sauvegardés avant l’activation du mode Éco.</value>
+  </data>
+  <data name="Your originals are saved. Switch off to restore them." xml:space="preserve">
+    <value>Vos originaux sont sauvegardés. Désactivez pour les restaurer.</value>
+  </data>
+  <data name="Your saved settings could not be read. View activity for help." xml:space="preserve">
+    <value>Lecture de vos réglages impossible. Consultez l’activité pour en savoir plus.</value>
+  </data>
+  <data name="Your settings could not be saved. Check activity and retry." xml:space="preserve">
+    <value>Sauvegarde de vos réglages impossible. Consultez l’activité et réessayez.</value>
+  </data>
+  <data name="Your view choice could not be remembered. You may be asked again next time. " xml:space="preserve">
+    <value>Votre choix de vue n’a pas pu être enregistré. Il pourra être redemandé au prochain démarrage. </value>
+  </data>
+  <data name="and process priority/throttling settings changed by EcoMode.&#xD;&#xA;&#xD;&#xA;" xml:space="preserve">
+    <value>ainsi que les priorités et limitations de processus modifiées par EcoMode.
+
+</value>
+  </data>
+  <data name="{0} preset loaded and saved. Review the app paths and bypass list, then switch Eco Mode on." xml:space="preserve">
+    <value>Profil {0} chargé et enregistré. Vérifiez les applications et les exclusions, puis activez le mode Éco.</value>
+  </data>
+  <data name="{0} restore failed for {1}:{2}: {3}" xml:space="preserve">
+    <value>Échec de restauration de {0} pour {1}:{2} : {3}</value>
+  </data>
+  <data name="&amp;Language" xml:space="preserve">
+    <value>&amp;Langue</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="Your language choice could not be saved. You may be asked again next time. {0}" xml:space="preserve">
+    <value>Votre langue n’a pas pu être enregistrée. Il faudra peut-être la choisir à nouveau au prochain démarrage. {0}</value>
+  </data>
+  <data name="Full .exe paths · one per line" xml:space="preserve">
+    <value>Chemins .exe complets · un par ligne</value>
+  </data>
+  <data name="GPU applications must be absolute paths to .exe files." xml:space="preserve">
+    <value>Les applications graphiques doivent être des chemins absolus vers des fichiers .exe.</value>
+  </data>
+  <data name="Applications (*.exe)|*.exe|All files (*.*)|*.*" xml:space="preserve">
+    <value>Applications (*.exe)|*.exe|Tous les fichiers (*.*)|*.*</value>
+  </data>
+  <data name="Cannot read registry value {0}." xml:space="preserve">
+    <value>Lecture de la valeur de registre {0} impossible.</value>
+  </data>
+  <data name="Unsupported registry value kind: {0}" xml:space="preserve">
+    <value>Type de valeur de registre non pris en charge : {0}</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Affichage</value>
+  </data>
+  <data name="Process cleanup failed: {0}" xml:space="preserve">
+    <value>Échec du nettoyage des processus : {0}</value>
+  </data>
+  <data name="Quit anyway selected. Process settings may remain changed; saved system recovery records are preserved." xml:space="preserve">
+    <value>Quitter quand même a été choisi. Des réglages de processus peuvent rester modifiés ; les sauvegardes de restauration système sont conservées.</value>
+  </data>
+  <data name="Restoration incomplete" xml:space="preserve">
+    <value>Restauration incomplète</value>
+  </data>
+  <data name="Some settings still need to be restored." xml:space="preserve">
+    <value>Certains réglages restent à restaurer.</value>
+  </data>
+  <data name="Some settings could not be restored. Windows may be blocking a process or require Administrator access." xml:space="preserve">
+    <value>Certains réglages n’ont pas pu être restaurés. Windows peut bloquer un processus ou demander les droits administrateur.</value>
+  </data>
+  <data name="If you quit anyway, blocked process limits may remain until those processes restart. Process recovery cannot be retried after exit. Saved power plan and registry recovery records are kept for the next launch." xml:space="preserve">
+    <value>Si vous quittez quand même, certains processus peuvent rester limités jusqu’à leur redémarrage. Leur restauration ne pourra plus être réessayée après la fermeture. Les sauvegardes du mode d’alimentation et du registre sont conservées pour le prochain lancement.</value>
+  </data>
+  <data name="Reopen EcoMode as Administrator if system settings still need restoring. Restart browsers after restoring their policies." xml:space="preserve">
+    <value>Relancez EcoMode en administrateur si des réglages système restent à restaurer. Redémarrez les navigateurs après la restauration de leurs stratégies.</value>
+  </data>
+  <data name="Retry restoration" xml:space="preserve">
+    <value>Réessayer la restauration</value>
+  </data>
+  <data name="Keep EcoMode open" xml:space="preserve">
+    <value>Garder EcoMode ouvert</value>
+  </data>
+  <data name="Quit anyway" xml:space="preserve">
+    <value>Quitter quand même</value>
+  </data>
+  <data name="BATTERY" xml:space="preserve">
+    <value>BATTERIE</value>
+  </data>
+  <data name="Show history" xml:space="preserve">
+    <value>Afficher l’historique</value>
+  </data>
+  <data name="Hide history" xml:space="preserve">
+    <value>Masquer l’historique</value>
+  </data>
+  <data name="Battery level history" xml:space="preserve">
+    <value>Historique du niveau de batterie</value>
+  </data>
+  <data name="History appears while EcoMode is running." xml:space="preserve">
+    <value>L’historique se remplit pendant l’utilisation d’EcoMode.</value>
+  </data>
+  <data name="Last 60 min · green: Eco on · gray: Eco off · dotted: mode change" xml:space="preserve">
+    <value>60 dernières min · vert : Éco actif · gris : inactif · pointillés : changement</value>
+  </data>
+  <data name="Automatic on battery (background apps only)" xml:space="preserve">
+    <value>Automatique sur batterie (applications en arrière-plan)</value>
+  </data>
+  <data name="Automatically limit background apps on battery and restore them when plugged in." xml:space="preserve">
+    <value>Limite automatiquement les applications en arrière-plan sur batterie et les rétablit sur secteur.</value>
+  </data>
+  <data name="Resume automatic mode" xml:space="preserve">
+    <value>Reprendre le mode automatique</value>
+  </data>
+  <data name="Charging" xml:space="preserve">
+    <value>En charge</value>
+  </data>
+  <data name="On battery" xml:space="preserve">
+    <value>Sur batterie</value>
+  </data>
+  <data name="Plugged in" xml:space="preserve">
+    <value>Sur secteur</value>
+  </data>
+  <data name="Power status unavailable" xml:space="preserve">
+    <value>État de l’alimentation indisponible</value>
+  </data>
+  <data name="No battery detected" xml:space="preserve">
+    <value>Aucune batterie détectée</value>
+  </data>
+  <data name="About {0} h {1} min left" xml:space="preserve">
+    <value>Environ {0} h {1} min restantes</value>
+  </data>
+  <data name="{0:F1} W discharge" xml:space="preserve">
+    <value>Décharge : {0:F1} W</value>
+  </data>
+  <data name="{0:F1}%/h observed" xml:space="preserve">
+    <value>{0:F1} %/h observés</value>
+  </data>
+  <data name="Runtime and discharge readings depend on your hardware." xml:space="preserve">
+    <value>L’autonomie et la puissance dépendent des données fournies par votre matériel.</value>
+  </data>
+  <data name="Automatic mode is off." xml:space="preserve">
+    <value>Le mode automatique est désactivé.</value>
+  </data>
+  <data name="Restore or backup needs attention. Automatic mode is paused." xml:space="preserve">
+    <value>Une restauration ou une sauvegarde nécessite votre attention. Mode automatique en pause.</value>
+  </data>
+  <data name="Manual profile active. Resume automatic mode to hand back control." xml:space="preserve">
+    <value>Profil manuel actif. Reprenez le mode automatique pour lui rendre la main.</value>
+  </data>
+  <data name="Manual override until the power source changes." xml:space="preserve">
+    <value>Contrôle manuel jusqu’au prochain changement d’alimentation.</value>
+  </data>
+  <data name="Automatic · background apps only" xml:space="preserve">
+    <value>Automatique · applications en arrière-plan uniquement</value>
+  </data>
+  <data name="No battery detected. Automatic mode is idle." xml:space="preserve">
+    <value>Aucune batterie détectée. Mode automatique en attente.</value>
+  </data>
+  <data name="Plugged in · automatic mode is idle." xml:space="preserve">
+    <value>Sur secteur · mode automatique en attente.</value>
+  </data>
+  <data name="Waiting for power status." xml:space="preserve">
+    <value>En attente de l’état de l’alimentation.</value>
+  </data>
+  <data name="Background app check failed: {0}" xml:space="preserve">
+    <value>Échec de la vérification des applications en arrière-plan : {0}</value>
+  </data>
+  <data name="Automatic Eco Mode started for background apps. Your profile settings were not changed." xml:space="preserve">
+    <value>Mode Éco automatique activé pour les applications en arrière-plan. Votre profil reste inchangé.</value>
+  </data>
+  <data name="Automatic mode could not start: {0}" xml:space="preserve">
+    <value>Impossible de démarrer le mode automatique : {0}</value>
+  </data>
+  <data name="Automatic mode preference could not be saved: {0}" xml:space="preserve">
+    <value>Impossible d’enregistrer le choix du mode automatique : {0}</value>
+  </data>
+  <data name="Live apps" xml:space="preserve">
+    <value>Applications en direct</value>
+  </data>
+  <data name="&amp;Live apps…" xml:space="preserve">
+    <value>&amp;Applications en direct…</value>
+  </data>
+  <data name="Wait for the current operation to finish." xml:space="preserve">
+    <value>Attendez la fin de l’opération en cours.</value>
+  </data>
+  <data name="Select a valid executable name." xml:space="preserve">
+    <value>Sélectionnez un nom d’exécutable valide.</value>
+  </data>
+  <data name="Built-in safety exclusions cannot be changed." xml:space="preserve">
+    <value>Les exclusions de sécurité intégrées ne peuvent pas être modifiées.</value>
+  </data>
+  <data name="{0} excluded from throttling. Existing changes were queued for restoration." xml:space="preserve">
+    <value>{0} exclu des limitations. Les changements existants font l’objet d’une restauration.</value>
+  </data>
+  <data name="Exclusion removed for {0}." xml:space="preserve">
+    <value>Exclusion supprimée pour {0}.</value>
+  </data>
+  <data name="Search app or PID" xml:space="preserve">
+    <value>Rechercher une application ou un PID</value>
+  </data>
+  <data name="Filter apps" xml:space="preserve">
+    <value>Filtrer les applications</value>
+  </data>
+  <data name="All apps" xml:space="preserve">
+    <value>Toutes les applications</value>
+  </data>
+  <data name="Managed by EcoMode" xml:space="preserve">
+    <value>Géré par EcoMode</value>
+  </data>
+  <data name="Excluded apps" xml:space="preserve">
+    <value>Applications exclues</value>
+  </data>
+  <data name="Needs restoration" xml:space="preserve">
+    <value>Restauration nécessaire</value>
+  </data>
+  <data name="Running apps in your Windows session" xml:space="preserve">
+    <value>Applications de votre session Windows</value>
+  </data>
+  <data name="App" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="PID" xml:space="preserve">
+    <value>PID</value>
+  </data>
+  <data name="EcoMode status" xml:space="preserve">
+    <value>État EcoMode</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>Priorité</value>
+  </data>
+  <data name="EcoQoS" xml:space="preserve">
+    <value>EcoQoS</value>
+  </data>
+  <data name="App list unavailable: {0}" xml:space="preserve">
+    <value>Liste des applications indisponible : {0}</value>
+  </data>
+  <data name="Exclusions apply to every instance of the executable and are saved to your profile. Readings refresh every 2 seconds." xml:space="preserve">
+    <value>Les exclusions concernent toutes les instances de l’exécutable et sont enregistrées dans votre profil. Actualisation toutes les 2 secondes.</value>
+  </data>
+  <data name="{0} of {1} apps · {2} managed · {3} need restoration" xml:space="preserve">
+    <value>{0} applications sur {1} · {2} gérées · {3} à restaurer</value>
+  </data>
+  <data name="Remove exclusion" xml:space="preserve">
+    <value>Supprimer l’exclusion</value>
+  </data>
+  <data name="Never throttle this app" xml:space="preserve">
+    <value>Ne jamais limiter cette application</value>
+  </data>
+  <data name="Select an app to manage its exclusion." xml:space="preserve">
+    <value>Sélectionnez une application pour gérer son exclusion.</value>
+  </data>
+  <data name="Built-in or protected app. Safety exclusion is locked." xml:space="preserve">
+    <value>Application intégrée ou protégée. Exclusion de sécurité verrouillée.</value>
+  </data>
+  <data name="Applies to all {0} processes." xml:space="preserve">
+    <value>S’applique à tous les processus {0}.</value>
+  </data>
+  <data name="Exclusion saved, but some settings still need restoration. Use Restore originals to retry." xml:space="preserve">
+    <value>Exclusion enregistrée, mais certains réglages restent à restaurer. Utilisez Restaurer les réglages d’origine pour réessayer.</value>
+  </data>
+  <data name="Exclusion preference saved for {0}." xml:space="preserve">
+    <value>Préférence d’exclusion enregistrée pour {0}.</value>
+  </data>
+  <data name="Could not change the exclusion: {0}" xml:space="preserve">
+    <value>Impossible de modifier l’exclusion : {0}</value>
+  </data>
+  <data name="Foreground app" xml:space="preserve">
+    <value>Application au premier plan</value>
+  </data>
+  <data name="Excluded from throttling" xml:space="preserve">
+    <value>Exclu des limitations</value>
+  </data>
+  <data name="Protected by Windows" xml:space="preserve">
+    <value>Protégé par Windows</value>
+  </data>
+  <data name="Access unavailable" xml:space="preserve">
+    <value>Accès indisponible</value>
+  </data>
+  <data name="Not managed by EcoMode" xml:space="preserve">
+    <value>Non géré par EcoMode</value>
+  </data>
+  <data name="Windows managed" xml:space="preserve">
+    <value>Géré par Windows</value>
+  </data>
+  <data name="Unavailable" xml:space="preserve">
+    <value>Indisponible</value>
+  </data>
+  <data name="Idle" xml:space="preserve">
+    <value>Inactif</value>
+  </data>
+  <data name="Below normal" xml:space="preserve">
+    <value>Inférieure à la normale</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Normale</value>
+  </data>
+  <data name="Above normal" xml:space="preserve">
+    <value>Supérieure à la normale</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Haute</value>
+  </data>
+  <data name="Realtime" xml:space="preserve">
+    <value>Temps réel</value>
+  </data>
+</root>

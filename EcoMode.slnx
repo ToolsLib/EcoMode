@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EcoMode/EcoMode.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EcoMode.RegressionTests/EcoMode.RegressionTests.csproj" />
+  </Folder>
+</Solution>
