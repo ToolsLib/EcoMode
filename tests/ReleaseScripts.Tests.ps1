@@ -125,3 +125,8 @@ finally {
     }
     Remove-Item -LiteralPath $resolvedFixture -Recurse -Force
 }
+
+# Expected failure tests set the mocked CLI's native exit status to 1. Clear it
+# only after every assertion and cleanup succeeds; GitHub's pwsh wrapper exits
+# with LASTEXITCODE even when the PowerShell script completed successfully.
+$global:LASTEXITCODE = 0
