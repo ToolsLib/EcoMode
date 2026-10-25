@@ -1,6 +1,14 @@
 #define MyAppName "EcoMode"
 #define MyAppExe  "ecomode.exe"
-#define MyAppVer  "1.0.0"
+#ifndef MyAppVer
+  #define MyAppVer "1.0.0"
+#endif
+#ifndef MyAppNumericVer
+  #define MyAppNumericVer "1.0.0.0"
+#endif
+#ifndef PublishDir
+  #define PublishDir "bin\Release\net9.0-windows\win-x64\publish"
+#endif
 #define MyPublisher "ToolsLib"
 #define MyURL "https://github.com/ToolsLib/EcoMode"
 
@@ -8,6 +16,7 @@
 AppId={{A4D0A0D8-7B4C-4CF1-9C5E-AAAA1111BBBB}}
 AppName={#MyAppName}
 AppVersion={#MyAppVer}
+VersionInfoVersion={#MyAppNumericVer}
 AppPublisher={#MyPublisher}
 AppPublisherURL={#MyURL}
 DefaultDirName={pf}\{#MyAppName}
@@ -19,12 +28,13 @@ Compression=lzma
 SolidCompression=yes
 ; Needs admin for HKLM/Policies + powercfg usage
 PrivilegesRequired=admin
-ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
 ;SetupIconFile=app_simplified.ico
 
 [Files]
 ; Point Source to your publish folder
-Source: "bin\Release\net9.0-windows\win-x64\publish\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
+Source: "{#PublishDir}\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"

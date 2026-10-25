@@ -1,6 +1,5 @@
 namespace ecomode;
 
-using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -15,10 +14,14 @@ public partial class MainForm : Form
 {
     private readonly bool _isAdmin;
     private readonly AppState _state;
+    private readonly OriginalSettingsManager _originalSettings;
 
     private bool _ecoHookActive = false;
+    private bool _ecoEnabled;
 
-    public MainForm(bool isAdmin)
+    public MainForm(bool isAdmin) : this(isAdmin, null) { }
+
+    internal MainForm(bool isAdmin, OriginalSettingsManager? originalSettings)
     {
         try
         {
@@ -36,11 +39,12 @@ public partial class MainForm : Form
             EnergyManager.Logger = Log;
 
             _state = AppState.Load();
+            _originalSettings = originalSettings ?? new OriginalSettingsManager(new WindowsSystemSettings(), message => Log(message));
             EnergyManager.SetBypass(_state.BypassProcesses); // Set bypass processes after loading state
 
             ApplyStateToUi();
-            // UpdateAdminBanner(_ecoHookActive);
-            UpdateStatus(_ecoHookActive); // starts OFF visually
+            UpdateStatus(false);
+            RefreshOriginalSettingsStatus();
         }
         catch (Exception ex)
         {
@@ -59,6 +63,22 @@ public partial class MainForm : Form
             return;
         }
         base.OnFormClosing(e);
+        if (!e.Cancel)
+        {
+            // Restore every change EcoMode applied, regardless of the current
+            // checkboxes or app lists. Avoid modal prompts during Windows shutdown.
+            if (!RestoreOriginalSettings(restoreAll: false) && e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                _reallyExit = false;
+                RestoreFromTray();
+                ShowExitWarning("Some original settings could not be restored. EcoMode will stay open.\r\n\r\n" +
+                    "Check the activity log and retry Quit. Restoring the power plan or browser policies may require Administrator privileges.",
+                    "Restore Incomplete", MessageBoxButtons.OK);
+                return;
+            }
+            trayIcon.Visible = false;
+        }
     }
 
     protected override void OnResize(EventArgs e)
@@ -71,11 +91,9 @@ public partial class MainForm : Form
     // Ensure hook gets cleaned up on exit
     protected override void OnFormClosed(FormClosedEventArgs e)
     {
-        if (_ecoHookActive)
-        {
-            try { HookManager.UnsubscribeWindowEvents(); } catch { }
-            _ecoHookActive = false;
-        }
+        StopEcoQos(); // retry cleanup if a process was temporarily unavailable
+        EnergyManager.Logger = null;
+        trayIcon.Dispose();
         base.OnFormClosed(e);
     }
 
@@ -98,6 +116,8 @@ public partial class MainForm : Form
     #region UI wiring
     private Button btnEcoOn = new();
     private Button btnEcoOff = new();
+    private Button btnSaveOriginal = new();
+    private Button btnRestoreOriginal = new();
     // private Label lblEcoState = new();
     private CheckBox chkPowerPlan = new();
     private CheckBox chkEdge = new();
@@ -132,9 +152,9 @@ public partial class MainForm : Form
     private ToolStripMenuItem miTrayQuit = new("Quit");
     private bool _reallyExit = false; // set true only when user chooses Quit
 
-    private SplitContainer splitMain;
-    private SplitContainer splitTop;
-    private SplitContainer splitRight;
+    private SplitContainer splitMain = null!;
+    private SplitContainer splitTop = null!;
+    private SplitContainer splitRight = null!;
 
     private void _InitializeComponent()
     {
@@ -218,18 +238,23 @@ public partial class MainForm : Form
         splitMain.Panel1.Controls.Add(splitTop);
 
         // ---------- Left Panel ----------
-        var leftPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(12) };
+        var leftPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(12), AutoScroll = true };
         splitTop.Panel1.Controls.Add(leftPanel);
 
+        var actions = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, WrapContents = true };
+        var options = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Top, AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false
+        };
+
         lblStatus.AutoSize = false;
-        lblStatus.Height = 20; // instead of 36
+        lblStatus.Height = 44;
         lblStatus.Dock = DockStyle.Top;
         lblStatus.Padding = new Padding(0, 2, 0, 0); // small breathing room
         lblStatus.TextAlign = ContentAlignment.MiddleLeft;
         lblStatus.ForeColor = Color.DarkGreen;
         lblStatus.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
         lblStatus.Text = "Eco Mode: OFF — Not elevated: system power plan + HKLM policies will be skipped.";
-        leftPanel.Controls.Add(lblStatus);
 
         btnEcoOn.Text = "🔋 Eco ON";
         btnEcoOn.SetBounds(0, 36, 140, 40);
@@ -239,7 +264,7 @@ public partial class MainForm : Form
         btnEcoOff.SetBounds(150, 36, 140, 40);
         btnEcoOff.Click += (_, __) => ToggleEco(false);
 
-        btnSave.Text = "Save Settings";
+        btnSave.Text = "Save Profile Settings";
         btnSave.SetBounds(300, 36, 160, 40);
         btnSave.Click += (_, __) => SaveFromUi();
 
@@ -247,10 +272,18 @@ public partial class MainForm : Form
         btnDonate.SetBounds(470, 36, 140, 40);
         btnDonate.Click += (_, __) => OpenDonatePage();
 
-        leftPanel.Controls.Add(btnDonate);
+        btnSaveOriginal.Text = "Save Original Settings";
+        btnSaveOriginal.Size = new Size(210, 36);
+        btnSaveOriginal.Click += (_, __) => SaveOriginalSettings();
+        btnRestoreOriginal.Text = "Restore Original Settings";
+        btnRestoreOriginal.Size = new Size(210, 36);
+        btnRestoreOriginal.Click += (_, __) => RestoreOriginalSettings(restoreAll: true);
+
+        actions.Controls.AddRange(new Control[] { btnEcoOn, btnEcoOff, btnSave, btnSaveOriginal, btnRestoreOriginal, btnDonate });
+        actions.SetFlowBreak(btnSave, true);
 
         // Checkboxes
-        chkPowerPlan.Text = "Windows power plan (EPP/Boost via powercfg)";
+        chkPowerPlan.Text = "Windows power plan (EPP/Boost)";
         chkPowerPlan.SetBounds(0, 88, 520, 26);
 
         chkEdge.Text = "Edge policy (Hardware Accel OFF / Efficiency Mode ON)";
@@ -265,11 +298,10 @@ public partial class MainForm : Form
         chkEcoQos.Text = "EcoQoS for running processes";
         chkEcoQos.SetBounds(0, 216, 320, 26);
 
-        leftPanel.Controls.AddRange(new Control[]
-        {
-            btnEcoOn, btnEcoOff, btnSave,
-            chkPowerPlan, chkEdge, chkChrome, chkGpuPref, chkEcoQos
-        });
+        options.Controls.AddRange(new Control[] { chkPowerPlan, chkEdge, chkChrome, chkGpuPref, chkEcoQos });
+        leftPanel.Controls.Add(options);
+        leftPanel.Controls.Add(actions);
+        leftPanel.Controls.Add(lblStatus);
 
         // ---------- Right Panel (two stacked text areas) ----------
         splitRight = new SplitContainer
@@ -494,144 +526,148 @@ public partial class MainForm : Form
 
     private void ToggleEco(bool eco)
     {
-        Log($"=== {(eco ? "ECO ON" : "ECO OFF")} ===");
-
-        // lblEcoState.Text = eco ? "Eco Mode: ON" : "Eco Mode: OFF";
-        // lblEcoState.ForeColor = eco ? Color.Green : Color.DarkRed;
-
-        // Show planned state immediately (doesn't depend on _ecoHookActive)
-        UpdateStatus(eco);
-
-        if (_state.IncludePowerPlan)
+        if (!eco)
         {
-            if (_isAdmin) ApplyPowerPlan(eco);
-            else Log("Skipped power plan (needs elevation).");
+            RestoreOriginalSettings(restoreAll: false);
+            return;
         }
 
-        if (_state.IncludeEdge)
+        try
         {
-            if (_isAdmin) ApplyEdgePolicy(eco);
-            else Log("Skipped Edge policy (needs elevation).");
-        }
-
-        if (_state.IncludeChrome)
-        {
-            if (_isAdmin) ApplyChromePolicy(eco);
-            else Log("Skipped Chrome policy (needs elevation).");
-        }
-
-        if (_state.IncludeGpuPref) ApplyGpuPreferences(eco);
-
-        if (_state.IncludeEcoQos)
-        {
-            if (eco)
+            SaveFromUi();
+            if (!_originalSettings.HasSnapshot)
             {
-                // Start foreground hook and throttle background immediately
+                var answer = MessageBox.Show(this,
+                    "Save the original settings before enabling Eco Mode?\r\n\r\n" +
+                    "EcoMode will save the settings affected by the selected options so Eco OFF can restore them.\r\n" +
+                    "New options and apps will be backed up before they are changed.\r\n\r\n" +
+                    (_isAdmin ? "" : "Power plan and browser policies require Administrator privileges and will be skipped.\r\n\r\n") +
+                    "Choose No to leave Eco Mode off.",
+                    "Save Original Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (answer != DialogResult.Yes) return;
+                _originalSettings.Capture(_state, _isAdmin);
+            }
+
+            Log("=== ECO ON ===");
+            bool applied = _originalSettings.ApplyEco(_state, _isAdmin);
+            _ecoEnabled = true;
+            if (!_isAdmin && (_state.IncludePowerPlan || _state.IncludeEdge || _state.IncludeChrome))
+                LogWarn("Power plan and browser policies skipped: restart as Administrator to use them.");
+
+            if (_state.IncludeEcoQos)
+            {
                 if (!_ecoHookActive)
                 {
                     HookManager.SubscribeToWindowEvents();
                     _ecoHookActive = true;
                 }
                 EnergyManager.ThrottleAllUserBackgroundProcesses();
-                Log("EcoQoS: throttled background processes; foreground will auto-boost.");
+                Log("EcoQoS enabled. Foreground apps keep their original priority.");
             }
             else
             {
-                // Stop hook and unthrottle everything
-                if (_ecoHookActive)
-                {
-                    HookManager.UnsubscribeWindowEvents();
-                    _ecoHookActive = false;
-                }
-                EnergyManager.UnthrottleAllUserProcesses();
-                Log("EcoQoS: restored normal priority to user processes.");
+                StopEcoQos();
             }
+
+            if (!applied) LogWarn("Some settings could not be applied. See the log; Eco OFF can restore any partial changes.");
+            Log("Restart browsers to apply policy changes.");
         }
-
-        // Optionally, refresh with the *actual* final state if you want to be extra-precise:
-        UpdateStatus(_ecoHookActive);
-
-        Log("Done. Restart browsers to apply policy changes.");
-    }
-
-    #region Actions
-
-    private void ApplyPowerPlan(bool eco)
-    {
-        // EPP + Boost (AC/DC); adapt values as desired
-        // Eco: EPP high (85/90), Boost off (0)
-        // Perf: EPP low (10/25), Boost aggressive/default (2/1)
-        var cmds = eco
-            ? new[]
-            {
-                "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFEPP 85",
-                "powercfg -setdcvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFEPP 90",
-                "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 0",
-                "powercfg -setdcvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 0",
-                "powercfg -setactive SCHEME_CURRENT"
-            }
-            : new[]
-            {
-                "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFEPP 10",
-                "powercfg -setdcvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFEPP 25",
-                "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 2",
-                "powercfg -setdcvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 1",
-                "powercfg -setactive SCHEME_CURRENT"
-            };
-
-        foreach (var c in cmds) RunCmd(c);
-    }
-
-    private void ApplyEdgePolicy(bool eco)
-    {
-        // HKLM\SOFTWARE\Policies\Microsoft\Edge
-        using var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Edge", true);
-        if (key is null) { Log("Edge policy key unavailable."); return; }
-
-        key.SetValue("HardwareAccelerationModeEnabled", eco ? 0 : 1, RegistryValueKind.DWord);
-        key.SetValue("EfficiencyModeEnabled", eco ? 1 : 0, RegistryValueKind.DWord);
-        Log("Edge policy updated.");
-    }
-
-    private void ApplyChromePolicy(bool eco)
-    {
-        // HKLM\SOFTWARE\Policies\Google\Chrome
-        using var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Google\Chrome", true);
-        if (key is null) { Log("Chrome policy key unavailable."); return; }
-
-        key.SetValue("HardwareAccelerationModeEnabled", eco ? 0 : 1, RegistryValueKind.DWord);
-        key.SetValue("BatterySaverModeAvailability", eco ? 1 : 0, RegistryValueKind.DWord);
-        Log("Chrome policy updated.");
-    }
-
-    private void ApplyGpuPreferences(bool eco)
-    {
-        // HKCU\Software\Microsoft\DirectX\UserGpuPreferences
-        using var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences", true);
-        if (key is null) { Log("GPU preference key unavailable."); return; }
-
-        foreach (var exe in _state.GpuPrefApps)
+        catch (Exception ex)
         {
-            try
-            {
-                var path = exe.Trim('"');
-                if (!File.Exists(path))
-                {
-                    Log($"GPU Pref: file not found: {path}");
-                    continue;
-                }
-                var val = eco ? "GpuPreference=1;" : "GpuPreference=2;"; // 1=power-saving, 2=high-perf
-                key.SetValue(path, val, RegistryValueKind.String);
-                Log($"GPU Pref set: {(eco ? "power-saving" : "high-perf")} -> {path}");
-            }
-            catch (Exception ex)
-            {
-                Log($"GPU Pref error for {exe}: {ex.Message}");
-            }
+            LogError($"Eco ON failed: {ex.Message}");
+        }
+        finally
+        {
+            UpdateStatus(_ecoEnabled);
+            RefreshOriginalSettingsStatus();
         }
     }
 
-    #endregion
+    private void SaveOriginalSettings()
+    {
+        try
+        {
+            if (_ecoEnabled || EnergyManager.HasTrackedProcesses || _originalSettings.HasPendingChanges)
+            {
+                MessageBox.Show(this, "Use Eco OFF to restore the pending changes before saving a new original.",
+                    "Original Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (_originalSettings.HasSnapshot && MessageBox.Show(this,
+                "Replace the saved original settings with the current settings for the selected options?",
+                "Replace Original Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            SaveFromUi();
+            _originalSettings.Capture(_state, _isAdmin);
+            if (!_isAdmin) LogWarn("Original settings include user GPU preferences only. Administrator-only settings will be captured before they are first applied.");
+        }
+        catch (Exception ex)
+        {
+            LogError($"Save original settings failed: {ex.Message}");
+        }
+        RefreshOriginalSettingsStatus();
+    }
+
+    private bool RestoreOriginalSettings(bool restoreAll)
+    {
+        Log(restoreAll ? "=== RESTORE ORIGINAL SETTINGS ===" : "=== ECO OFF ===");
+        bool processesRestored = StopEcoQos();
+        bool restored = false;
+        _ecoEnabled = false;
+        try
+        {
+            restored = _originalSettings.Restore(_isAdmin, restoreAll);
+            if (restored && processesRestored)
+                LogInfo("Original settings restored. Restart browsers to apply policy changes.");
+            else
+                LogWarn("Restore incomplete. See the log, then retry Restore Original Settings (as Administrator if required).");
+        }
+        catch (Exception ex)
+        {
+            LogError($"Restore failed: {ex.Message}");
+        }
+        UpdateStatus(false);
+        RefreshOriginalSettingsStatus();
+        return restored && processesRestored;
+    }
+
+    private bool StopEcoQos()
+    {
+        bool hookRemoved = true;
+        if (_ecoHookActive)
+        {
+            try { HookManager.UnsubscribeWindowEvents(); }
+            catch (Exception ex) { LogWarn($"Could not remove the foreground hook: {ex.Message}"); hookRemoved = false; }
+            if (hookRemoved) _ecoHookActive = false;
+        }
+        bool restored = EnergyManager.UnthrottleAllUserProcesses();
+        if (!restored) LogWarn("Some process settings could not be restored; cleanup will be retried.");
+        return restored && hookRemoved;
+    }
+
+    private void RefreshOriginalSettingsStatus()
+    {
+        try
+        {
+            bool pending = _originalSettings.HasPendingChanges || (EnergyManager.HasTrackedProcesses || _ecoHookActive) && !_ecoEnabled;
+            btnSaveOriginal.Enabled = !_ecoEnabled && !pending && !EnergyManager.HasTrackedProcesses;
+            btnRestoreOriginal.Enabled = _originalSettings.HasSnapshot || EnergyManager.HasTrackedProcesses || _ecoHookActive;
+            UpdateStatus(_ecoEnabled);
+            if (pending && !_ecoEnabled)
+            {
+                lblStatus.Text += " — Restore pending.";
+                lblStatus.ForeColor = Color.DarkOrange;
+                LogWarn("Saved changes are waiting to be restored. Use Eco OFF or Restore Original Settings.");
+            }
+        }
+        catch (Exception ex)
+        {
+            btnSaveOriginal.Enabled = false;
+            btnRestoreOriginal.Enabled = _originalSettings.HasSnapshot;
+            LogError($"Cannot read original settings: {ex.Message}");
+        }
+    }
 
     #region Helpers
 
@@ -799,11 +835,19 @@ public partial class MainForm : Form
 
     private void OnMenuQuit(object? sender, EventArgs e)
     {
-        // Close();
+        if (ShowExitWarning(
+            "Quitting turns Eco Mode off and restores the original power plan settings, browser policies, GPU preferences, " +
+            "and process priority/throttling settings changed by EcoMode.\r\n\r\n" +
+            "Restart browsers for restored policies to take effect.\r\n\r\nChoose OK to restore settings and quit.",
+            "Quit and Restore Settings", MessageBoxButtons.OKCancel) != DialogResult.OK)
+            return;
+
         _reallyExit = true;
-        try { trayIcon.Visible = false; } catch { }
         Close();
     }
+
+    internal virtual DialogResult ShowExitWarning(string message, string title, MessageBoxButtons buttons) =>
+        MessageBox.Show(this, message, title, buttons, MessageBoxIcon.Warning);
 
     private void OpenDonatePage()
     {
@@ -821,30 +865,6 @@ public partial class MainForm : Form
         }
     }
 
-    private void RunCmd(string cmdLine)
-    {
-        try
-        {
-            var psi = new ProcessStartInfo("cmd.exe", "/c " + cmdLine)
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
-            using var p = Process.Start(psi)!;
-            var stdout = p.StandardOutput.ReadToEnd();
-            var stderr = p.StandardError.ReadToEnd();
-            p.WaitForExit();
-            Log($"> {cmdLine}");
-            if (!string.IsNullOrWhiteSpace(stdout)) Log(stdout.Trim());
-            if (!string.IsNullOrWhiteSpace(stderr)) Log(stderr.Trim());
-        }
-        catch (Exception ex)
-        {
-            Log($"> {cmdLine} -> ERROR: {ex.Message}");
-        }
-    }
 
     private void Log(string msg, Color? color = null)
     {

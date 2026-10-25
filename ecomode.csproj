@@ -13,6 +13,8 @@
 
 <ItemGroup>
   <EmbeddedResource Include="Assets\app_simplified.ico" />
+  <Compile Remove="tests\**\*.cs" />
+  <InternalsVisibleTo Include="EcoMode.RegressionTests" />
 </ItemGroup>
 
 

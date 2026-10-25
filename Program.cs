@@ -19,6 +19,15 @@ static class Program
         try
         {
             ApplicationConfiguration.Initialize();
+            // A single owner prevents two instances from overwriting the restore snapshot
+            // or recording each other's process throttling as an original state.
+            using var instance = new Mutex(true, @"Local\EcoModeGUI", out bool firstInstance);
+            if (!firstInstance)
+            {
+                MessageBox.Show("EcoMode is already running. Open it from the system tray.", "EcoMode",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             using var identity = WindowsIdentity.GetCurrent();
             var principal = new WindowsPrincipal(identity);
             bool isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);

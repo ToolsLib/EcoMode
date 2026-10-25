@@ -1,0 +1,99 @@
+name: Build release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+      - '[0-9]*'
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.release.tag_name || github.ref_name }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+  RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+  INNO_SETUP_VERSION: '7.1.0'
+
+jobs:
+  release:
+    name: Windows x64 packages
+    runs-on: windows-2025
+    timeout-minutes: 30
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out the release tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+          persist-credentials: false
+
+      - name: Resolve release version
+        id: version
+        run: |
+          $version = ./scripts/Get-ReleaseVersion.ps1 -Tag $env:RELEASE_TAG
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Install the latest .NET 9 SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Run regression checks
+        run: |
+          ./tests/ReleaseScripts.Tests.ps1
+          # Hosted VMs do not reliably expose CPU EPP/boost power settings.
+          dotnet run --project tests/EcoMode.RegressionTests.csproj --configuration Release -- --skip-power-read
+          if ($LASTEXITCODE -ne 0) { throw 'Regression checks failed.' }
+
+      - name: Install verified Inno Setup
+        id: inno
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP "innosetup-$($env:INNO_SETUP_VERSION)-x64.exe"
+          $tag = 'is-' + $env:INNO_SETUP_VERSION.Replace('.', '_')
+          $url = "https://github.com/jrsoftware/issrc/releases/download/$tag/innosetup-$($env:INNO_SETUP_VERSION)-x64.exe"
+          Invoke-WebRequest -Uri $url -OutFile $installer
+          $signature = Get-AuthenticodeSignature -LiteralPath $installer
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'CN=Pyrsys B\.V\.') {
+            throw 'Inno Setup installer signature is invalid or from an unexpected publisher.'
+          }
+          $toolDirectory = Join-Path $env:RUNNER_TEMP 'inno-setup'
+          $arguments = @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-', '/CURRENTUSER', '/NOICONS', "/DIR=`"$toolDirectory`"")
+          $install = Start-Process -FilePath $installer -ArgumentList $arguments -Wait -PassThru -WindowStyle Hidden
+          if ($install.ExitCode -notin @(0, 3010)) { throw "Inno Setup installation failed: $($install.ExitCode)" }
+          $compiler = Join-Path $toolDirectory 'ISCC.exe'
+          if (!(Test-Path -LiteralPath $compiler)) { throw 'Inno Setup compiler was not installed.' }
+          "compiler=$compiler" >> $env:GITHUB_OUTPUT
+
+      - name: Build portable ZIP, installer, and checksums
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          ISCC_PATH: ${{ steps.inno.outputs.compiler }}
+        run: ./scripts/Build-Release.ps1 -Version $env:RELEASE_VERSION -IsccPath $env:ISCC_PATH
+
+      - name: Save release packages as workflow artifacts
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: EcoMode-${{ steps.version.outputs.version }}-win-x64
+          path: artifacts/release/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+
+      - name: Attach packages to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: ./scripts/Publish-Release.ps1 -Tag $env:RELEASE_TAG

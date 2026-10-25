@@ -41,7 +41,8 @@ namespace ecomode.Interop
         {
             if (windowEventHook != IntPtr.Zero)
             {
-                UnhookWinEvent(windowEventHook);
+                if (UnhookWinEvent(windowEventHook) == 0)
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
                 windowEventHook = IntPtr.Zero;
             }
         }
@@ -49,7 +50,8 @@ namespace ecomode.Interop
         public static void WindowEventCallback(IntPtr hWinEventHook, uint eventType,
             IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            EnergyManager.HandleForegroundEvent(hwnd);
+            if (windowEventHook != IntPtr.Zero)
+                EnergyManager.HandleForegroundEvent(hwnd);
         }
 
         public delegate void WinEventProc(IntPtr hWinEventHook, uint eventType,

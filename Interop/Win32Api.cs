@@ -12,12 +12,25 @@ namespace ecomode.Interop
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle, uint processId);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool QueryFullProcessImageName([In] IntPtr hProcess, [In] int dwFlags, [Out] StringBuilder lpExeName, ref int lpdwSize);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool SetProcessInformation([In] IntPtr hProcess,
-            [In] PROCESS_INFORMATION_CLASS ProcessInformationClass, IntPtr ProcessInformation, uint ProcessInformationSize);
+        public static extern bool SetProcessInformation(IntPtr process, PROCESS_INFORMATION_CLASS informationClass,
+            ref PROCESS_POWER_THROTTLING_STATE state, uint size);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool GetProcessInformation(IntPtr process, PROCESS_INFORMATION_CLASS informationClass,
+            ref PROCESS_POWER_THROTTLING_STATE state, uint size);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern PriorityClass GetPriorityClass(IntPtr process);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern uint WaitForSingleObject(IntPtr handle, uint milliseconds);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetPriorityClass(IntPtr handle, PriorityClass priorityClass);
