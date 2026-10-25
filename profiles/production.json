@@ -1,29 +1,14 @@
 {
-  "IncludePowerPlan": true,
-  "IncludeEdge": true,
-  "IncludeChrome": true,
-  "IncludeGpuPref": true,
+  "IncludePowerPlan": false,
+  "IncludeEdge": false,
+  "IncludeChrome": false,
+  "IncludeGpuPref": false,
   "IncludeEcoQos": true,
-  "GpuPrefApps": [
-    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-    "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-    "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe",
-    "C:\\Program Files\\Adobe\\Adobe Photoshop 2025\\Photoshop.exe",
-    "C:\\Program Files (x86)\\Steam\\steam.exe",
-    "C:\\Program Files\\Blender Foundation\\Blender 4.0\\blender.exe"
-  ],
+  "GpuPrefApps": [],
   "BypassProcesses": [
-    "explorer",
-    "dwm",
-    "taskmgr",
-    "discord",
-    "teams",
-    "slack",
-    "code",
-    "devenv",
-    "powershell",
-    "cmd"
-  ],
-  "EcoQosProcesses": null
+    "Photoshop", "Illustrator", "InDesign", "Lightroom", "LightroomClassic", "Acrobat",
+    "Adobe Premiere Pro", "AfterFX", "aerender", "Adobe Media Encoder", "Resolve", "Fusion",
+    "blender", "ffmpeg", "HandBrake", "HandBrakeCLI", "obs64", "audiodg",
+    "Ableton Live 12 Suite", "Ableton Live 12 Standard", "FL64", "reaper", "audacity"
+  ]
 }

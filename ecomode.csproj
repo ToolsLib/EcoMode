@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -12,6 +12,7 @@
 
 <ItemGroup>
   <EmbeddedResource Include="Assets\app_simplified.ico" />
+  <EmbeddedResource Include="profiles\*.json" LogicalName="ecomode.profiles.%(Filename)%(Extension)" />
   <Compile Remove="tests\**\*.cs" />
   <Compile Remove="artifacts\**\*.cs" />
   <InternalsVisibleTo Include="EcoMode.RegressionTests" />

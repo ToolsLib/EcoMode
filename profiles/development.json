@@ -1,0 +1,15 @@
+{
+  "IncludePowerPlan": false,
+  "IncludeEdge": false,
+  "IncludeChrome": false,
+  "IncludeGpuPref": false,
+  "IncludeEcoQos": true,
+  "GpuPrefApps": [],
+  "BypassProcesses": [
+    "Code", "devenv", "rider64", "idea64", "dotnet", "MSBuild", "VBCSCompiler",
+    "ServiceHub.RoslynCodeAnalysisService", "cl", "link", "cmake", "ninja", "make",
+    "node", "python", "pythonw", "java", "javac", "go", "rustc", "cargo",
+    "wsl", "wslhost", "vmmem", "vmmemWSL", "Docker Desktop", "com.docker.backend",
+    "WindowsTerminal", "pwsh", "powershell", "cmd", "git", "audiodg"
+  ]
+}

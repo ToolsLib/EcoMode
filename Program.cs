@@ -19,16 +19,14 @@ static class Program
         try
         {
             ApplicationConfiguration.Initialize();
-            using var instance = SingleInstance.TryAcquire();
-            if (instance == null)
-            {
-                MessageBox.Show("EcoMode is already running in this or another Windows session. Close that instance before starting another.", "EcoMode",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
             using var identity = WindowsIdentity.GetCurrent();
             var principal = new WindowsPrincipal(identity);
             bool isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            using var instance = StartupElevation.AcquireInstance(isAdmin,
+                () => MessageBox.Show(StartupElevation.Confirmation, "Restart as Administrator?",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes,
+                (message, icon) => MessageBox.Show(message, "EcoMode", MessageBoxButtons.OK, icon));
+            if (instance == null) return;
 
             MainForm form;
             try

@@ -15,9 +15,13 @@
 * **Configurable bypass list**: define which processes should never be throttled.
 * **Tray support**: runs in the background, minimizes to system tray instead of closing.
 * **Import / export / reset profiles**: easily back up or share your configuration.
+* **Built-in presets**: start with Balanced, Battery Saver, Gaming, Development, Creative Work, or Video Calls, then customize the app and bypass lists.
+* **Utility-style interface**: dark panels, a clear Eco status, grouped controls, and a compact activity log. Colors and reusable control styles live in `UtilityTheme.cs`; the window layout lives in `MainForm.Layout.cs`.
 * **Activity log**: console-like log viewer with color-coded log levels.
 
 ## 📥 Installation
+
+The installer and portable ZIP include the .NET runtime. **Users do not need to install .NET 10 or the .NET Desktop Runtime.** The .NET 10 SDK is needed only to build EcoMode from source.
 
 1. Download the latest installer from the [Releases](../../releases) page.
 2. Run the setup — EcoMode will be installed with Start Menu and system tray support.
@@ -27,15 +31,35 @@
 
 ## 🚀 Usage
 
-* Click **🔋 Eco ON** to enable Eco Mode.
+* When started without Administrator rights, EcoMode offers to restart as Administrator before opening the window. Choose **Yes** to open the Windows elevation prompt, or **No** to continue in standard mode. Canceling the Windows prompt also continues in standard mode. Already elevated launches skip this confirmation.
+* Click **Eco ON** to enable Eco Mode.
 * On the first **Eco ON**, accept the prompt to save your original settings. Choosing **No** leaves Eco Mode off.
-* Click **Save Original Settings** to save a new baseline for the selected options and configured GPU apps. Restore pending EcoMode changes first; replacing an existing baseline requires confirmation.
+* Click **Save originals** to save a new baseline for the selected options and configured GPU apps. Restore pending EcoMode changes first; replacing an existing baseline requires confirmation.
 * Click **Eco OFF** to undo the settings EcoMode applied, regardless of the currently selected options or app list.
-* Click **Restore Original Settings** to reapply the entire saved baseline whenever needed.
+* Click **Restore originals** to reapply the entire saved baseline whenever needed.
 * Use the **check boxes** to control which tweaks are applied (Power Plan, Edge/Chrome policies, GPU prefs, EcoQoS).
-* Use **Browse…** to add apps for GPU preference management.
+* Use **Add app** to add apps for GPU preference management.
 * Add process names to the **Bypass list** if they should never be throttled.
 * Right-click the **tray icon** for quick Save / Quit options.
+
+### Preset profiles
+
+Choose a **Preset profile** and click **Load**. Confirming replaces and saves the current profile, including any unsaved edits. Review the options, GPU paths and bypass list, then click **Eco ON** to apply it. Use **Eco OFF** and finish restoring any pending changes before switching presets. Loading a preset preserves your saved original settings.
+
+| Preset | Enabled changes | Bypass list focus |
+| --- | --- | --- |
+| Balanced | Background EcoQoS and power-saving GPU preferences for Edge/Chrome | Common calls, audio and OBS |
+| Battery Saver | Power-plan EPP/boost, Edge/Chrome policies, browser GPU preferences and EcoQoS | Common calls and audio |
+| Gaming | Background EcoQoS | Launchers, Discord, OBS and overlay tools |
+| Development | Background EcoQoS | IDEs, compilers, build tools, runtimes, terminals and container hosts |
+| Creative Work | Background EcoQoS | Editors, renderers, encoders, recording and audio tools |
+| Video Calls | Background EcoQoS | Meeting apps, browsers, WebView, OBS and audio |
+
+Battery Saver uses the existing Eco power values (EPP 85 AC / 90 DC, CPU boost disabled) and disables Edge/Chrome hardware acceleration. It can reduce performance on demanding tasks. Power-plan and browser policy changes require Administrator privileges; browser policies need a browser restart.
+
+Presets are starting points. **Add the executable names of your games, renderers, build tools or meeting apps to the bypass list**, especially if they must run at full speed while in the background. Foreground applications retain their original priority; the built-in system bypass list also remains active. GPU paths cover common installation locations, and missing files are skipped; use **Add app** for other locations. Gaming, Development, Creative Work and Video Calls leave power-plan, browser and GPU settings untouched.
+
+The same presets are available as importable JSON files in [`profiles/`](profiles/) and are embedded in the app, so the picker also works when only the executable is copied. Creative Work uses the existing `production.json` filename. Edited presets can be saved and exported like any other profile.
 
 User GPU originals are stored separately from profiles at `%APPDATA%\EcoMode\original-settings.json`. Machine-wide power plan and browser policy originals are kept in the protected 64-bit registry value `HKLM\SOFTWARE\ToolsLib\EcoMode\OriginalSettingsV1`, shared across Windows accounts and sessions. Only one EcoMode instance can run on a machine at a time. An administrator launch migrates machine entries from older per-user snapshots before applying new changes.
 
@@ -72,15 +96,17 @@ The checks use temporary snapshot files, disposable registry keys, and dedicated
 
 ## Deployment
 
-```
-# if you want to rely on user's .NET Desktop Runtime (smaller):
-dotnet publish -c Release -r win-x64 --self-contained false
+Build the standalone Windows x64 executable with the checked-in publish profile:
 
-# OR ship everything (bigger, no runtime needed):
-dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+```powershell
+dotnet publish ecomode.csproj -c Release -r win-x64 -p:PublishProfile=Standalone
 ```
 
-..then build it with Inno Setup Compiler.
+The output is `artifacts/standalone/win-x64/ecomode.exe`. This single executable bundles the app, .NET runtime, Windows Forms libraries, native runtime libraries, and built-in presets. It can be copied to another Windows x64 PC without installing .NET. Native libraries are extracted automatically when it starts.
+
+In Visual Studio, choose **Publish → Standalone** with the **Release** configuration. The Inno Setup script also uses this standalone output by default. The automated release script uses the same profile to build the portable ZIP and installer.
+
+Files directly under `bin/Debug/` or `bin/Release/` are development builds and can still require an installed runtime. Distribute the published executable or the release packages.
 
 ## Automated releases
 

@@ -1,0 +1,12 @@
+{
+  "IncludePowerPlan": false,
+  "IncludeEdge": false,
+  "IncludeChrome": false,
+  "IncludeGpuPref": false,
+  "IncludeEcoQos": true,
+  "GpuPrefApps": [],
+  "BypassProcesses": [
+    "ms-teams", "Teams", "Zoom", "CptHost", "Webex", "CiscoCollabHost", "Slack",
+    "Discord", "Skype", "chrome", "msedge", "firefox", "msedgewebview2", "obs64", "audiodg"
+  ]
+}

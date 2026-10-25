@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using ecomode.Interop;
 
-public class MainForm : Form
+public partial class MainForm : Form
 {
     private readonly bool _isAdmin;
     private readonly AppState _state;
@@ -117,31 +117,31 @@ public class MainForm : Form
 
     private void UpdateStatus(bool ecoPlannedOn)
     {
-        var adminText = _isAdmin
-            ? "Running as Administrator: full features enabled."
-            : "Not elevated: system power plan + HKLM policies will be skipped.";
-
-        lblStatus.Text = $"Eco Mode: {(ecoPlannedOn ? "ON" : "OFF")} — {adminText}";
-        lblStatus.ForeColor = ecoPlannedOn ? Color.Green : Color.DarkRed;
+        lblStatus.Text = ecoPlannedOn ? "Eco is active" : "Eco is off";
+        lblStatus.ForeColor = ecoPlannedOn ? UtilityTheme.Accent : UtilityTheme.Text;
+        lblStatusDetail.Text = ecoPlannedOn ? "Background savings enabled." : "Ready to save power.";
     }
 
     #region UI wiring
-    private Button btnEcoOn = new();
-    private Button btnEcoOff = new();
-    private Button btnSaveOriginal = new();
-    private Button btnRestoreOriginal = new();
+    private Button btnEcoOn = new UtilityButton();
+    private Button btnEcoOff = new UtilityButton();
+    private Button btnSaveOriginal = new UtilityButton();
+    private Button btnRestoreOriginal = new UtilityButton();
     private CheckBox chkPowerPlan = new();
     private CheckBox chkEdge = new();
     private CheckBox chkChrome = new();
     private CheckBox chkGpuPref = new();
     private CheckBox chkEcoQos = new();
-    private Button btnBrowseGpu = new();
+    private Button btnBrowseGpu = new UtilityButton();
+    private ComboBox cboPresets = new UtilityComboBox();
+    private Button btnLoadPreset = new UtilityButton();
+    private Label lblPresetDescription = new();
 
-    private TextBox txtGpuApps = new();
-    private TextBox txtEcoQosProcs = new();
+    private RichTextBox txtGpuApps = new UtilityTextEditor();
+    private RichTextBox txtEcoQosProcs = new UtilityTextEditor();
     private Label lblStatus = new();
-    private Button btnSave = new();
-    private Button btnDonate = new();
+    private Button btnSave = new UtilityButton();
+    private Button btnDonate = new UtilityButton();
     private RichTextBox txtLog = new();
 
     // Menu
@@ -165,229 +165,6 @@ public class MainForm : Form
     private SplitContainer splitMain = null!;
     private SplitContainer splitTop = null!;
     private SplitContainer splitRight = null!;
-
-    private void BuildUi()
-    {
-        Text = "EcoMode GUI";
-        Width = 1200;
-        Height = 800;
-        StartPosition = FormStartPosition.CenterScreen;
-        MinimumSize = new System.Drawing.Size(1100, 700);
-
-        // ===== Root panel with padding =====
-        var rootPanel = new Panel
-        {
-            Dock = DockStyle.Fill,
-            Padding = new Padding(10) // <-- adjust to taste (all sides)
-        };
-        Controls.Add(rootPanel);
-
-        // ===== Menu =====
-        miSave.ShortcutKeys = Keys.Control | Keys.S;
-        miSave.Click += OnMenuSave;
-
-        miQuit.ShortcutKeys = Keys.Control | Keys.Q;
-        miQuit.Click += OnMenuQuit;
-
-        fileMenu.DropDownItems.AddRange(new ToolStripItem[] { miSave, new ToolStripSeparator(), miQuit });
-
-        // Edit menu
-        miImport.Click += OnMenuImportProfile;
-        miExport.Click += OnMenuExportProfile;
-        miReset.Click  += OnMenuResetDefaults;
-
-        editMenu.DropDownItems.Clear();
-        editMenu.DropDownItems.AddRange(new ToolStripItem[]
-        {
-            miImport,
-            miExport,
-            new ToolStripSeparator(),
-            miReset
-        });
-        editMenu.Enabled = true; // now active
-
-        menu.Items.AddRange(new ToolStripItem[] { fileMenu, editMenu });
-        menu.Dock = DockStyle.Top;
-
-        MainMenuStrip = menu;
-        Controls.Add(menu);
-
-        // ===== System tray =====
-        trayMenu.Items.AddRange(new ToolStripItem[]
-        {
-            miTrayShow, new ToolStripSeparator(), miTraySave, new ToolStripSeparator(), miTrayQuit
-        });
-        miTrayShow.Click += (_, __) => RestoreFromTray();
-        miTraySave.Click += (_, __) => SaveFromUi();
-        miTrayQuit.Click += OnMenuQuit;
-        trayIcon.Text = "EcoMode";
-        trayIcon.ContextMenuStrip = trayMenu;
-        trayIcon.Visible = true;
-        trayIcon.DoubleClick += (_, __) => RestoreFromTray();
-
-        // ===== Main vertical split: Top (controls) / Bottom (log) =====
-        splitMain = new SplitContainer
-        {
-            Orientation = Orientation.Horizontal,
-            Dock = DockStyle.Fill
-            // SplitterDistance will be set in OnFormShown
-        };
-        rootPanel.Controls.Add(splitMain);
-
-
-        // ===== Top horizontal split: Left (buttons+checkboxes) / Right (text areas) =====
-        splitTop = new SplitContainer
-        {
-            Orientation = Orientation.Vertical,
-            Dock = DockStyle.Fill
-            // SplitterDistance will be set in OnFormShown
-        };
-        splitMain.Panel1.Controls.Add(splitTop);
-
-        // ---------- Left Panel ----------
-        var leftPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(12), AutoScroll = true };
-        splitTop.Panel1.Controls.Add(leftPanel);
-
-        var actions = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, WrapContents = true };
-        var options = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Top, AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false
-        };
-
-        lblStatus.AutoSize = false;
-        lblStatus.Height = 44;
-        lblStatus.Dock = DockStyle.Top;
-        lblStatus.Padding = new Padding(0, 2, 0, 0); // small breathing room
-        lblStatus.TextAlign = ContentAlignment.MiddleLeft;
-        lblStatus.ForeColor = Color.DarkGreen;
-        lblStatus.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-        lblStatus.Text = "Eco Mode: OFF — Not elevated: system power plan + HKLM policies will be skipped.";
-
-        btnEcoOn.Text = "🔋 Eco ON";
-        btnEcoOn.SetBounds(0, 36, 140, 40);
-        btnEcoOn.Click += (_, __) => ToggleEco(true);
-
-        btnEcoOff.Text = "Eco OFF";
-        btnEcoOff.SetBounds(150, 36, 140, 40);
-        btnEcoOff.Click += (_, __) => ToggleEco(false);
-
-        btnSave.Text = "Save Profile Settings";
-        btnSave.SetBounds(300, 36, 160, 40);
-        btnSave.Click += (_, __) => SaveFromUi();
-
-        btnDonate.Text = "Donate ❤️";
-        btnDonate.SetBounds(470, 36, 140, 40);
-        btnDonate.Click += (_, __) => OpenDonatePage();
-
-        btnSaveOriginal.Text = "Save Original Settings";
-        btnSaveOriginal.Size = new Size(210, 36);
-        btnSaveOriginal.Click += (_, __) => SaveOriginalSettings();
-        btnRestoreOriginal.Text = "Restore Original Settings";
-        btnRestoreOriginal.Size = new Size(210, 36);
-        btnRestoreOriginal.Click += (_, __) => RestoreOriginalSettings(restoreAll: true);
-
-        actions.Controls.AddRange(new Control[] { btnEcoOn, btnEcoOff, btnSave, btnSaveOriginal, btnRestoreOriginal, btnDonate });
-        actions.SetFlowBreak(btnSave, true);
-
-        // Checkboxes
-        chkPowerPlan.Text = "Windows power plan (EPP/Boost)";
-        chkPowerPlan.SetBounds(0, 88, 520, 26);
-
-        chkEdge.Text = "Edge policy (Hardware Accel OFF / Efficiency Mode ON)";
-        chkEdge.SetBounds(0, 120, 540, 26);
-
-        chkChrome.Text = "Chrome policy (Hardware Accel OFF / Battery Saver)";
-        chkChrome.SetBounds(0, 152, 520, 26);
-
-        chkGpuPref.Text = "Per-app GPU preference (HKCU)";
-        chkGpuPref.SetBounds(0, 184, 320, 26);
-
-        chkEcoQos.Text = "EcoQoS for running processes";
-        chkEcoQos.SetBounds(0, 216, 320, 26);
-
-        options.Controls.AddRange(new Control[] { chkPowerPlan, chkEdge, chkChrome, chkGpuPref, chkEcoQos });
-        leftPanel.Controls.Add(options);
-        leftPanel.Controls.Add(actions);
-        leftPanel.Controls.Add(lblStatus);
-
-        // ---------- Right Panel (two stacked text areas) ----------
-        splitRight = new SplitContainer
-        {
-            Orientation = Orientation.Horizontal,
-            Dock = DockStyle.Fill
-            // SplitterDistance will be set in OnFormShown
-        };
-        splitTop.Panel2.Controls.Add(splitRight);
-
-        // ==========================================================
-        // GPU Pref Apps (top)
-        var panelGpu = new Panel { Dock = DockStyle.Fill, Padding = new Padding(8) };
-
-        // header row: label (left) + Browse... (right)
-        var headerGpu = new Panel { Dock = DockStyle.Top, Height = 28 };
-        var lblGpu = new Label
-        {
-            Text = "GPU Pref Apps (EXE paths, one per line):",
-            AutoSize = false,
-            Dock = DockStyle.Fill,
-            TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        };
-        btnBrowseGpu.Text = "Browse…";
-        btnBrowseGpu.AutoSize = true;
-        btnBrowseGpu.Dock = DockStyle.Right;
-        btnBrowseGpu.Margin = new Padding(6, 2, 0, 2);
-        btnBrowseGpu.Click += (_, __) => BrowseAndAddGpuApps();
-
-        headerGpu.Controls.Add(lblGpu);
-        headerGpu.Controls.Add(btnBrowseGpu);
-
-        // textbox
-        txtGpuApps.Multiline = true;
-        txtGpuApps.ScrollBars = ScrollBars.Vertical;
-        txtGpuApps.Dock = DockStyle.Fill;
-
-        // assemble
-        panelGpu.Controls.Add(txtGpuApps);
-        panelGpu.Controls.Add(headerGpu);
-        splitRight.Panel1.Controls.Add(panelGpu);
-        // ==========================================================
-
-        // EcoQoS Processes (bottom)
-        var panelQos = new Panel { Dock = DockStyle.Fill, Padding = new Padding(8) };
-        var lblQos = new Label { Text = "EcoQoS Bypass Processes (names, one per line):", Dock = DockStyle.Top, Height = 20 };
-        txtEcoQosProcs.Multiline = true;
-        txtEcoQosProcs.ScrollBars = ScrollBars.Vertical;
-        txtEcoQosProcs.Dock = DockStyle.Fill;
-        panelQos.Controls.Add(txtEcoQosProcs);
-        panelQos.Controls.Add(lblQos);
-        splitRight.Panel2.Controls.Add(panelQos);
-
-        // ===== Bottom log =====
-        txtLog.ReadOnly = true;
-        txtLog.BackColor = Color.Black;
-        txtLog.ForeColor = Color.LightGreen;
-        txtLog.Font = new Font("Consolas", 9.75f);
-        txtLog.Dock = DockStyle.Fill;
-        txtLog.BorderStyle = BorderStyle.FixedSingle;
-        txtLog.WordWrap = false;
-        txtLog.ScrollBars = RichTextBoxScrollBars.Vertical;
-        splitMain.Panel2.Controls.Add(txtLog);
-
-        // Defer splitter setup until form is actually shown
-        this.Shown += OnFormShown;
-    }
-
-    private void OnFormShown(object? sender, EventArgs e)
-    {
-        // Now the SplitContainers have real sizes. Set min sizes first, then distances.
-        TrySetMinSizes(splitMain, 240, 120);
-        TrySetMinSizes(splitTop, 360, 280);
-        TrySetMinSizes(splitRight, 140, 140);
-
-        SafeSetSplitter(splitMain, (int)(splitMain.Height * 0.65));  // ~65% to top controls
-        SafeSetSplitter(splitTop, (int)(splitTop.Width * 0.55));   // ~55% to left panel
-        SafeSetSplitter(splitRight, (int)(splitRight.Height * 0.50)); // half top/bottom
-    }
 
     private static void TrySetMinSizes(SplitContainer sc, int min1, int min2)
     {
@@ -654,14 +431,19 @@ public class MainForm : Form
     {
         try
         {
+            bool hasSnapshot = _originalSettings.HasSnapshot;
             bool pending = _originalSettings.HasPendingChanges || (EnergyManager.HasTrackedProcesses || _ecoHookActive) && !_ecoEnabled;
             btnSaveOriginal.Enabled = !_ecoEnabled && !pending && !EnergyManager.HasTrackedProcesses;
-            btnRestoreOriginal.Enabled = _originalSettings.HasSnapshot || EnergyManager.HasTrackedProcesses || _ecoHookActive;
+            btnRestoreOriginal.Enabled = hasSnapshot || EnergyManager.HasTrackedProcesses || _ecoHookActive;
+            lblOriginalStatus.Text = pending ? _ecoEnabled ? "ORIGINALS  /  ECO CHANGES ACTIVE" : "ORIGINALS  /  RESTORE PENDING" :
+                hasSnapshot ? "ORIGINALS  /  SAVED" : "ORIGINALS  /  NOT SAVED YET";
+            lblOriginalStatus.ForeColor = pending && !_ecoEnabled ? UtilityTheme.Warning : UtilityTheme.Muted;
             UpdateStatus(_ecoEnabled);
             if (pending && !_ecoEnabled)
             {
-                lblStatus.Text += " — Restore pending.";
-                lblStatus.ForeColor = Color.DarkOrange;
+                lblStatus.Text = "Restore pending";
+                lblStatus.ForeColor = UtilityTheme.Warning;
+                lblStatusDetail.Text = "Use Eco OFF to finish recovery.";
                 LogWarn("Saved changes are waiting to be restored. Use Eco OFF or Restore Original Settings.");
             }
         }
@@ -669,11 +451,47 @@ public class MainForm : Form
         {
             btnSaveOriginal.Enabled = false;
             btnRestoreOriginal.Enabled = _originalSettings.HasSnapshot;
+            lblOriginalStatus.Text = "ORIGINALS  /  COULD NOT READ";
+            lblOriginalStatus.ForeColor = UtilityTheme.Warning;
             LogError($"Cannot read original settings: {ex.Message}");
         }
     }
 
     #region Helpers
+
+    private void OnLoadPreset(object? sender, EventArgs e)
+    {
+        if (cboPresets.SelectedItem is not ProfilePreset preset) return;
+        try
+        {
+            EnsurePresetCanLoad();
+            if (MessageBox.Show(this,
+                $"Load the {preset.Name} preset? This replaces your current profile and any unsaved edits.\r\n\r\n" +
+                preset.Description + "\r\n\r\nReview the app paths and bypass list, then click Eco ON to apply it.",
+                "Load Preset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+                return;
+            LoadPreset(preset.Id);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Load preset failed: {ex.Message}");
+            MessageBox.Show(this, ex.Message, "Cannot Load Preset", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    private void EnsurePresetCanLoad()
+    {
+        if (_ecoEnabled || _ecoHookActive || EnergyManager.HasTrackedProcesses || _originalSettings.HasPendingChanges)
+            throw new InvalidOperationException("Use Eco OFF and finish restoring pending changes before loading a preset.");
+    }
+
+    internal void LoadPreset(string id)
+    {
+        var preset = ProfilePresets.Get(id);
+        EnsurePresetCanLoad();
+        ReplaceProfile(preset.CreateState());
+        LogInfo($"{preset.Name} preset loaded and saved. Review the app paths and bypass list, then click Eco ON.");
+    }
 
     private static Icon? LoadEmbeddedIcon(string resourceName)
     {
@@ -778,7 +596,11 @@ public class MainForm : Form
     {
         // Parse and validate before atomically replacing the profile. A bad import
         // must leave both the current runtime configuration and saved file intact.
-        var imported = AppState.Parse(json);
+        ReplaceProfile(AppState.Parse(json));
+    }
+
+    private void ReplaceProfile(AppState imported)
+    {
         imported.Save(_configPath);
         CopyState(imported, _state);
         ApplyStateToUi();
@@ -867,14 +689,14 @@ public class MainForm : Form
         txtLog.SelectionStart = txtLog.TextLength;
         txtLog.SelectionLength = 0;
 
-        txtLog.SelectionColor = color ?? Color.LightGreen;
+        txtLog.SelectionColor = color ?? UtilityTheme.Muted;
         txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {msg}{Environment.NewLine}");
         txtLog.SelectionColor = txtLog.ForeColor;
     }
     
-    private void LogInfo(string msg)  => Log(msg, Color.LightGreen);
-    private void LogWarn(string msg)  => Log(msg, Color.Yellow);
-    private void LogError(string msg) => Log(msg, Color.Red);
+    private void LogInfo(string msg)  => Log(msg, UtilityTheme.Text);
+    private void LogWarn(string msg)  => Log(msg, UtilityTheme.Warning);
+    private void LogError(string msg) => Log(msg, UtilityTheme.Error);
 
     #endregion
 }

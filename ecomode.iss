@@ -7,7 +7,7 @@
   #define MyAppNumericVer "1.0.0.0"
 #endif
 #ifndef PublishDir
-  #define PublishDir "bin\Release\net10.0-windows\win-x64\publish"
+  #define PublishDir "artifacts\standalone\win-x64"
 #endif
 #define MyPublisher "ToolsLib"
 #define MyURL "https://github.com/ToolsLib/EcoMode"

@@ -28,9 +28,8 @@ New-Item -ItemType Directory -Path $releaseDirectory, $publishDirectory -Force |
 
 try {
     dotnet publish "$projectRoot/ecomode.csproj" --configuration Release --runtime win-x64 --self-contained true `
-        --output $publishDirectory "-p:Version=$Version" "-p:AssemblyVersion=$numericVersion" "-p:FileVersion=$numericVersion" `
-        -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:TargetLatestRuntimePatch=true `
-        -p:DebugType=None -p:DebugSymbols=false
+        -p:PublishProfile=Standalone `
+        --output $publishDirectory "-p:Version=$Version" "-p:AssemblyVersion=$numericVersion" "-p:FileVersion=$numericVersion"
     if ($LASTEXITCODE -ne 0) { throw 'dotnet publish failed.' }
 
     Copy-Item -LiteralPath "$projectRoot/LICENSE", "$projectRoot/README.md" -Destination $publishDirectory

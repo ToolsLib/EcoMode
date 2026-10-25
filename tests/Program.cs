@@ -65,6 +65,8 @@ internal static partial class Program
             Run("Windows shutdown restores settings without a modal warning", ShutdownCleanup);
             Run("new buttons fit the default and minimum window sizes", RenderForm);
             RunRecoveryTests(args);
+            RunProfilePresetTests();
+            RunStartupElevationTests();
             Console.WriteLine($"PASS: {_passed} regression checks.");
             return 0;
         }
@@ -551,7 +553,9 @@ internal static partial class Program
     private static void RenderForm()
     {
         var (_, manager, _) = Setup();
-        using var form = new MainForm(false, manager);
+        string configPath = Path.Combine(_root, "render-profile.json");
+        ProfilePresets.Get("balanced").CreateState().Save(configPath);
+        using var form = new MainForm(false, manager, configPath);
         try
         {
             form.StartPosition = FormStartPosition.Manual;
@@ -563,11 +567,46 @@ internal static partial class Program
                 form.Size = size;
                 Invoke(form, "OnFormShown", form, EventArgs.Empty);
                 form.PerformLayout();
-                foreach (string name in new[] { "btnEcoOn", "btnEcoOff", "btnSaveOriginal", "btnRestoreOriginal" })
+                using (var initial = new Bitmap(form.Width, form.Height))
+                {
+                    form.DrawToBitmap(initial, new Rectangle(Point.Empty, form.Size));
+                    initial.Save(Path.Combine(AppContext.BaseDirectory, $"ui-{size.Width}.png"));
+                }
+                foreach (string name in new[] { "btnEcoOn", "btnEcoOff", "btnSaveOriginal", "btnRestoreOriginal", "btnLoadPreset" })
                 {
                     var button = Field<Button>(form, name);
-                    Check(button.Parent!.ClientRectangle.Contains(button.Bounds), $"{name} is clipped at {size}.");
+                    Check(button.Parent!.ClientRectangle.Contains(button.Bounds), $"{name} is clipped at {size}: {button.Bounds} in {button.Parent.ClientRectangle}.");
+                    var surface = Field<SplitContainer>(form, "splitTop").Panel1;
+                    var visibleBounds = surface.RectangleToClient(button.RectangleToScreen(button.ClientRectangle));
+                    Check(surface.ClientRectangle.Contains(visibleBounds), $"{name} is outside the visible control area at {size}.");
                 }
+                // Windows can add a few pixels to MinimumSize for the current DPI's window frame.
+                Check(form.Width <= size.Width + 16 && form.Height <= size.Height + 32,
+                    $"The runtime layout unexpectedly enlarged the requested size: {form.Size} instead of {size}.");
+                var mainMenu = form.MainMenuStrip!;
+                var content = Field<SplitContainer>(form, "splitMain");
+                Check(form.RectangleToClient(content.RectangleToScreen(content.ClientRectangle)).Top >= mainMenu.Bottom,
+                    "The app content covers the File and Edit menus.");
+                var picker = Field<ComboBox>(form, "cboPresets");
+                Check(picker.Parent!.ClientRectangle.Contains(picker.Bounds) && picker.Width > 150,
+                    $"Preset picker is clipped at {size}.");
+                foreach (var preset in ProfilePresets.All)
+                {
+                    picker.SelectedItem = preset;
+                    form.PerformLayout();
+                    var description = Field<Label>(form, "lblPresetDescription");
+                    Check(description.Text == preset.Description && description.Parent!.ClientRectangle.Contains(description.Bounds),
+                        $"Preset description is clipped at {size}.");
+                    var lastOption = Field<CheckBox>(form, "chkEcoQos");
+                    var viewport = lastOption.Parent!.Parent!;
+                    var optionBounds = viewport.RectangleToClient(lastOption.RectangleToScreen(lastOption.ClientRectangle));
+                    Check(viewport.ClientRectangle.Contains(optionBounds), $"Options require scrolling for {preset.Name} at {size}.");
+                    var restore = Field<Button>(form, "btnRestoreOriginal");
+                    var controlArea = Field<SplitContainer>(form, "splitTop").Panel1;
+                    Check(controlArea.ClientRectangle.Contains(controlArea.RectangleToClient(restore.RectangleToScreen(restore.ClientRectangle))),
+                        $"Recovery controls require scrolling for {preset.Name} at {size}.");
+                }
+                picker.SelectedItem = ProfilePresets.Get("balanced");
                 using var bitmap = new Bitmap(form.Width, form.Height);
                 form.DrawToBitmap(bitmap, new Rectangle(Point.Empty, form.Size));
                 bitmap.Save(Path.Combine(AppContext.BaseDirectory, $"ui-{size.Width}.png"));
