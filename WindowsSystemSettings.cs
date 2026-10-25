@@ -6,9 +6,15 @@ namespace ecomode;
 
 internal sealed class WindowsSystemSettings : ISystemSettings
 {
+    private readonly RegistryKey _userRoot;
+
+    internal WindowsSystemSettings(RegistryKey? userRoot = null) => _userRoot = userRoot ?? Registry.CurrentUser;
+
     private static readonly Guid Processor = new("54533251-82be-4824-96c1-47b60b740d00");
-    private static readonly Guid Epp = new("36687f9e-e3a5-4dbf-b1dc-15eb381c6863");
-    private static readonly Guid Boost = new("be337238-0d82-4146-a960-4f3749d470c7");
+    private static readonly Guid Epp = SettingRules.Epp;
+    private static readonly Guid Boost = SettingRules.Boost;
+
+    public void Validate(SettingTarget target, SettingValue value) => SettingRules.Validate(target, value);
 
     public IEnumerable<SettingTarget> GetTargets(AppState profile, bool isAdmin)
     {
@@ -31,12 +37,15 @@ internal sealed class WindowsSystemSettings : ISystemSettings
         }
         if (profile.IncludeGpuPref)
         {
-            foreach (string raw in profile.GpuPrefApps.Distinct(StringComparer.OrdinalIgnoreCase))
+            foreach (string raw in profile.GpuPrefApps.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct(StringComparer.OrdinalIgnoreCase))
             {
                 string path = raw.Trim().Trim('"');
                 if (!File.Exists(path)) continue;
-                yield return new(SettingKind.UserRegistry, @"Software\Microsoft\DirectX\UserGpuPreferences", path,
+                var target = new SettingTarget(SettingKind.UserRegistry, SettingRules.GpuPath, path,
                     SettingValue.From("GpuPreference=1;", RegistryValueKind.String));
+                var current = Read(target);
+                yield return target with { EcoValue = SettingValue.From(
+                    GpuPreferences.WithPreference(current.Exists ? current.Data.GetString() : null, 1), RegistryValueKind.String) };
             }
         }
     }
@@ -46,25 +55,25 @@ internal sealed class WindowsSystemSettings : ISystemSettings
 
     public SettingValue Read(SettingTarget target)
     {
+        SettingRules.ValidateTarget(target);
         if (target.Kind == SettingKind.Power)
         {
             Guid scheme = Guid.Parse(target.Path), setting = Guid.Parse(target.Name);
             Check(PowerReadACValueIndex(IntPtr.Zero, in scheme, in Processor, in setting, out uint ac));
             Check(PowerReadDCValueIndex(IntPtr.Zero, in scheme, in Processor, in setting, out uint dc));
-            return SettingValue.From(new[] { ac, dc });
+            var value = SettingValue.From(new[] { ac, dc });
+            Validate(target, value);
+            return value;
         }
 
-        using var key = Root(target).OpenSubKey(target.Path);
-        if (key == null || !key.GetValueNames().Contains(target.Name, StringComparer.OrdinalIgnoreCase))
-            return SettingValue.Missing;
-
-        object data = key.GetValue(target.Name, null, RegistryValueOptions.DoNotExpandEnvironmentNames)
-            ?? throw new InvalidDataException($"Cannot read registry value {target.Name}.");
-        return SettingValue.From(data, key.GetValueKind(target.Name));
+        var original = RegistryValueAccess.Read(Root(target), target.Path, target.Name);
+        Validate(target, original);
+        return original;
     }
 
     public void Write(SettingTarget target, SettingValue value)
     {
+        Validate(target, value);
         if (target.Kind == SettingKind.Power)
         {
             Guid scheme = Guid.Parse(target.Path), setting = Guid.Parse(target.Name);
@@ -76,29 +85,11 @@ internal sealed class WindowsSystemSettings : ISystemSettings
             return;
         }
 
-        if (!value.Exists)
-        {
-            using var existing = Root(target).OpenSubKey(target.Path, writable: true);
-            existing?.DeleteValue(target.Name, throwOnMissingValue: false);
-            return;
-        }
-
-        object data = value.Kind switch
-        {
-            RegistryValueKind.DWord => value.Data.GetInt32(),
-            RegistryValueKind.QWord => value.Data.GetInt64(),
-            RegistryValueKind.String or RegistryValueKind.ExpandString => value.Data.GetString()!,
-            RegistryValueKind.MultiString => value.Data.EnumerateArray().Select(e => e.GetString()!).ToArray(),
-            RegistryValueKind.Binary or RegistryValueKind.None => value.Data.GetBytesFromBase64(),
-            _ => throw new InvalidDataException($"Unsupported registry value kind: {value.Kind}")
-        };
-        using var key = Root(target).CreateSubKey(target.Path, writable: true)
-            ?? throw new IOException($"Cannot open registry key {target.Path}.");
-        key.SetValue(target.Name, data, value.Kind);
+        RegistryValueAccess.Write(Root(target), target.Path, target.Name, value);
     }
 
-    private static RegistryKey Root(SettingTarget target) => target.Kind == SettingKind.MachineRegistry
-        ? Registry.LocalMachine : Registry.CurrentUser;
+    private RegistryKey Root(SettingTarget target) => target.Kind == SettingKind.MachineRegistry
+        ? Registry.LocalMachine : _userRoot;
 
     private static Guid GetActiveScheme()
     {

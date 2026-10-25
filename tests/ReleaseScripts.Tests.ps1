@@ -49,6 +49,11 @@ function global:gh {
 }
 
 try {
+    Run 'installer preserves user profiles and machine recovery originals' {
+        $installerScript = Get-Content -Raw -LiteralPath "$projectRoot/ecomode.iss"
+        Assert ($installerScript -notmatch '(?im)^\s*\[UninstallDelete\]') 'Uninstall must preserve recovery data after abnormal termination.'
+        Assert ($installerScript -match 'net10\.0-windows') 'Installer publish defaults must match .NET 10.'
+    }
     $fixtureScripts = Join-Path $fixture 'scripts'
     $fixturePackages = Join-Path $fixture 'artifacts/release'
     New-Item -ItemType Directory -Path $fixtureScripts, $fixturePackages -Force | Out-Null

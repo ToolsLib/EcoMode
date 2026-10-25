@@ -2,18 +2,18 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <!-- Allow registry / PInvoke warnings to be clean -->
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
 <ItemGroup>
   <EmbeddedResource Include="Assets\app_simplified.ico" />
   <Compile Remove="tests\**\*.cs" />
+  <Compile Remove="artifacts\**\*.cs" />
   <InternalsVisibleTo Include="EcoMode.RegressionTests" />
 </ItemGroup>
 

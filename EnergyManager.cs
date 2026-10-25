@@ -39,6 +39,7 @@ public static class EnergyManager
         var merged = new HashSet<string>(DefaultBypass, StringComparer.OrdinalIgnoreCase);
         foreach (string raw in userBypass ?? Array.Empty<string>())
         {
+            if (string.IsNullOrWhiteSpace(raw)) continue;
             string name = raw.Trim().Trim('"');
             if (name.Length == 0) continue;
             merged.Add(name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ? name : name + ".exe");

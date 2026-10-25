@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-internal static class Program
+internal static partial class Program
 {
     private static readonly AppState Profile = new();
     private static string _root = "";
@@ -16,6 +16,14 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.Contains("--lock-child"))
+        {
+            using var instance = SingleInstance.TryAcquire(args[1]);
+            Console.WriteLine(instance == null ? "BUSY" : "READY");
+            if (instance != null) Thread.Sleep(Timeout.Infinite);
+            return 0;
+        }
+        if (args.Contains("--window-child")) return RunWindowChild();
         if (args.Contains("--child"))
         {
             Console.WriteLine("READY");
@@ -56,6 +64,7 @@ internal static class Program
             Run("failed quit restoration warns, stays open, and supports retry", FailedQuit);
             Run("Windows shutdown restores settings without a modal warning", ShutdownCleanup);
             Run("new buttons fit the default and minimum window sizes", RenderForm);
+            RunRecoveryTests(args);
             Console.WriteLine($"PASS: {_passed} regression checks.");
             return 0;
         }
@@ -277,7 +286,7 @@ internal static class Program
         var target = new SettingTarget(SettingKind.UserRegistry, path, "value", SettingValue.From(1, RegistryValueKind.DWord));
         try
         {
-            Check(!windows.Read(target).Exists, "New test key should have no original value.");
+            Check(!RegistryValueAccess.Read(Registry.CurrentUser, target.Path, target.Name).Exists, "New test key should have no original value.");
             SettingValue[] originals =
             {
                 SettingValue.From(-1, RegistryValueKind.DWord),
@@ -290,15 +299,15 @@ internal static class Program
             };
             foreach (var value in originals)
             {
-                windows.Write(target, value);
-                var original = windows.Read(target);
+                RegistryValueAccess.Write(Registry.CurrentUser, target.Path, target.Name, value);
+                var original = RegistryValueAccess.Read(Registry.CurrentUser, target.Path, target.Name);
                 Check(Same(original, value), "Native registry adapter changed a value or its kind.");
-                windows.Write(target, target.EcoValue);
-                windows.Write(target, JsonSerializer.Deserialize<SettingValue>(JsonSerializer.Serialize(original))!);
-                Check(Same(windows.Read(target), original), "Native registry restore did not round-trip.");
+                RegistryValueAccess.Write(Registry.CurrentUser, target.Path, target.Name, target.EcoValue);
+                RegistryValueAccess.Write(Registry.CurrentUser, target.Path, target.Name, JsonSerializer.Deserialize<SettingValue>(JsonSerializer.Serialize(original))!);
+                Check(Same(RegistryValueAccess.Read(Registry.CurrentUser, target.Path, target.Name), original), "Native registry restore did not round-trip.");
             }
-            windows.Write(target, SettingValue.Missing);
-            Check(!windows.Read(target).Exists, "Original absence was not restored.");
+            RegistryValueAccess.Write(Registry.CurrentUser, target.Path, target.Name, SettingValue.Missing);
+            Check(!RegistryValueAccess.Read(Registry.CurrentUser, target.Path, target.Name).Exists, "Original absence was not restored.");
         }
         finally { Registry.CurrentUser.DeleteSubKeyTree(path, throwOnMissingSubKey: false); }
     }
@@ -481,7 +490,7 @@ internal static class Program
                 Invoke(form, "OnMenuQuit", form, EventArgs.Empty);
                 Check(!form.IsDisposed && !Field<bool>(form, "_reallyExit") && manager.HasPendingChanges,
                     "Failed restoration should cancel exit and preserve pending work.");
-                Check(form.Warnings.Count == 2 && form.Warnings[1].Contains("Administrator"),
+                Check(form.Warnings.Count >= 2 && form.Warnings.Any(w => w.Contains("Administrator")),
                     "Failed restoration should display an actionable warning.");
                 Check(system.Values["gpu"].Data.GetInt32() == 37, "A failed policy restore should not block GPU restoration.");
                 Check(Field<NotifyIcon>(form, "trayIcon").Visible, "Tray icon must remain available after failed Quit.");
@@ -527,11 +536,14 @@ internal static class Program
         public DialogResult QuitResponse = DialogResult.OK;
         public readonly List<string> Warnings = new();
 
-        public TestMainForm(bool isAdmin, OriginalSettingsManager manager) : base(isAdmin, manager) { }
+        public DialogResult RecoveryResponse = DialogResult.Cancel;
+
+        public TestMainForm(bool isAdmin, IOriginalSettingsManager manager, string? configPath = null) : base(isAdmin, manager, configPath) { }
 
         internal override DialogResult ShowExitWarning(string message, string title, MessageBoxButtons buttons)
         {
             Warnings.Add(message);
+            if (title == "Administrator Recovery Required") return RecoveryResponse;
             return buttons == MessageBoxButtons.OKCancel ? QuitResponse : DialogResult.OK;
         }
     }
@@ -576,7 +588,10 @@ internal static class Program
         public string? FailRead;
         public string? FailWrite;
         public Action? BeforeWrite;
+        public Action<SettingTarget, SettingValue>? Validator;
         public int Writes;
+
+        public void Validate(SettingTarget target, SettingValue value) => Validator?.Invoke(target, value);
 
         public IEnumerable<SettingTarget> GetTargets(AppState profile, bool isAdmin) =>
             Targets.Where(t => isAdmin || !t.RequiresAdmin);

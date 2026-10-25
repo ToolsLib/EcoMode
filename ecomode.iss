@@ -7,7 +7,7 @@
   #define MyAppNumericVer "1.0.0.0"
 #endif
 #ifndef PublishDir
-  #define PublishDir "bin\Release\net9.0-windows\win-x64\publish"
+  #define PublishDir "bin\Release\net10.0-windows\win-x64\publish"
 #endif
 #define MyPublisher "ToolsLib"
 #define MyURL "https://github.com/ToolsLib/EcoMode"
@@ -19,7 +19,7 @@ AppVersion={#MyAppVer}
 VersionInfoVersion={#MyAppNumericVer}
 AppPublisher={#MyPublisher}
 AppPublisherURL={#MyURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableDirPage=no
 DisableProgramGroupPage=no
@@ -47,6 +47,5 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 ; Offer to launch after install
 Filename: "{app}\{#MyAppExe}"; Description: "Launch {#MyAppName}"; Flags: nowait postinstall skipifsilent
 
-[UninstallDelete]
-; Optional: remove per-user config
-Type: filesandordirs; Name: "{userappdata}\EcoMode"
+; Keep per-user profiles and the shared HKLM restore journal on uninstall.
+; A previous abnormal exit may still require these originals after reinstall.

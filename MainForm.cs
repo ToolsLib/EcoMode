@@ -7,28 +7,27 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
 using System.Reflection;
-using ecomode;
 using ecomode.Interop;
 
-public partial class MainForm : Form
+public class MainForm : Form
 {
     private readonly bool _isAdmin;
     private readonly AppState _state;
-    private readonly OriginalSettingsManager _originalSettings;
+    private readonly IOriginalSettingsManager _originalSettings;
+    private readonly string? _configPath;
 
     private bool _ecoHookActive = false;
     private bool _ecoEnabled;
 
     public MainForm(bool isAdmin) : this(isAdmin, null) { }
 
-    internal MainForm(bool isAdmin, OriginalSettingsManager? originalSettings)
+    internal MainForm(bool isAdmin, IOriginalSettingsManager? originalSettings, string? configPath = null)
     {
         try
         {
             _isAdmin = isAdmin;
-            _InitializeComponent();
-
-            // this.Icon = new Icon("app_simplified.ico");
+            _configPath = configPath;
+            BuildUi();
             var icon = LoadEmbeddedIcon("ecomode.Assets.app_simplified.ico");
             if (icon != null)
             {
@@ -38,18 +37,19 @@ public partial class MainForm : Form
 
             EnergyManager.Logger = Log;
 
-            _state = AppState.Load();
-            _originalSettings = originalSettings ?? new OriginalSettingsManager(new WindowsSystemSettings(), message => Log(message));
+            _state = AppState.Load(_configPath);
+            _originalSettings = originalSettings ?? new SettingsCoordinator(new WindowsSystemSettings(), message => Log(message));
             EnergyManager.SetBypass(_state.BypassProcesses); // Set bypass processes after loading state
 
             ApplyStateToUi();
             UpdateStatus(false);
             RefreshOriginalSettingsStatus();
         }
-        catch (Exception ex)
+        catch
         {
-            MessageBox.Show($"InitializeComponent/MainForm error:\r\n\r\n{ex}", "EcoModeGUI — Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            throw; // let Program.cs handler log it too
+            trayIcon.Dispose();
+            trayMenu.Dispose();
+            throw;
         }
     }
 
@@ -69,6 +69,14 @@ public partial class MainForm : Form
             // checkboxes or app lists. Avoid modal prompts during Windows shutdown.
             if (!RestoreOriginalSettings(restoreAll: false) && e.CloseReason == CloseReason.UserClosing)
             {
+                if (!_isAdmin && !EnergyManager.HasTrackedProcesses && !_ecoHookActive && ShowExitWarning(
+                    "Some system settings need Administrator privileges to restore. Process throttling has been cleaned up.\r\n\r\n" +
+                    "Choose OK to exit and keep the pending recovery record, then reopen EcoMode as Administrator and restore the settings. " +
+                    "Choose Cancel to keep EcoMode open.", "Administrator Recovery Required", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    trayIcon.Visible = false;
+                    return;
+                }
                 e.Cancel = true;
                 _reallyExit = false;
                 RestoreFromTray();
@@ -97,12 +105,16 @@ public partial class MainForm : Form
         base.OnFormClosed(e);
     }
 
-    // private void UpdateAdminBanner(bool eco)
-    // {
-    //     lblAdmin.Text = _isAdmin
-    //         ? "Running as Administrator: full features enabled."
-    //         : "Not elevated: system power plan + HKLM policies will be skipped.";
-    // }
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            trayIcon.Dispose();
+            trayMenu.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
     private void UpdateStatus(bool ecoPlannedOn)
     {
         var adminText = _isAdmin
@@ -118,7 +130,6 @@ public partial class MainForm : Form
     private Button btnEcoOff = new();
     private Button btnSaveOriginal = new();
     private Button btnRestoreOriginal = new();
-    // private Label lblEcoState = new();
     private CheckBox chkPowerPlan = new();
     private CheckBox chkEdge = new();
     private CheckBox chkChrome = new();
@@ -128,7 +139,6 @@ public partial class MainForm : Form
 
     private TextBox txtGpuApps = new();
     private TextBox txtEcoQosProcs = new();
-    // private Label lblAdmin = new();
     private Label lblStatus = new();
     private Button btnSave = new();
     private Button btnDonate = new();
@@ -156,7 +166,7 @@ public partial class MainForm : Form
     private SplitContainer splitTop = null!;
     private SplitContainer splitRight = null!;
 
-    private void _InitializeComponent()
+    private void BuildUi()
     {
         Text = "EcoMode GUI";
         Width = 1200;
@@ -210,9 +220,6 @@ public partial class MainForm : Form
         miTrayShow.Click += (_, __) => RestoreFromTray();
         miTraySave.Click += (_, __) => SaveFromUi();
         miTrayQuit.Click += OnMenuQuit;
-
-        // trayIcon.Icon = SystemIcons.Application; // replace with your own .ico if you have one
-        // trayIcon.Icon = new Icon("app_simplified.ico");
         trayIcon.Text = "EcoMode";
         trayIcon.ContextMenuStrip = trayMenu;
         trayIcon.Visible = true;
@@ -496,8 +503,6 @@ public partial class MainForm : Form
         chkGpuPref.Checked = _state.IncludeGpuPref;
         chkEcoQos.Checked = _state.IncludeEcoQos;
         txtGpuApps.Text = string.Join(Environment.NewLine, _state.GpuPrefApps);
-
-        // txtEcoQosProcs.Text = string.Join(Environment.NewLine, _state.EcoQosProcesses);
         txtEcoQosProcs.Text = string.Join(Environment.NewLine, _state.BypassProcesses);
     }
 
@@ -510,12 +515,11 @@ public partial class MainForm : Form
         _state.IncludeEcoQos = chkEcoQos.Checked;
 
         _state.GpuPrefApps = txtGpuApps.Lines.Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.Trim()).ToArray();
-        // _state.EcoQosProcesses = txtEcoQosProcs.Lines.Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.Trim()).ToArray();
         // save bypass list from the same textbox
         _state.BypassProcesses = txtEcoQosProcs.Lines
             .Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.Trim()).ToArray();
 
-        _state.Save();
+        _state.Save(_configPath);
 
         // push the new bypass to EnergyManager immediately
         EnergyManager.SetBypass(_state.BypassProcesses);
@@ -697,7 +701,7 @@ public partial class MainForm : Form
             var fresh = new AppState();
 
             CopyState(fresh, _state);  // reuse helper from import
-            _state.Save();
+            _state.Save(_configPath);
 
             ApplyStateToUi();
             EnergyManager.SetBypass(_state.BypassProcesses);
@@ -755,24 +759,7 @@ public partial class MainForm : Form
             if (ofd.ShowDialog(this) == DialogResult.OK)
             {
                 var json = File.ReadAllText(ofd.FileName);
-                var imported = JsonSerializer.Deserialize<AppState>(json);
-
-                if (imported is null)
-                {
-                    LogWarn("Import aborted: file did not contain a valid profile.");
-                    return;
-                }
-
-                // Replace current state with imported settings
-                // (If you prefer merge, we can do field-by-field.)
-                CopyState(imported, _state);
-
-                // Persist to disk
-                _state.Save();
-
-                // Re-apply to UI and runtime
-                ApplyStateToUi();
-                EnergyManager.SetBypass(_state.BypassProcesses);
+                ImportProfileJson(json);
 
                 LogInfo($"Profile imported from: {ofd.FileName}");
             }
@@ -787,19 +774,28 @@ public partial class MainForm : Form
         }
     }
 
-    // Helper to copy fields from src -> dst (keeps reference to existing _state)
+    internal void ImportProfileJson(string json)
+    {
+        // Parse and validate before atomically replacing the profile. A bad import
+        // must leave both the current runtime configuration and saved file intact.
+        var imported = AppState.Parse(json);
+        imported.Save(_configPath);
+        CopyState(imported, _state);
+        ApplyStateToUi();
+        EnergyManager.SetBypass(_state.BypassProcesses);
+    }
+
     private static void CopyState(AppState src, AppState dst)
     {
+        src.Normalize();
         dst.IncludePowerPlan = src.IncludePowerPlan;
         dst.IncludeEdge      = src.IncludeEdge;
         dst.IncludeChrome    = src.IncludeChrome;
         dst.IncludeGpuPref   = src.IncludeGpuPref;
         dst.IncludeEcoQos    = src.IncludeEcoQos;
 
-        dst.GpuPrefApps      = src.GpuPrefApps ?? Array.Empty<string>();
-        dst.BypassProcesses  = src.BypassProcesses ?? Array.Empty<string>();
-
-        // legacy field intentionally ignored on write; AppState.Save() nulls it anyway
+        dst.GpuPrefApps      = src.GpuPrefApps.ToArray();
+        dst.BypassProcesses  = src.BypassProcesses.ToArray();
     }
 
     private void HideToTray()
@@ -868,7 +864,6 @@ public partial class MainForm : Form
 
     private void Log(string msg, Color? color = null)
     {
-        // txtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {msg}{Environment.NewLine}");
         txtLog.SelectionStart = txtLog.TextLength;
         txtLog.SelectionLength = 0;
 
@@ -882,54 +877,4 @@ public partial class MainForm : Form
     private void LogError(string msg) => Log(msg, Color.Red);
 
     #endregion
-}
-
-public class AppState
-{
-    public bool IncludePowerPlan { get; set; } = true;
-    public bool IncludeEdge { get; set; } = true;
-    public bool IncludeChrome { get; set; } = true;
-    public bool IncludeGpuPref { get; set; } = true;
-    public bool IncludeEcoQos { get; set; } = true;
-
-    public string[] GpuPrefApps { get; set; } = new[]
-    {
-        @"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-    };
-
-    // NEW: configurable bypass list (process names, with or without .exe)
-    public string[] BypassProcesses { get; set; } = Array.Empty<string>();
-
-    // OLD (for backward-compat with existing settings.json). Not used anymore.
-    public string[]? EcoQosProcesses { get; set; }
-    // public string[] EcoQosProcesses { get; set; } = new[] { "chrome", "msedge", "Code", "Discord" };
-
-    public static string ConfigPath =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EcoMode", "settings.json");
-
-    public void Save()
-    {
-        var dir = Path.GetDirectoryName(ConfigPath)!;
-        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-        // Stop writing the legacy field
-        EcoQosProcesses = null;
-
-        File.WriteAllText(ConfigPath, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
-    }
-
-    public static AppState Load()
-    {
-        try
-        {
-            if (File.Exists(ConfigPath))
-            {
-                var s = File.ReadAllText(ConfigPath);
-                return JsonSerializer.Deserialize<AppState>(s) ?? new AppState();
-            }
-        }
-        catch { /* ignore and fallback */ }
-        return new AppState();
-    }
 }

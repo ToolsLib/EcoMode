@@ -6,7 +6,8 @@ namespace ecomode;
 
 internal enum SettingKind { UserRegistry, MachineRegistry, Power }
 
-internal sealed record SettingValue(bool Exists, RegistryValueKind Kind, JsonElement Data)
+internal sealed record SettingValue([property: JsonRequired] bool Exists,
+    [property: JsonRequired] RegistryValueKind Kind, [property: JsonRequired] JsonElement Data)
 {
     public static SettingValue From(object value, RegistryValueKind kind = RegistryValueKind.None) =>
         new(true, kind, JsonSerializer.SerializeToElement(value));
@@ -14,7 +15,9 @@ internal sealed record SettingValue(bool Exists, RegistryValueKind Kind, JsonEle
     public static SettingValue Missing => new(false, RegistryValueKind.None, JsonSerializer.SerializeToElement<object?>(null));
 }
 
-internal sealed record SettingTarget(SettingKind Kind, string Path, string Name, SettingValue EcoValue)
+internal sealed record SettingTarget([property: JsonRequired] SettingKind Kind,
+    [property: JsonRequired] string Path, [property: JsonRequired] string Name,
+    [property: JsonRequired] SettingValue EcoValue)
 {
     public bool RequiresAdmin => Kind != SettingKind.UserRegistry;
 
@@ -27,6 +30,7 @@ internal sealed class SavedSetting
 {
     public required SettingTarget Target { get; init; }
     public required SettingValue Original { get; init; }
+    [JsonRequired]
     public bool PendingRestore { get; set; }
 }
 
@@ -45,28 +49,48 @@ internal interface ISystemSettings
     IEnumerable<SettingTarget> GetTargets(AppState profile, bool isAdmin);
     SettingValue Read(SettingTarget target);
     void Write(SettingTarget target, SettingValue value);
+    void Validate(SettingTarget target, SettingValue value) { }
+}
+
+internal interface IOriginalSettingsManager
+{
+    bool HasSnapshot { get; }
+    bool HasPendingChanges { get; }
+    void Capture(AppState profile, bool isAdmin);
+    bool ApplyEco(AppState profile, bool isAdmin);
+    bool Restore(bool isAdmin, bool restoreAll = false);
 }
 
 // The snapshot is independent of importable profiles. PendingRestore is written before
 // changing Windows, so even a partial apply or an app restart can be recovered.
-internal sealed class OriginalSettingsManager
+internal sealed class OriginalSettingsManager : IOriginalSettingsManager
 {
     public static string DefaultPath => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EcoMode", "original-settings.json");
 
     private readonly ISystemSettings _system;
-    private readonly string _path;
+    private readonly ISettingsSnapshotStore _store;
     private readonly Action<string> _log;
+    private OriginalSettings? _cached;
+    private bool _restoreProgressUnsaved;
 
     public OriginalSettingsManager(ISystemSettings system, Action<string> log, string? path = null)
     {
         _system = system;
         _log = log;
-        _path = path ?? DefaultPath;
+        _store = new FileSettingsSnapshotStore(path ?? DefaultPath);
     }
 
-    public bool HasSnapshot => File.Exists(_path);
-    public bool HasPendingChanges => Load()?.Settings.Any(s => s.PendingRestore) == true;
+    public OriginalSettingsManager(ISystemSettings system, Action<string> log, ISettingsSnapshotStore store)
+    {
+        _system = system;
+        _log = log;
+        _store = store;
+    }
+
+    public bool HasSnapshot => _store.Exists || _cached != null;
+    public bool HasPendingChanges => Load()?.Settings.Any(s => s.PendingRestore) == true ||
+        _cached?.Settings.Any(s => s.PendingRestore) == true;
 
     public void Capture(AppState profile, bool isAdmin)
     {
@@ -76,7 +100,7 @@ internal sealed class OriginalSettingsManager
         var snapshot = new OriginalSettings();
         CaptureMissing(snapshot, _system.GetTargets(profile, isAdmin).ToList());
         Save(snapshot);
-        _log($"Original settings saved ({snapshot.SavedAt:g}) to {_path}.");
+        _log($"Original settings saved ({snapshot.SavedAt:g}) to {_store.Description}.");
     }
 
     public bool ApplyEco(AppState profile, bool isAdmin)
@@ -108,19 +132,26 @@ internal sealed class OriginalSettingsManager
 
     public bool Restore(bool isAdmin, bool restoreAll = false)
     {
-        var snapshot = Load();
+        OriginalSettings? snapshot;
+        try { snapshot = Load(); }
+        catch (Exception ex) when (_cached != null && (ex is IOException or UnauthorizedAccessException or JsonException))
+        {
+            snapshot = _cached;
+            _log($"Using the last validated originals because the journal cannot be read: {ex.Message}");
+        }
         if (snapshot == null)
         {
             _log("No original settings have been saved. No system settings were changed.");
             return true;
         }
 
+        Validate(snapshot);
         bool success = true;
         foreach (var setting in snapshot.Settings.Where(s => restoreAll || s.PendingRestore))
         {
             // Also journal a manual restore, so a failed attempt stays visible/retryable.
             setting.PendingRestore = true;
-            Save(snapshot);
+            TrySaveRestoreProgress(snapshot);
             try
             {
                 if (setting.Target.RequiresAdmin && !isAdmin)
@@ -135,8 +166,37 @@ internal sealed class OriginalSettingsManager
                 _log($"Restore failed: {setting.Target.Name}: {ex.Message}");
             }
         }
-        Save(snapshot);
+        TrySaveRestoreProgress(snapshot);
         return success;
+    }
+
+    // Move legacy machine entries out of the per-user file. Persist the shared
+    // copy before removing anything, so interruption cannot lose the originals.
+    internal void MigrateMachineSettingsTo(OriginalSettingsManager destination)
+    {
+        var source = Load();
+        if (source == null || !source.Settings.Any(s => s.Target.RequiresAdmin)) return;
+        var machine = destination.Load() ?? new OriginalSettings();
+        foreach (var setting in source.Settings.Where(s => s.Target.RequiresAdmin))
+        {
+            var existing = machine.Settings.SingleOrDefault(s => s.Target.Matches(setting.Target));
+            if (existing == null) machine.Settings.Add(setting);
+            else existing.PendingRestore |= setting.PendingRestore;
+        }
+        destination.Save(machine);
+        source.Settings.RemoveAll(s => s.Target.RequiresAdmin);
+        Save(source);
+    }
+
+    private void TrySaveRestoreProgress(OriginalSettings snapshot)
+    {
+        _cached = snapshot;
+        try { Save(snapshot); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            _restoreProgressUnsaved = true;
+            _log($"Restore journal could not be updated. Continuing restoration; pending work may be retried on the next launch: {ex.Message}");
+        }
     }
 
     private void CaptureMissing(OriginalSettings snapshot, IEnumerable<SettingTarget> targets)
@@ -145,25 +205,45 @@ internal sealed class OriginalSettingsManager
         {
             // Never overwrite a baseline with a value already changed by EcoMode.
             if (snapshot.Settings.Any(s => s.Target.Matches(target))) continue;
-            snapshot.Settings.Add(new SavedSetting { Target = target, Original = _system.Read(target) });
+            var original = _system.Read(target);
+            _system.Validate(target, original);
+            snapshot.Settings.Add(new SavedSetting { Target = target, Original = original });
         }
     }
 
     private OriginalSettings? Load()
     {
-        if (!File.Exists(_path)) return null;
-        var snapshot = JsonSerializer.Deserialize<OriginalSettings>(File.ReadAllText(_path));
-        if (snapshot == null || snapshot.Version != 1 || snapshot.Settings == null ||
-            snapshot.Settings.Any(s => s == null || s.Target == null || s.Original == null))
-            throw new InvalidDataException("The original settings snapshot is invalid or from an unsupported version.");
+        // A failed manual restore may have pending work that was never writable
+        // to disk. Keep that validated state until a later save succeeds.
+        if (_restoreProgressUnsaved && _cached?.Settings.Any(s => s.PendingRestore) == true) return _cached;
+        if (!_store.Exists) return _cached;
+        var snapshot = JsonSerializer.Deserialize<OriginalSettings>(_store.Read());
+        Validate(snapshot);
+        _cached = snapshot;
         return snapshot;
+    }
+
+    private void Validate(OriginalSettings? snapshot)
+    {
+        if (snapshot == null || snapshot.Version != 1 || snapshot.Settings == null ||
+            snapshot.Settings.Any(s => s == null || s.Target == null || s.Target.EcoValue == null || s.Original == null))
+            throw new InvalidDataException("The original settings snapshot is invalid or from an unsupported version.");
+        var seen = new List<SettingTarget>();
+        foreach (var setting in snapshot.Settings)
+        {
+            _system.Validate(setting.Target, setting.Original);
+            _system.Validate(setting.Target, setting.Target.EcoValue);
+            if (seen.Any(t => t.Matches(setting.Target)))
+                throw new InvalidDataException("Duplicate setting in the restore snapshot.");
+            seen.Add(setting.Target);
+        }
     }
 
     private void Save(OriginalSettings snapshot)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-        var temporaryPath = _path + ".tmp";
-        File.WriteAllText(temporaryPath, JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true }));
-        File.Move(temporaryPath, _path, overwrite: true);
+        Validate(snapshot);
+        _store.Write(JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true }));
+        _cached = snapshot;
+        _restoreProgressUnsaved = false;
     }
 }

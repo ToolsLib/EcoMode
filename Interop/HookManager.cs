@@ -5,19 +5,15 @@ namespace ecomode.Interop
 {
     internal class HookManager
     {
-        private const int WINEVENT_INCONTEXT = 4;
         private const int WINEVENT_OUTOFCONTEXT = 0;
-        private const int WINEVENT_SKIPOWNPROCESS = 2;
-        private const int WINEVENT_SKIPOWNTHREAD = 1;
 
         private const int EVENT_SYSTEM_FOREGROUND = 3;
 
         private static IntPtr windowEventHook;
-        // Explicitly declare it to prevent GC
-        // See: https://stackoverflow.com/questions/6193711/call-has-been-made-on-garbage-collected-delegate-in-c
-        private static WinEventProc hookProcDelegate = WindowEventCallback;
+        // Root the delegate for the entire lifetime of the native hook.
+        private static readonly WinEventProc hookProcDelegate = WindowEventCallback;
 
-        public static void SubscribeToWindowEvents()
+        public static void SubscribeToWindowEvents(uint processId = 0)
         {
             if (windowEventHook == IntPtr.Zero)
             {
@@ -26,9 +22,9 @@ namespace ecomode.Interop
                     EVENT_SYSTEM_FOREGROUND, // eventMax
                     IntPtr.Zero,             // hmodWinEventProc
                     hookProcDelegate,        // lpfnWinEventProc
-                    0,                       // idProcess
+                    processId,               // tests can restrict events to an isolated child
                     0,                       // idThread
-                    WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+                    WINEVENT_OUTOFCONTEXT);
 
                 if (windowEventHook == IntPtr.Zero)
                 {
@@ -59,7 +55,7 @@ namespace ecomode.Interop
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWinEventHook(int eventMin, int eventMax,
-            IntPtr hmodWinEventProc, WinEventProc lpfnWinEventProc, int idProcess, int idThread, int dwflags);
+            IntPtr hmodWinEventProc, WinEventProc lpfnWinEventProc, uint idProcess, int idThread, int dwflags);
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern int UnhookWinEvent(IntPtr hWinEventHook);

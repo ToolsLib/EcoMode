@@ -19,12 +19,10 @@ static class Program
         try
         {
             ApplicationConfiguration.Initialize();
-            // A single owner prevents two instances from overwriting the restore snapshot
-            // or recording each other's process throttling as an original state.
-            using var instance = new Mutex(true, @"Local\EcoModeGUI", out bool firstInstance);
-            if (!firstInstance)
+            using var instance = SingleInstance.TryAcquire();
+            if (instance == null)
             {
-                MessageBox.Show("EcoMode is already running. Open it from the system tray.", "EcoMode",
+                MessageBox.Show("EcoMode is already running in this or another Windows session. Close that instance before starting another.", "EcoMode",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -32,7 +30,6 @@ static class Program
             var principal = new WindowsPrincipal(identity);
             bool isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
 
-            // Wrap constructor too, in case InitializeComponent throws
             MainForm form;
             try
             {
@@ -40,7 +37,7 @@ static class Program
             }
             catch (Exception ex)
             {
-                ShowAndLog("Error creating MainForm (InitializeComponent?)", ex);
+                ShowAndLog("Error initializing EcoMode", ex);
                 return;
             }
 

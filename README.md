@@ -37,19 +37,25 @@
 * Add process names to the **Bypass list** if they should never be throttled.
 * Right-click the **tray icon** for quick Save / Quit options.
 
-The original settings snapshot is stored separately from profiles at `%APPDATA%\EcoMode\original-settings.json`. It preserves the original AC/DC EPP and boost values for each affected power plan, plus the exact browser policy and GPU preference values and registry types. Values that did not originally exist are removed on restore. Adding options, GPU apps, or another active power plan extends the snapshot before those settings are changed. Repeated Eco ON does not overwrite saved originals.
+User GPU originals are stored separately from profiles at `%APPDATA%\EcoMode\original-settings.json`. Machine-wide power plan and browser policy originals are kept in the protected 64-bit registry value `HKLM\SOFTWARE\ToolsLib\EcoMode\OriginalSettingsV1`, shared across Windows accounts and sessions. Only one EcoMode instance can run on a machine at a time. An administrator launch migrates machine entries from older per-user snapshots before applying new changes.
+
+Snapshots preserve the original AC/DC EPP and boost values for each affected power plan and the exact supported policy/GPU values. Values that did not originally exist are removed on restore. Adding options, GPU apps, or another active power plan extends the appropriate snapshot before those settings are changed. Repeated Eco ON does not overwrite saved originals. GPU changes preserve unrelated preference fields. Unknown snapshot destinations, duplicate entries, and invalid value types/ranges are rejected before restoration.
 
 Run EcoMode as Administrator to capture, apply, or restore system power settings and browser policies. Without elevation, user GPU preferences and accessible processes are still supported. Failed restores remain pending for retry, including after restarting the app. Power values are restored to their original plans without switching away from the currently active plan. Browser policy changes require a browser restart.
 
-**Quit** shows a warning that EcoMode will restore the power plan settings, browser policies, GPU preferences, and original process priority/EcoQoS state it changed. Choose **OK** to restore and exit, or **Cancel** to keep running. Restoration includes processes subsequently added to the bypass list and settings whose options were subsequently unchecked. If a restore fails, EcoMode stays open, warns you, and retains pending changes for retry; restoring system settings may require Administrator privileges. Closing the window with **X** still keeps EcoMode running in the tray. Windows shutdown also attempts restoration without showing a modal warning; any failed system restores remain saved for the next launch. Cleanup cannot run if the process is forcibly terminated. Processes whose original throttling state cannot be queried are left unchanged.
+**Quit** shows a warning that EcoMode will restore the power plan settings, browser policies, GPU preferences, and original process priority/EcoQoS state it changed. Choose **OK** to restore and exit, or **Cancel** to keep running. Restoration includes processes subsequently added to the bypass list and settings whose options were subsequently unchecked. If system restoration needs elevation, an unelevated instance offers a recovery exit after process cleanup: the saved originals remain, and you can reopen EcoMode as Administrator to finish restoration. Other restore failures keep the app open with a warning. Journal update failures do not prevent best-effort rollback; unchanged pending records can be retried on the next launch.
+
+Closing the window with **X** still keeps EcoMode running in the tray. Windows shutdown attempts restoration without showing a modal warning. Cleanup cannot run if the process is forcibly terminated. Processes whose original throttling state cannot be queried are left unchanged. Uninstall preserves profiles and both restore journals so pending settings can still be recovered after reinstalling. Imported profiles are validated before saving; null/blank entries are normalized, and malformed startup profiles fall back to defaults without blocking the recovery UI.
 
 ## 🛠 Tech
 
-* **C# (.NET WinForms)**
+* **C# (.NET 10 LTS WinForms)**
 * **P/Invoke (Win32 APIs)** for EcoQoS and power throttling
 * **Inno Setup** for installer packaging
 
 ## Build and Run (development)
+
+Requires Windows and the .NET 10 SDK. `global.json` selects an installed stable .NET 10 feature band.
 
 ```
 dotnet build
@@ -62,7 +68,7 @@ Run the regression checks on Windows with:
 dotnet run --project tests/EcoMode.RegressionTests.csproj
 ```
 
-The checks use temporary snapshot files, a disposable user registry key, and dedicated child processes. They read the active power plan without changing it and render the form offscreen to check the button layout.
+The checks use temporary snapshot files, disposable registry keys, and dedicated child processes/windows. Native power writes are exercised on a duplicated inactive plan, which is restored and deleted; the active plan is left unchanged. The form is rendered offscreen to check the button layout. Pass `-- --skip-power-read` on hosted VMs to omit the hardware-dependent power read/write checks. [CI](.github/workflows/ci.yml) runs the remaining checks and release-script tests on branch pushes and pull requests with read-only repository permissions.
 
 ## Deployment
 
@@ -88,7 +94,7 @@ The tag determines the app version, Windows file version, installer version, and
 
 Packages are also available as workflow artifacts for 30 days. Uploads use the built-in `GITHUB_TOKEN` with `contents: write`; no personal access token is needed. Binaries are unsigned unless code signing is configured separately.
 
-The workflow uses the latest matching .NET 9 SDK, Windows Server 2025, and Inno Setup 7.1.0. GitHub actions are pinned to verified release commits, and [Dependabot](.github/dependabot.yml) checks weekly for updates. The hardware-dependent active power-plan read check is skipped on hosted VMs; the remaining process, registry, snapshot, and UI regression checks still run.
+The workflow uses the latest matching .NET 10 SDK, Windows Server 2025, and Inno Setup 7.1.0. GitHub actions are pinned to verified release commits, and [Dependabot](.github/dependabot.yml) checks weekly for updates. Hardware-dependent power-plan read/write checks are skipped on hosted VMs; the remaining process, registry, snapshot, and UI regression checks still run.
 
 To build the same packages locally with PowerShell 7 and an installed Inno Setup compiler:
 
