@@ -79,7 +79,7 @@ Closing the window with **X** still keeps EcoMode running in the tray. Windows s
 
 ## Build and Run (development)
 
-Requires Windows and the .NET 10 SDK. `global.json` selects an installed stable .NET 10 feature band.
+Requires Windows and the .NET 10 SDK version specified in `global.json`. Compatible patches in the same SDK feature band can be used locally when that exact version is unavailable. CI and release workflows install the specified version to keep SDK selection reproducible.
 
 ```
 dotnet build
@@ -120,7 +120,7 @@ The tag determines the app version, Windows file version, installer version, and
 
 Packages are also available as workflow artifacts for 30 days. Uploads use the built-in `GITHUB_TOKEN` with `contents: write`; no personal access token is needed. Binaries are unsigned unless code signing is configured separately.
 
-The workflow uses the latest matching .NET 10 SDK, Windows Server 2025, and Inno Setup 7.1.0. GitHub actions are pinned to verified release commits, and [Dependabot](.github/dependabot.yml) checks weekly for updates. Hardware-dependent power-plan read/write checks are skipped on hosted VMs; the remaining process, registry, snapshot, and UI regression checks still run.
+The workflow uses the .NET 10 SDK specified in `global.json`, Windows Server 2025, and Inno Setup 7.1.0. GitHub actions are pinned to verified release commits, and [Dependabot](.github/dependabot.yml) checks weekly for updates. Hardware-dependent power-plan read/write checks are skipped on hosted VMs; the remaining process, registry, snapshot, and UI regression checks still run.
 
 To build the same packages locally with PowerShell 7 and an installed Inno Setup compiler:
 
