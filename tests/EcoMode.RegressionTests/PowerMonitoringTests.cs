@@ -272,10 +272,14 @@ internal static partial class Program
                     var toggle = Field<Control>(form, "chkAutomatic");
                     Check(toggle.Visible && dashboard.ClientRectangle.Contains(dashboard.RectangleToClient(toggle.RectangleToScreen(toggle.ClientRectangle))), "Battery toggle is clipped.");
                     Check(Field<Label>(form, "lblBattery").Text.Contains("80"), "Battery percentage is missing.");
+                    // The offscreen fixture can start taller than a hosted VM's
+                    // display. History must not force additional offscreen growth.
+                    int maximumHeight = Math.Max(form.Height, Screen.FromControl(form).WorkingArea.Height);
                     Field<Button>(form, "btnBatteryHistory").PerformClick(); form.PerformLayout();
                     Application.DoEvents();
                     var chart = Field<Control>(form, "_batteryChart");
-                    Check(chart.Visible && chart.Width > 200 && chart.Height >= 100 && form.Height <= Screen.PrimaryScreen!.WorkingArea.Height, "History is hidden or pushes the window off screen.");
+                    Check(chart.Visible && chart.Width > 200 && chart.Height >= 100 && form.Height <= maximumHeight,
+                        $"History is hidden or forces offscreen growth: window={form.Size}, allowed height={maximumHeight}, chart={chart.Size}, visible={chart.Visible}.");
                     if (view == AppView.Advanced)
                         Check(Field<Control>(form, "txtGpuApps").Height >= 50 && Field<Control>(form, "txtEcoQosProcs").Height >= 50,
                             "Expanded history leaves too little space to edit app rules.");

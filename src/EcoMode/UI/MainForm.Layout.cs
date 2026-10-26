@@ -483,6 +483,11 @@ public partial class MainForm
         try
         {
             int width = Math.Max(1, card.ClientSize.Width - card.Padding.Horizontal);
+            // On small displays, keep the app editors usable below expanded
+            // history and let the right-hand panel scroll instead of crushing them.
+            splitTop.Panel2.AutoScroll = true;
+            splitTop.Panel2.AutoScrollMinSize = _view == AppView.Advanced && _historyVisible
+                ? new Size(0, _advancedBatteryHost.Height + splitRight.SplitterWidth + 340) : Size.Empty;
             int required = Math.Max(_powerControls.GetPreferredSize(new Size(width, 0)).Height,
                 _powerControls.Height) + card.Padding.Vertical;
             int controlsShortfall = required - card.ClientSize.Height;
