@@ -29,6 +29,8 @@ function Reset-Gh([bool] $exists, [bool] $draft, [string[]] $assets = @()) {
         Release = @{ isDraft = $draft; assets = @($assets | ForEach-Object { @{ name = $_ } }) }
         Calls = [Collections.Generic.List[object]]::new()
         FailUpload = $false
+        DropUpload = $false
+        FailEdit = $false
     }
 }
 
@@ -43,7 +45,11 @@ function global:gh {
             $state.Release | ConvertTo-Json -Depth 6 -Compress
         }
         'create' { $state.Exists = $true; $state.Release.isDraft = $true }
-        'upload' { if ($state.FailUpload) { $global:LASTEXITCODE = 1 } }
+        'upload' {
+            if ($state.FailUpload) { $global:LASTEXITCODE = 1; return }
+            if (!$state.DropUpload) { $state.Release.assets += @{ name = [IO.Path]::GetFileName($args[3]) } }
+        }
+        'edit' { if ($state.FailEdit) { $global:LASTEXITCODE = 1 } else { $state.Release.isDraft = $false } }
         default { throw "Unexpected gh invocation: $args" }
     }
 }
@@ -134,6 +140,23 @@ $global:LASTEXITCODE = 0
             Assert-Throws { & "$fixtureScripts/Get-ReleaseVersion.ps1" -Tag $tag }
         }
     }
+    Run 'only an explicitly annotated tag opts into automatic publication' {
+        $intentRoot = Join-Path $fixture 'intent'
+        New-Item -ItemType Directory -Path $intentRoot | Out-Null
+        git init -q $intentRoot
+        git -C $intentRoot -c user.name=Fixture -c user.email=fixture@example.invalid commit --allow-empty -q -m 'Publish: true'
+        if ($LASTEXITCODE -ne 0) { throw 'Could not create the tag-intent fixture.' }
+        git -C $intentRoot -c user.name=Fixture -c user.email=fixture@example.invalid tag -a v1.2.3 -m "Release`n`nPublish: true"
+        git -C $intentRoot -c user.name=Fixture -c user.email=fixture@example.invalid tag -a v1.2.4 -m 'Release draft'
+        git -C $intentRoot tag v1.2.5
+        Push-Location $intentRoot
+        try {
+            Assert (& "$projectRoot/scripts/Get-ReleaseIntent.ps1" -Tag v1.2.3) 'Explicit annotated intent did not enable publication.'
+            Assert (!(& "$projectRoot/scripts/Get-ReleaseIntent.ps1" -Tag v1.2.4)) 'Normal tags must still create drafts.'
+            Assert (!(& "$projectRoot/scripts/Get-ReleaseIntent.ps1" -Tag v1.2.5)) 'A lightweight tag inherited intent from its commit.'
+        }
+        finally { Pop-Location }
+    }
     Run 'missing release creates a verified draft prerelease and uploads packages' {
         Reset-Gh $false $false
         & $publisher -Tag "v$testVersion"
@@ -167,8 +190,29 @@ $global:LASTEXITCODE = 0
     Run 'upload failures stop publication' {
         Reset-Gh $true $true
         $global:EcoModeReleaseTest.FailUpload = $true
-        Assert-Throws { & $publisher -Tag "v$testVersion" }
+        Assert-Throws { & $publisher -Tag "v$testVersion" -Publish }
         Assert (@($global:EcoModeReleaseTest.Calls | Where-Object { $_[1] -eq 'upload' }).Count -eq 1) 'Publication continued after failure.'
+        Assert ($global:EcoModeReleaseTest.Release.isDraft) 'A failed upload published the release.'
+    }
+    Run 'explicit publication occurs only after all assets are verified' {
+        Reset-Gh $false $false
+        & $publisher -Tag "v$testVersion" -Publish
+        Assert (!$global:EcoModeReleaseTest.Release.isDraft) 'Verified release was not published.'
+        $calls = $global:EcoModeReleaseTest.Calls
+        Assert ($calls[-1][1] -eq 'edit' -and '--draft=false' -in $calls[-1]) 'Publication did not happen last.'
+        Assert (@($calls | Where-Object { $_[1] -eq 'upload' }).Count -eq 3) 'Expected all packages before publication.'
+    }
+    Run 'incomplete asset verification prevents publication' {
+        Reset-Gh $true $true
+        $global:EcoModeReleaseTest.DropUpload = $true
+        Assert-Throws { & $publisher -Tag "v$testVersion" -Publish }
+        Assert ($global:EcoModeReleaseTest.Release.isDraft) 'Incomplete release was published.'
+    }
+    Run 'publication errors fail the workflow and preserve the draft' {
+        Reset-Gh $true $true
+        $global:EcoModeReleaseTest.FailEdit = $true
+        Assert-Throws { & $publisher -Tag "v$testVersion" -Publish }
+        Assert ($global:EcoModeReleaseTest.Release.isDraft) 'Failed publication lost draft state.'
     }
     Run 'missing packages fail before any GitHub operation' {
         Reset-Gh $true $true

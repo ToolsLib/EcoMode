@@ -1,6 +1,12 @@
 # Changelog
 
-## 1.2.0
+## 1.2.1
+
+- Publish the complete 1.2 feature set below after fixing hosted-runner display assumptions in the battery dashboard checks.
+- Keep app-rule editors usable with expanded history on small displays using a scrollable panel.
+- Expose regression failures as GitHub annotations and support explicit publication through an annotated tag after verifying all release assets.
+
+## 1.2.0 (tagged; release build did not complete)
 
 - Add Standard and Advanced views, a first-launch chooser, and a view selector available at any time.
 - Translate the interface into English, French, Spanish, and Simplified Chinese using bundled .NET resources.

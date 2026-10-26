@@ -2,7 +2,8 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
-    [string] $Tag
+    [string] $Tag,
+    [switch] $Publish
 )
 
 $ErrorActionPreference = 'Stop'
@@ -19,7 +20,7 @@ foreach ($file in $files) {
 
 $releaseJson = gh release view $Tag --json isDraft,assets 2>$null
 if ($LASTEXITCODE -ne 0) {
-    # A tag push prepares a draft; publishing remains an explicit maintainer action.
+    # Keep the release a draft until every package is attached and verified.
     $arguments = @('release', 'create', $Tag, '--verify-tag', '--draft', '--title', "EcoMode $version", '--generate-notes')
     if ($version.Contains('-')) { $arguments += '--prerelease' }
     & gh @arguments
@@ -41,4 +42,20 @@ foreach ($file in $files) {
     if ($release.isDraft -or @($release.assets).Count -gt 0) { $arguments += '--clobber' }
     & gh @arguments
     if ($LASTEXITCODE -ne 0) { throw "Could not upload release package: $file" }
+}
+
+if ($Publish) {
+    $verifiedJson = gh release view $Tag --json isDraft,assets
+    if ($LASTEXITCODE -ne 0) { throw 'Could not verify uploaded release assets.' }
+    $verified = ($verifiedJson -join "`n") | ConvertFrom-Json
+    if (@($files | Where-Object { $_ -notin $verified.assets.name }).Count -ne 0) {
+        throw 'Release remains a draft because the expected asset set is incomplete.'
+    }
+    if ($verified.isDraft) {
+        $arguments = @('release', 'edit', $Tag, '--draft=false')
+        $notes = Join-Path (Split-Path $PSScriptRoot -Parent) 'CHANGELOG.md'
+        if (Test-Path -LiteralPath $notes -PathType Leaf) { $arguments += @('--notes-file', $notes) }
+        & gh @arguments
+        if ($LASTEXITCODE -ne 0) { throw 'Could not publish the verified release.' }
+    }
 }

@@ -173,6 +173,8 @@ Push a version tag such as `v1.2.3` (or `1.2.3`) to run [the release workflow](.
 
 The tag determines the app version, Windows file version, installer version, and filenames. The workflow creates a **draft release** with the packages attached. Review it and publish it when ready. Publishing a release directly also triggers the build for its tag. Existing complete published packages are preserved when the publish event triggers a second run; draft or incomplete mutable releases can be retried. If immutable releases are enabled, let the tag build finish attaching all packages before publishing the draft.
 
+To explicitly publish as part of a tag build, use an **annotated** tag whose message contains a standalone `Publish: true` line. For example, `git tag -a 1.2.1 -m "EcoMode 1.2.1" -m "Publish: true"`, then push that tag. The workflow still creates a draft first, uploads the portable ZIP, installer and checksums, verifies the complete asset set, and only then publishes. Tags without this marker, including lightweight tags, keep the default draft behavior. Published notes use `CHANGELOG.md` when available.
+
 Packages are also available as workflow artifacts for 30 days. Uploads use the built-in `GITHUB_TOKEN` with `contents: write`; no personal access token is needed. Binaries are unsigned unless code signing is configured separately.
 
 The workflow uses the .NET 10 SDK specified in `global.json`, Windows Server 2025, and Inno Setup 7.1.0. GitHub actions are pinned to verified release commits, and [Dependabot](.github/dependabot.yml) checks weekly for updates. Hardware-dependent power-plan read/write checks are skipped on hosted VMs; the remaining process, registry, snapshot, and UI regression checks still run.

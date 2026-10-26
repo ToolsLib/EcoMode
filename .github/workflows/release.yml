@@ -45,6 +45,8 @@ jobs:
         run: |
           $version = ./scripts/Get-ReleaseVersion.ps1 -Tag $env:RELEASE_TAG
           "version=$version" >> $env:GITHUB_OUTPUT
+          $publish = ./scripts/Get-ReleaseIntent.ps1 -Tag $env:RELEASE_TAG
+          "publish=$($publish.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
 
       - name: Install the .NET SDK from global.json
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
@@ -98,4 +100,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: ./scripts/Publish-Release.ps1 -Tag $env:RELEASE_TAG
+          PUBLISH_RELEASE: ${{ steps.version.outputs.publish }}
+        run: ./scripts/Publish-Release.ps1 -Tag $env:RELEASE_TAG -Publish:($env:PUBLISH_RELEASE -eq 'true')
