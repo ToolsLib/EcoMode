@@ -151,6 +151,17 @@ internal static partial class Program
                 Application.DoEvents();
                 SaveLocalizationSnapshot(form, $"ui-{language.Code}-{view}.png");
                 CheckHeaderLayout(form);
+                var battery = Field<Control>(form, "_batteryDashboard");
+                var automatic = Field<Control>(form, "chkAutomatic");
+                Check(battery.ClientRectangle.Contains(battery.RectangleToClient(automatic.RectangleToScreen(automatic.ClientRectangle))),
+                    $"{language.Code}/{view}: the automatic switch is clipped by the battery card.");
+                foreach (string name in new[] { "lblBatteryUsage", "lblAutomaticStatus" })
+                {
+                    var label = Field<Label>(form, name);
+                    Check(battery.ClientRectangle.Contains(battery.RectangleToClient(label.RectangleToScreen(label.ClientRectangle))) &&
+                        label.Height >= label.GetPreferredSize(new Size(label.Width, 0)).Height,
+                        $"{language.Code}/{view}: battery help text is clipped: {name}.");
+                }
                 if (view == AppView.Advanced) CheckOptionLayout(form);
                 foreach (string name in view == AppView.Simple ? new[] { "btnSimpleRestore", "btnSimpleActivity" } : new[] { "btnSaveOriginal", "btnRestoreOriginal" })
                 {

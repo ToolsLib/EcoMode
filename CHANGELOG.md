@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.2
+
+- Clear the full switch background during repainting so old text and native checkbox pixels cannot show behind the main or smaller switches.
+- Resize switches when fonts change, keep captions clear of the thumb, and handle very small bounds safely.
+- Use a rounded keyboard-focus outline that follows the switch track.
+- Keep the automatic-mode switch and help text visible in translated dashboards, including French.
+- Add rendering, sizing, and layout regression coverage for both switch sizes across all four languages.
+
 ## 1.2.1
 
 - Publish the complete 1.2 feature set below after fixing hosted-runner display assumptions in the battery dashboard checks.

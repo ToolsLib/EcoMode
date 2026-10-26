@@ -10,6 +10,8 @@ internal static partial class Program
         Run("failed capture leaves the Eco switch off and usable", EcoSwitchCaptureFailure);
         Run("pending recovery uses RETRY and cannot accidentally enable Eco Mode", EcoSwitchRecovery);
         Run("Eco switch exposes distinct accessible states and does not auto-check", EcoSwitchAccessibility);
+        Run("all switches repaint their complete surface without stale text or native glyphs", SwitchRepaintSurface);
+        Run("switch captions fit after font and language changes and tolerate small bounds", SwitchSizing);
         Run("header text grows without overlapping at larger font sizes", HeaderFontLayout);
         Run("option switches support direct and label clicks and persist profile selections", OptionSwitchSelections);
     }
@@ -123,6 +125,81 @@ internal static partial class Program
         }
     }
 
+    private static void SwitchRepaintSurface()
+    {
+        try
+        {
+            foreach (var language in L.Languages)
+            {
+                L.SetLanguage(language.Code);
+                using var main = new EcoModeSwitch();
+                using var option = new UtilitySwitch();
+                foreach (var toggle in new UtilitySwitch[] { main, option })
+                {
+                    foreach (bool enabled in new[] { true, false })
+                    {
+                        toggle.Enabled = enabled;
+                        for (int state = 0; state < 3; state++)
+                        {
+                            if (toggle is EcoModeSwitch eco) eco.State = (EcoSwitchState)state;
+                            else toggle.Checked = state == 1;
+                            using var bitmap = new Bitmap(toggle.Width, toggle.Height);
+                            using (var graphics = Graphics.FromImage(bitmap))
+                            {
+                                // Reuse a dirty paint buffer as Windows can during invalidation.
+                                graphics.Clear(Color.Magenta);
+                                graphics.DrawString("Previous text", toggle.Font, Brushes.Black, Point.Empty);
+                                typeof(UtilitySwitch).GetMethod("OnPaint", BindingFlags.Instance | BindingFlags.NonPublic)!
+                                    .Invoke(toggle, new object[] { new PaintEventArgs(graphics, toggle.ClientRectangle) });
+                            }
+                            foreach (var corner in new[] { Point.Empty, new Point(bitmap.Width - 1, 0), new Point(0, bitmap.Height - 1), new Point(bitmap.Width - 1, bitmap.Height - 1) })
+                                Check(bitmap.GetPixel(corner.X, corner.Y).ToArgb() == toggle.BackColor.ToArgb(),
+                                    $"{language.Code}/{toggle.GetType().Name}/{state}: stale contents remain outside the switch track.");
+                            toggle.DrawToBitmap(bitmap, toggle.ClientRectangle);
+                            Check(bitmap.GetPixel(0, 0).ToArgb() == toggle.BackColor.ToArgb(), "Native checkbox painting leaked outside the switch track.");
+                        }
+                    }
+                }
+            }
+        }
+        finally { L.SetLanguage("en"); }
+    }
+
+    private static void SwitchSizing()
+    {
+        try
+        {
+            foreach (var language in L.Languages)
+            {
+                L.SetLanguage(language.Code);
+                foreach (float points in new[] { 9f, 14f, 22f })
+                {
+                    using var font = new Font(UtilityTheme.StrongFont.FontFamily, points, FontStyle.Bold);
+                    using var main = new EcoModeSwitch(); using var option = new UtilitySwitch();
+                    foreach (var toggle in new UtilitySwitch[] { main, option })
+                    {
+                        toggle.Font = font;
+                        Check(toggle.Size == toggle.GetPreferredSize(Size.Empty), "Font changes left the switch at its old size.");
+                        for (int state = 0; state < 3; state++)
+                        {
+                            if (toggle is EcoModeSwitch eco) eco.State = (EcoSwitchState)state;
+                            else toggle.Checked = state == 1;
+                            Check(toggle.Width >= TextRenderer.MeasureText(toggle.Text, font).Width + toggle.Height,
+                                $"{language.Code}: a switch caption overlaps the thumb after a font change.");
+                        }
+                        foreach (var size in new[] { new Size(4, 4), new Size(8, 8), new Size(10, 50), new Size(80, 12) })
+                        {
+                            toggle.Size = size;
+                            using var bitmap = new Bitmap(size.Width, size.Height);
+                            toggle.DrawToBitmap(bitmap, toggle.ClientRectangle);
+                        }
+                    }
+                }
+            }
+        }
+        finally { L.SetLanguage("en"); }
+    }
+
     private static void HeaderFontLayout()
     {
         var (_, manager, _) = Setup();
@@ -206,8 +283,9 @@ internal static partial class Program
         Check(header.Bottom <= body.Top, "Main controls cover the app subtitle.");
         var status = Field<Label>(form, "lblStatus");
         var toggle = Field<EcoModeSwitch>(form, "ecoSwitch");
-        Check(!status.RectangleToScreen(status.ClientRectangle).IntersectsWith(toggle.RectangleToScreen(toggle.ClientRectangle)),
-            "Eco switch overlaps its status text.");
+        foreach (var text in new[] { status, Field<Label>(form, "lblStatusDetail") })
+            Check(!text.RectangleToScreen(text.ClientRectangle).IntersectsWith(toggle.RectangleToScreen(toggle.ClientRectangle)),
+                "Eco switch overlaps its status or help text.");
     }
 
     private static void SaveInterfaceSnapshot(MainForm form, string name)

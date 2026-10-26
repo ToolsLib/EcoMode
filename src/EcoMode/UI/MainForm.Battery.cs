@@ -25,10 +25,21 @@ public partial class MainForm
         content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         content.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         _batteryDashboard.Controls.Add(content);
+        _batteryDashboard.Layout += (_, _) =>
+        {
+            int width = Math.Max(1, _batteryDashboard.ClientSize.Width - _batteryDashboard.Padding.Horizontal);
+            if (content.MaximumSize.Width != width) content.MaximumSize = new Size(width, 0);
+        };
+        // Header actions must not dictate the width of the switch column below.
+        var header = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, ColumnCount = 2, Margin = Padding.Empty };
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+        content.Controls.Add(header, 0, 0);
+        content.SetColumnSpan(header, 2);
         var heading = UtilityTheme.Label("BATTERY", muted: true);
         heading.Font = UtilityTheme.StrongFont;
         heading.Anchor = AnchorStyles.Left;
-        content.Controls.Add(heading, 0, 0);
+        header.Controls.Add(heading, 0, 0);
         UtilityTheme.StyleButton(btnBatteryHistory);
         btnBatteryHistory.AutoSize = true;
         btnBatteryHistory.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -58,7 +69,7 @@ public partial class MainForm
         btnLiveApps.Click += (_, _) => ShowLiveApps();
         tools.Controls.Add(btnLiveApps);
         tools.Controls.Add(btnBatteryHistory);
-        content.Controls.Add(tools, 1, 0);
+        header.Controls.Add(tools, 1, 0);
         lblBattery.Font = UtilityTheme.StrongFont;
         lblBattery.Dock = DockStyle.Fill;
         lblBattery.Margin = new Padding(0, 6, 0, 3);
