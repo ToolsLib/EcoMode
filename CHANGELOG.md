@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+- Add an optional, per-user Start with Windows setting in the File and tray menus, disabled by default.
+- Launch directly in the notification area at sign-in without flashing a window, requesting elevation, or interrupting with the first-run view chooser.
+- Preserve saved preferences and automatic background-app mode, and retain restoration on Quit and Windows shutdown.
+- Keep duplicate sign-in launches quiet and let users open the running app from its tray icon.
+- Remove the installed copy's startup entry on uninstall while preserving entries for other copies and original-settings recovery records.
+- Translate startup controls and messages into all four supported languages and add startup, hidden-window lifetime, recovery, and installer regression coverage.
+
 ## 1.2.2
 
 - Clear the full switch background during repainting so old text and native checkbox pixels cannot show behind the main or smaller switches.

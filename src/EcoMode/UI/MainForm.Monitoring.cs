@@ -63,9 +63,10 @@ public partial class MainForm
         try { _battery = _powerSource.Read(); }
         catch { _battery = BatterySnapshot.Unknown; }
         _batteryHistory.Add(_runtimeClock.Elapsed, DateTimeOffset.Now, _battery, _ecoEnabled);
+        bool wasProcessModeActive = _ecoEnabled && _ecoHookActive;
         EvaluateAutomaticMode();
         bool enabled = _ecoEnabled && _ecoHookActive;
-        if (_sweepSchedule.Due(_runtimeClock.Elapsed, enabled, forceSweep))
+        if (_sweepSchedule.Due(_runtimeClock.Elapsed, enabled, forceSweep && wasProcessModeActive))
         {
             try { ScanBackgroundProcesses(newProcessesOnly: true); }
             catch (Exception ex) { LogWarn(L.T("Background app check failed: {0}", ex.Message)); }

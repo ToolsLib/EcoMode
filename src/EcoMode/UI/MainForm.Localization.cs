@@ -46,6 +46,7 @@ public partial class MainForm
             }
             ecoSwitch.RefreshLanguage();
             chkAutomatic.RefreshLanguage();
+            RefreshStartupOption();
             ecoSwitch.AccessibleName = L.T("Eco Mode");
             ecoSwitch.State = ecoSwitch.State;
             cboPresets.Refresh();

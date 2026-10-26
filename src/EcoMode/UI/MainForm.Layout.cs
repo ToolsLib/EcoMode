@@ -88,6 +88,7 @@ public partial class MainForm
         trayIcon.ContextMenuStrip = trayMenu;
         trayIcon.Visible = true;
         trayIcon.DoubleClick += (_, _) => RestoreFromTray();
+        BuildStartupMenus();
     }
 
     private Panel BuildHeader()

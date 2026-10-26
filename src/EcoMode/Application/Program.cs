@@ -6,13 +6,15 @@ namespace ecomode;
 static class Program
 {
     [STAThread]
-    static void Main()
+    static void Main(string[] args)
     {
+        bool automaticStartup = StartupLaunch.IsAutomatic(args);
+        bool interactive = !automaticStartup;
         // Global exception handlers (before anything else)
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-        Application.ThreadException += (s, e) => ShowAndLog(L.T("UI Thread Exception"), e.Exception);
+        Application.ThreadException += (s, e) => ShowAndLog(L.T("UI Thread Exception"), e.Exception, interactive);
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-            ShowAndLog(L.T("Non-UI/Background Exception"), e.ExceptionObject as Exception ?? new Exception("Unknown"));
+            ShowAndLog(L.T("Non-UI/Background Exception"), e.ExceptionObject as Exception ?? new Exception("Unknown"), interactive);
 
         try
         {
@@ -24,25 +26,26 @@ static class Program
             using var instance = StartupElevation.AcquireInstance(isAdmin,
                 () => MessageBox.Show(StartupElevation.Confirmation, L.T("Restart as Administrator?"),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes,
-                (message, icon) => MessageBox.Show(message, "EcoMode", MessageBoxButtons.OK, icon));
+                (message, icon) => MessageBox.Show(message, "EcoMode", MessageBoxButtons.OK, icon), automaticStartup: automaticStartup);
             if (instance == null) return;
 
             MainForm form;
             try
             {
                 string? viewSaveFailure = null;
-                var view = new ViewPreferences().GetOrChoose(() =>
+                var view = StartupLaunch.SelectView(automaticStartup, new ViewPreferences(), () =>
                 {
                     using var choice = new ViewChoiceDialog();
                     choice.ShowDialog();
                     return choice.SelectedView;
                 }, message => viewSaveFailure = message);
-                form = new MainForm(isAdmin, null, initialView: view);
+                form = new MainForm(isAdmin, null, initialView: view, startInTray: automaticStartup);
+                form.VisibleChanged += (_, _) => { if (form.Visible) interactive = true; };
                 if (viewSaveFailure != null) form.ReportViewSaveFailure(viewSaveFailure);
             }
             catch (Exception ex)
             {
-                ShowAndLog(L.T("Error initializing EcoMode"), ex);
+                ShowAndLog(L.T("Error initializing EcoMode"), ex, interactive);
                 return;
             }
 
@@ -50,11 +53,11 @@ static class Program
         }
         catch (Exception ex)
         {
-            ShowAndLog(L.T("Fatal error in Program.Main"), ex);
+            ShowAndLog(L.T("Fatal error in Program.Main"), ex, interactive);
         }
     }
 
-    private static void ShowAndLog(string title, Exception ex)
+    private static void ShowAndLog(string title, Exception ex, bool showDialog = true)
     {
         try
         {
@@ -66,6 +69,7 @@ static class Program
         }
         catch { /* ignore logging issues */ }
 
+        if (!showDialog) return;
         try
         {
             MessageBox.Show($"{title}:\r\n\r\n{ex}", L.T("EcoModeGUI — Error"),

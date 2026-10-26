@@ -929,4 +929,37 @@
   <data name="Realtime" xml:space="preserve">
     <value>实时</value>
   </data>
+  <data name="Start with Windows" xml:space="preserve">
+    <value>随 Windows 启动</value>
+  </data>
+  <data name="Start in the notification area when you sign in. Applies to your Windows account." xml:space="preserve">
+    <value>登录时在通知区域启动。仅适用于你的 Windows 账户。</value>
+  </data>
+  <data name="Startup uses another copy. Turn this option off and on to use this copy." xml:space="preserve">
+    <value>启动项指向另一个副本。关闭并重新启用此选项以使用当前副本。</value>
+  </data>
+  <data name="Could not read the Windows startup setting: {0}" xml:space="preserve">
+    <value>无法读取 Windows 启动设置：{0}</value>
+  </data>
+  <data name="Could not update the Windows startup setting: {0}" xml:space="preserve">
+    <value>无法更新 Windows 启动设置：{0}</value>
+  </data>
+  <data name="EcoMode will start in the notification area when you sign in." xml:space="preserve">
+    <value>EcoMode 将在登录时于通知区域启动。</value>
+  </data>
+  <data name="EcoMode will no longer start automatically when you sign in." xml:space="preserve">
+    <value>EcoMode 将不再在登录时自动启动。</value>
+  </data>
+  <data name="The startup executable path is invalid." xml:space="preserve">
+    <value>启动程序路径无效。</value>
+  </data>
+  <data name="The startup command is too long. Move EcoMode to a shorter path and try again." xml:space="preserve">
+    <value>启动命令过长。请将 EcoMode 移至较短的路径后重试。</value>
+  </data>
+  <data name="EcoMode started in the notification area. Open it to review settings that need attention." xml:space="preserve">
+    <value>EcoMode 已在通知区域启动。请打开它以查看需要处理的设置。</value>
+  </data>
+  <data name="EcoMode is already running in this or another Windows session. Open it from the notification area, or close that instance before starting another." xml:space="preserve">
+    <value>EcoMode 已在当前或其他 Windows 会话中运行。请从通知区域打开它，或关闭现有实例后再启动。</value>
+  </data>
 </root>

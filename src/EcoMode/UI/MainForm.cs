@@ -22,7 +22,8 @@ public partial class MainForm : Form
 
     internal MainForm(bool isAdmin, IOriginalSettingsManager? originalSettings, string? configPath = null,
         string? viewPreferencesPath = null, AppView? initialView = null, string? languagePreferencesPath = null,
-        IPowerSource? powerSource = null, string? automationPreferencesPath = null, bool startMonitoring = true)
+        IPowerSource? powerSource = null, string? automationPreferencesPath = null, bool startMonitoring = true,
+        IStartupRegistration? startupRegistration = null, bool startInTray = false)
     {
         try
         {
@@ -34,6 +35,8 @@ public partial class MainForm : Form
             _automationPreferences = new AutomationPreferences(automationPreferencesPath);
             _automaticPolicy.Enabled = _automationPreferences.Load();
             _monitoringRequested = startMonitoring;
+            _startupRegistration = startupRegistration ?? new WindowsStartupRegistration();
+            _startInTray = startInTray;
             _view = initialView ?? _viewPreferences.Load() ?? AppView.Simple;
             BuildUi();
             L.TranslateTree(this);
@@ -56,6 +59,7 @@ public partial class MainForm : Form
             EnsureOriginalSettingsSaved();
             RefreshOriginalSettingsStatus();
             ApplyViewLayout(resize: true);
+            RefreshStartupOption(reportFailure: true);
             L.LanguageChanged += OnLanguageChanged;
         }
         catch

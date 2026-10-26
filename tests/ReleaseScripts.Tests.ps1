@@ -59,6 +59,8 @@ try {
         $installerScript = Get-Content -Raw -LiteralPath "$projectRoot/installer/EcoMode.iss"
         Assert ($installerScript -notmatch '(?im)^\s*\[UninstallDelete\]') 'Uninstall must preserve recovery data after abnormal termination.'
         Assert ($installerScript -match 'artifacts\\standalone\\win-x64') 'Installer publish defaults must use the standalone output.'
+        Assert ($installerScript -match 'CompareText\(StartupCommand, InstalledCommand\) = 0') 'Uninstall must preserve startup entries that point to another copy.'
+        Assert ($installerScript -match "RegDeleteValue\(HKCU, 'Software\\Microsoft\\Windows\\CurrentVersion\\Run', 'EcoMode'\)") 'Uninstall must remove only the current user startup value for this installed copy.'
     }
     Run 'release packaging uses the source layout from any working directory and cleans failed builds' {
         $buildRoot = Join-Path $fixture 'packaging'

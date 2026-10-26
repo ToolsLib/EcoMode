@@ -12,17 +12,17 @@ internal static class StartupElevation
 
     internal static SingleInstance? AcquireInstance(bool isAdmin, Func<bool> confirmRestart,
         Action<string, MessageBoxIcon> notify, string mutexName = SingleInstance.Name,
-        Func<ProcessStartInfo, bool>? launch = null)
+        Func<ProcessStartInfo, bool>? launch = null, bool automaticStartup = false)
     {
         SingleInstance? instance = SingleInstance.TryAcquire(mutexName);
         try
         {
             if (instance == null)
             {
-                NotifyAlreadyRunning(notify);
+                if (!automaticStartup) NotifyAlreadyRunning(notify);
                 return null;
             }
-            if (isAdmin || !confirmRestart()) return instance;
+            if (isAdmin || automaticStartup || !confirmRestart()) return instance;
 
             string? failure = null;
             try
@@ -87,6 +87,6 @@ internal static class StartupElevation
     }
 
     private static void NotifyAlreadyRunning(Action<string, MessageBoxIcon> notify) =>
-        notify(L.T("EcoMode is already running in this or another Windows session. Close that instance before starting another."),
+        notify(L.T("EcoMode is already running in this or another Windows session. Open it from the notification area, or close that instance before starting another."),
             MessageBoxIcon.Information);
 }

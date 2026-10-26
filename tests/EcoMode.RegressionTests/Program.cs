@@ -80,6 +80,7 @@ internal static partial class Program
             RunRecoveryTests(args);
             RunProfilePresetTests();
             RunStartupElevationTests();
+            RunWindowsStartupTests();
             RunProcessSafetyTests();
             RunInterfaceTests();
             RunStartupOriginalsTests();
@@ -570,10 +571,12 @@ internal static partial class Program
         public readonly List<bool> Scans = new();
         public TestMainForm(bool isAdmin, IOriginalSettingsManager manager, string? configPath = null,
             AppView? initialView = AppView.Advanced, string? viewPreferencesPath = null, string? languagePreferencesPath = null,
-            IPowerSource? powerSource = null, string? automationPreferencesPath = null, bool startMonitoring = false)
+            IPowerSource? powerSource = null, string? automationPreferencesPath = null, bool startMonitoring = false,
+            IStartupRegistration? startupRegistration = null, bool startInTray = false)
             : base(isAdmin, manager, configPath, viewPreferencesPath ?? Path.Combine(_root, "view-" + Guid.NewGuid().ToString("N") + ".json"), initialView,
                 languagePreferencesPath ?? Path.Combine(_root, "language-" + Guid.NewGuid().ToString("N") + ".json"),
-                powerSource: powerSource, automationPreferencesPath: automationPreferencesPath ?? Path.Combine(_root, "auto-" + Guid.NewGuid().ToString("N") + ".json"), startMonitoring: startMonitoring)
+                powerSource: powerSource, automationPreferencesPath: automationPreferencesPath ?? Path.Combine(_root, "auto-" + Guid.NewGuid().ToString("N") + ".json"), startMonitoring: startMonitoring,
+                startupRegistration: startupRegistration ?? new FakeStartupRegistration(), startInTray: startInTray)
         { }
 
         internal override DialogResult ShowExitWarning(string message, string title, MessageBoxButtons buttons)
@@ -606,7 +609,7 @@ internal static partial class Program
         ProfilePresets.Get("balanced").CreateState().Save(configPath);
         using var form = new MainForm(false, manager, configPath,
             Path.Combine(_root, "render-view.json"), AppView.Advanced,
-            automationPreferencesPath: Path.Combine(_root, "render-auto.json"), startMonitoring: false);
+            automationPreferencesPath: Path.Combine(_root, "render-auto.json"), startMonitoring: false, startupRegistration: new FakeStartupRegistration());
         try
         {
             form.StartPosition = FormStartPosition.Manual;

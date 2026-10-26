@@ -50,3 +50,17 @@ Filename: "{app}\{#MyAppExe}"; Description: "Launch {#MyAppName}"; Flags: nowait
 
 ; Keep per-user profiles and the shared HKLM restore journal on uninstall.
 ; A previous abnormal exit may still require these originals after reinstall.
+
+[Code]
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  StartupCommand, InstalledCommand: String;
+begin
+  if CurUninstallStep = usUninstall then
+  begin
+    InstalledCommand := '"' + ExpandConstant('{app}\{#MyAppExe}') + '" --startup';
+    if RegQueryStringValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'EcoMode', StartupCommand) then
+      if CompareText(StartupCommand, InstalledCommand) = 0 then
+        RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'EcoMode');
+  end;
+end;

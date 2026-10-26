@@ -929,4 +929,37 @@ Un interrupteur, un état clair et la restauration facile de vos réglages.</val
   <data name="Realtime" xml:space="preserve">
     <value>Temps réel</value>
   </data>
+  <data name="Start with Windows" xml:space="preserve">
+    <value>Démarrer avec Windows</value>
+  </data>
+  <data name="Start in the notification area when you sign in. Applies to your Windows account." xml:space="preserve">
+    <value>Démarre dans la zone de notification à l’ouverture de session, pour votre compte Windows.</value>
+  </data>
+  <data name="Startup uses another copy. Turn this option off and on to use this copy." xml:space="preserve">
+    <value>Le démarrage utilise une autre copie. Désactivez puis réactivez cette option pour utiliser celle-ci.</value>
+  </data>
+  <data name="Could not read the Windows startup setting: {0}" xml:space="preserve">
+    <value>Impossible de lire le réglage de démarrage Windows : {0}</value>
+  </data>
+  <data name="Could not update the Windows startup setting: {0}" xml:space="preserve">
+    <value>Impossible de modifier le réglage de démarrage Windows : {0}</value>
+  </data>
+  <data name="EcoMode will start in the notification area when you sign in." xml:space="preserve">
+    <value>EcoMode démarrera dans la zone de notification à l’ouverture de session.</value>
+  </data>
+  <data name="EcoMode will no longer start automatically when you sign in." xml:space="preserve">
+    <value>EcoMode ne démarrera plus automatiquement à l’ouverture de session.</value>
+  </data>
+  <data name="The startup executable path is invalid." xml:space="preserve">
+    <value>Le chemin de l’exécutable de démarrage est invalide.</value>
+  </data>
+  <data name="The startup command is too long. Move EcoMode to a shorter path and try again." xml:space="preserve">
+    <value>La commande de démarrage est trop longue. Placez EcoMode dans un chemin plus court puis réessayez.</value>
+  </data>
+  <data name="EcoMode started in the notification area. Open it to review settings that need attention." xml:space="preserve">
+    <value>EcoMode a démarré dans la zone de notification. Ouvrez-le pour consulter les réglages nécessitant votre attention.</value>
+  </data>
+  <data name="EcoMode is already running in this or another Windows session. Open it from the notification area, or close that instance before starting another." xml:space="preserve">
+    <value>EcoMode est déjà actif dans cette session Windows ou une autre. Ouvrez-le depuis la zone de notification, ou fermez cette instance avant d’en lancer une autre.</value>
+  </data>
 </root>

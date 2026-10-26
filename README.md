@@ -20,6 +20,7 @@
 * **Live app list**: inspect EcoMode status, priority and EcoQoS, search running apps, and save per-executable throttling exclusions.
 * **Configurable bypass list**: define which processes should never be throttled.
 * **Tray support**: runs in the background, minimizes to system tray instead of closing.
+* **Optional Windows startup**: launch silently in the system tray at sign-in for your Windows account.
 * **Import / export / reset profiles**: easily back up or share your configuration.
 * **Built-in presets**: start with Balanced, Battery Saver, Gaming, Development, Creative Work, or Video Calls, then customize the app and bypass lists.
 * **Utility-style interface**: dark panels, a clear Eco status, grouped controls, and a compact activity log. Styles live in [`UI/Controls`](src/EcoMode/UI/Controls/); layouts live in [`UI`](src/EcoMode/UI/).
@@ -50,6 +51,16 @@ The installer and portable ZIP include the .NET runtime. **Users do not need to 
 * Right-click the **tray icon** for Show / Quit and, in Advanced view, Save.
 
 [First-launch choice](docs/welcome.png) · [Advanced view](docs/advanced-view.png)
+
+### Start with Windows
+
+Enable **File → Start with Windows**, or right-click the tray icon and select **Start with Windows**. It is off by default and applies only to your Windows account. The two menus show the same checked state. Turning it off removes EcoMode's startup entry; quitting EcoMode keeps the preference for your next sign-in.
+
+Sign-in launches go straight to the notification area without flashing the window, requesting Administrator access, or opening a first-run view chooser. Double-click the tray icon or choose **Show** to open the window. A duplicate sign-in launch exits quietly. Startup preserves your saved language, view, profile, originals, and automatic-mode preference. It does not apply a manual Eco profile; if **Automatic on battery** is enabled, background-app mode still follows the power source. Normal tray Quit and Windows shutdown retain the existing restoration behavior. To request Administrator access, quit and launch EcoMode normally.
+
+This uses the current user's Windows `Run` entry named `EcoMode`, pointing to the quoted executable path with `--startup`. Framework-dependent development launches also include the quoted DLL path. Opening the app never enables or rewrites this entry automatically, and importing or resetting profiles does not alter it. For portable copies, keep the executable in a permanent location before enabling startup. If another copy is registered, the menu tooltip explains how to switch to the current copy. Windows Settings can independently disable startup apps; EcoMode does not override that choice.
+
+Uninstall removes the current user's startup entry only when it points to the installed copy, preserving entries for other copies and all original-settings recovery records.
 
 ### Language
 
