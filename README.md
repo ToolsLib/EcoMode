@@ -20,6 +20,7 @@
 * **Live app list**: inspect EcoMode status, priority and EcoQoS, search running apps, and save per-executable throttling exclusions.
 * **Configurable bypass list**: define which processes should never be throttled.
 * **Tray support**: runs in the background, minimizes to system tray instead of closing.
+* **Tray status**: the normal icon means Eco Mode is off, a green check badge means it is on, and an amber exclamation badge means restoration is pending. Hover for the translated status. Manual and automatic Eco Mode use the same indicators.
 * **Optional Windows startup**: launch silently in the system tray at sign-in for your Windows account.
 * **Import / export / reset profiles**: easily back up or share your configuration.
 * **Built-in presets**: start with Balanced, Battery Saver, Gaming, Development, Creative Work, or Video Calls, then customize the app and bypass lists.

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Show a green check badge in the notification area while Eco Mode is on, and an amber exclamation badge when restoration is pending.
+- Keep tray status and translated tooltips synchronized with manual and automatic Eco Mode, including hidden sign-in startup.
+- Fix transient layouts permanently increasing the minimum window height; resize from settled content and allow the minimum to shrink again.
+- Add tray-state, standalone icon-resource, and repeated-resizing regression coverage across both views and all four languages.
+
 ## 1.3.0
 
 - Add an optional, per-user Start with Windows setting in the File and tray menus, disabled by default.

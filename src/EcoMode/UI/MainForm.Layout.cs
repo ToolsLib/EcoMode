@@ -9,6 +9,7 @@ public partial class MainForm
     private TableLayoutPanel? _powerControls;
     private bool _fittingControlPanel;
     private bool _fitControlPanelQueued;
+    private bool _layingOutCurrentView;
 
     private void BuildUi()
     {
@@ -52,7 +53,7 @@ public partial class MainForm
         BuildBatteryDashboard();
         splitTop.Panel2.Controls.Add(_advancedBatteryHost);
         BuildActivityPanel();
-        splitMain.SizeChanged += (_, _) => FitControlPanel();
+        splitMain.SizeChanged += (_, _) => QueueFitControlPanel();
         Shown += OnFormShown;
     }
 
@@ -190,11 +191,7 @@ public partial class MainForm
         _powerControls = content;
         content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         card.Controls.Add(content);
-        content.Layout += (_, _) =>
-        {
-            FitControlPanel();
-            QueueFitControlPanel();
-        };
+        content.Layout += (_, _) => QueueFitControlPanel();
         AddSection(content, BuildSimpleIntroduction());
 
         var mode = new TableLayoutPanel
@@ -479,7 +476,7 @@ public partial class MainForm
 
     private void FitControlPanel()
     {
-        if (_applyingViewLayout || _updatingLanguage || _fittingControlPanel || !Visible || _powerControls?.Parent is not Control card || splitMain.Height <= 0) return;
+        if (_applyingViewLayout || _updatingLanguage || _layingOutCurrentView || _fittingControlPanel || !Visible || _powerControls?.Parent is not Control card || splitMain.Height <= 0) return;
         _fittingControlPanel = true;
         try
         {
@@ -489,18 +486,18 @@ public partial class MainForm
             splitTop.Panel2.AutoScroll = true;
             splitTop.Panel2.AutoScrollMinSize = _view == AppView.Advanced && _historyVisible
                 ? new Size(0, _advancedBatteryHost.Height + splitRight.SplitterWidth + 340) : Size.Empty;
-            int required = Math.Max(_powerControls.GetPreferredSize(new Size(width, 0)).Height,
-                _powerControls.Height) + card.Padding.Vertical;
-            int controlsShortfall = required - card.ClientSize.Height;
+            int required = _powerControls.GetPreferredSize(new Size(width, 0)).Height + card.Padding.Vertical;
             if (_view == AppView.Advanced)
                 required = Math.Max(required, _advancedBatteryHost.Height + splitRight.SplitterWidth + (_historyVisible ? 340 : 220));
             int activityHeight = splitMain.Panel2Collapsed ? 0 : splitMain.SplitterWidth + 76;
-            int shortfall = Math.Max(required + activityHeight - splitMain.Height, controlsShortfall);
-            // Longer translations can wrap. Grow the minimum height instead of
-            // hiding restoration controls below a scrollbar at the window minimum.
-            if (shortfall > 0 && WindowState == FormWindowState.Normal)
+            // Measure at the settled column width. Derive the minimum from content,
+            // not the previous window height, so transient wrapping cannot ratchet it up.
+            if (WindowState == FormWindowState.Normal)
+            {
+                int minimumHeight = Math.Max(700, Height - splitMain.Height + required + activityHeight);
                 MinimumSize = new Size(MinimumSize.Width, Math.Min(Screen.FromControl(this).WorkingArea.Height - 40,
-                    Math.Max(MinimumSize.Height, Height + shortfall)));
+                    minimumHeight));
+            }
             if (splitMain.Panel2Collapsed) return;
             if (splitMain.Panel1MinSize == required && splitMain.SplitterDistance >= required) return;
             TrySetMinSizes(splitMain, 0, 76);

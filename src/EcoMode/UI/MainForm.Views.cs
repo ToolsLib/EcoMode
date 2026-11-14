@@ -189,20 +189,27 @@ public partial class MainForm
 
     private void LayoutCurrentView()
     {
-        if (_view == AppView.Simple)
+        if (_layingOutCurrentView) return;
+        _layingOutCurrentView = true;
+        try
         {
-            TrySetMinSizes(splitMain, 0, 76);
-            if (!splitMain.Panel2Collapsed) SafeSetSplitter(splitMain, splitMain.Height - 110);
-            FitControlPanel();
-            return;
+            if (_view == AppView.Simple)
+            {
+                TrySetMinSizes(splitMain, 0, 76);
+                if (!splitMain.Panel2Collapsed) SafeSetSplitter(splitMain, splitMain.Height - 110);
+            }
+            else
+            {
+                TrySetMinSizes(splitMain, 340, 76);
+                TrySetMinSizes(splitTop, 440, 330);
+                TrySetMinSizes(splitRight, 100, 100);
+                SafeSetSplitter(splitMain, splitMain.Height - 102);
+                SafeSetSplitter(splitTop, (int)(splitTop.Width * 0.49));
+                SafeSetSplitter(splitRight, (int)(splitRight.Height * 0.50));
+            }
         }
-        TrySetMinSizes(splitMain, 340, 76);
-        TrySetMinSizes(splitTop, 440, 330);
-        TrySetMinSizes(splitRight, 100, 100);
-        SafeSetSplitter(splitMain, splitMain.Height - 102);
-        SafeSetSplitter(splitTop, (int)(splitTop.Width * 0.49));
-        SafeSetSplitter(splitRight, (int)(splitRight.Height * 0.50));
+        finally { _layingOutCurrentView = false; }
         FitControlPanel();
-        SafeSetSplitter(splitRight, splitRight.Height / 2);
+        if (_view == AppView.Advanced) SafeSetSplitter(splitRight, splitRight.Height / 2);
     }
 }

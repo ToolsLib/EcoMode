@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\app_simplified.ico" LogicalName="ecomode.Assets.app_simplified.ico" />
+    <EmbeddedResource Include="Assets\tray_*.ico" LogicalName="ecomode.Assets.%(Filename)%(Extension)" />
     <EmbeddedResource Include="Profiles\*.json" LogicalName="ecomode.profiles.%(Filename)%(Extension)" />
     <InternalsVisibleTo Include="EcoMode.RegressionTests" />
   </ItemGroup>
