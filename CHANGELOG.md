@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.1
 
 - Show a green check badge in the notification area while Eco Mode is on, and an amber exclamation badge when restoration is pending.
 - Keep tray status and translated tooltips synchronized with manual and automatic Eco Mode, including hidden sign-in startup.
