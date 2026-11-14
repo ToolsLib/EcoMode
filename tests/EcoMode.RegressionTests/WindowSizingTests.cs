@@ -59,6 +59,7 @@ internal static partial class Program
         ShowOffscreen(form);
         form.Size = new Size(1100, 700);
         SettleWindowLayout(form);
+        int originalMinimum = form.MinimumSize.Height;
         var description = Field<Label>(form, "lblPresetDescription");
         string original = description.Text;
         description.Text = string.Join(Environment.NewLine, Enumerable.Repeat("Additional profile information", 18));
@@ -66,7 +67,10 @@ internal static partial class Program
         int expandedMinimum = form.MinimumSize.Height;
         description.Text = original;
         SettleWindowLayout(form);
-        Check(form.MinimumSize.Height < expandedMinimum, "Shorter content kept the previous large minimum height.");
+        // A small hosted display can cap both minimums at the same screen height.
+        // Returning to the baseline still proves the window did not retain extra height.
+        Check(form.MinimumSize.Height == originalMinimum,
+            $"Shorter content did not restore the original minimum: before={originalMinimum}, expanded={expandedMinimum}, after={form.MinimumSize.Height}, working={Screen.FromControl(form).WorkingArea}.");
         form.Size = new Size(1100, 700);
         SettleWindowLayout(form);
         Check(form.Height <= 732, "The window could not return to its original minimum after content shrank.");
