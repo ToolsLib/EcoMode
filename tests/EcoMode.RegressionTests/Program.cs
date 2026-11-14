@@ -46,6 +46,18 @@ internal static partial class Program
         Directory.CreateDirectory(_root);
         try
         {
+            if (args.Contains("--layout-tests-only"))
+            {
+                Run("power controls and header fit the default and minimum window sizes", RenderForm);
+                RunWindowSizingTests();
+                return 0;
+            }
+            if (args.Contains("--tray-tests-only"))
+            {
+                RunTrayStatusTests();
+                Console.WriteLine($"PASS: {_passed} tray status checks.");
+                return 0;
+            }
             if (args.Contains("--localization-tests-only"))
             {
                 RunLocalizationTests();
@@ -83,6 +95,8 @@ internal static partial class Program
             RunWindowsStartupTests();
             RunProcessSafetyTests();
             RunInterfaceTests();
+            RunWindowSizingTests();
+            RunTrayStatusTests();
             RunStartupOriginalsTests();
             RunViewTests();
             RunExitRecoveryTests();

@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Text.Json;
-using System.Reflection;
 using ecomode.Interop;
 
 namespace ecomode;
@@ -38,16 +37,11 @@ public partial class MainForm : Form
             _startupRegistration = startupRegistration ?? new WindowsStartupRegistration();
             _startInTray = startInTray;
             _view = initialView ?? _viewPreferences.Load() ?? AppView.Simple;
+            _trayStatusIcons = new TrayStatusIcons();
+            Icon = trayIcon.Icon = _trayStatusIcons[EcoSwitchState.Off];
             BuildUi();
             L.TranslateTree(this);
             L.TranslateItems(trayMenu.Items);
-            var icon = LoadEmbeddedIcon("ecomode.Assets.app_simplified.ico");
-            if (icon != null)
-            {
-                this.Icon = icon;
-                trayIcon.Icon = icon;
-            }
-
             EnergyManager.Logger = Log;
 
             _state = AppState.Load(_configPath);
@@ -66,6 +60,7 @@ public partial class MainForm : Form
         {
             trayIcon.Dispose();
             trayMenu.Dispose();
+            _trayStatusIcons?.Dispose();
             throw;
         }
     }
@@ -89,6 +84,7 @@ public partial class MainForm : Form
             trayMenu.Dispose();
         }
         base.Dispose(disposing);
+        if (disposing) _trayStatusIcons?.Dispose();
     }
 
     private void UpdateStatus(bool ecoPlannedOn)
@@ -487,6 +483,7 @@ public partial class MainForm : Form
             lblStatusDetail.Text = L.T("Check the activity log and retry.");
             LogError(L.T("Cannot read original settings: {0}", ex.Message));
         }
+        RefreshTrayStatus();
         RefreshSimpleStatus();
     }
 
@@ -524,14 +521,6 @@ public partial class MainForm : Form
         EnsurePresetCanLoad();
         ReplaceProfile(preset.CreateState());
         LogInfo(L.T("{0} preset loaded and saved. Review the app paths and bypass list, then switch Eco Mode on.", preset.Name));
-    }
-
-    private static Icon? LoadEmbeddedIcon(string resourceName)
-    {
-        var asm = Assembly.GetExecutingAssembly();
-        // e.g. "ecomode.Assets.app_simplified.ico"
-        using var s = asm.GetManifestResourceStream(resourceName);
-        return s != null ? new Icon(s) : null;
     }
 
     private void OnMenuResetDefaults(object? sender, EventArgs e)
